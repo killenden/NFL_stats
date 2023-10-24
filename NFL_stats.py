@@ -71,11 +71,10 @@ def init():
 
 
     schedule = pd.read_csv('Schedule.csv',header=0,index_col=0)
-    print(schedule)
-
+    week = 8
     week_list=[]
     for i in range(0,len(schedule)):
-        week_list.append(schedule.iloc[i,7])
+        week_list.append(schedule.iloc[i,week-1])
     return week_list, lk_table_mascot, lk_table
 
 
@@ -198,4 +197,8 @@ if __name__ == '__main__':
     passing_df = DF_Creator(url, lk_table_mascot)
     url = 'https://www.nfl.com/stats/team-stats/defense/rushing/2023/reg/all'
     rushing_df = DF_Creator(url, lk_table_mascot)
+    url = 'https://www.nfl.com/stats/team-stats/offense/passing/2023/reg/all'
+    passing_of = DF_Creator(url, lk_table_mascot)
+    url = 'https://www.nfl.com/stats/team-stats/offense/rushing/2023/reg/all'
+    rushing_of = DF_Creator(url, lk_table_mascot)
     output = Output(standings_df)
