@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
+import re
 
 def init():
     lk_table = {'Arizona Cardinals': 'ARI',
@@ -189,11 +190,103 @@ def DF_Creator(url, lk_table_mascot):
     acronym_df = acronym_df.set_index('Team')
     return acronym_df.sort_values(by='Team', ascending=True)
 
+def Player_DF_Creator(url, lk_table_mascot):
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'html.parser')
+    # print('Classes of each table:')
+    # for table in soup.find_all('table'):
+    #     print(table.get('class'))
+
+
+
+    #  Looking for the table with the classes 'wikitable' and 'sortable'
+    table = soup.find('table', class_='TableBase-table')
+    table_headers=[]
+    for x in soup.find_all('th'):
+        data = x.text.strip()
+        if '\n' in data:
+            data = data[:data.find('\n')]
+        table_headers.append(data)
+        
+
+    final = []
+    team_list=[]
+    for row in table.tbody.find_all('tr'):    
+        # Find all data for each column
+        columns = row.find_all('td')
+        row_list=[]
+        if(columns != []):
+            for i in range(0,len(columns)):
+                data = columns[i].text.strip()
+                if '\n' in data:
+                    if i == 0:
+                        start = find_nth(data, '\n', 7)
+                        team = data[start+len('\n'):]
+                        team_list.append(re.sub(r"^\s+", '', team))
+                        start = find_nth(data, '\n', 4)
+                    data = data[start+len('\n'):]
+                    data = data[:data.find('\n')]
+                if ' ' in data:
+                    data = re.sub(r"^\s+", '', data)
+                row_list.append(data)
+        final.append(row_list)
+    df = pd.DataFrame(final,columns = table_headers)
+    df['Team'] = team_list
+    return df
+
+def find_nth(haystack, needle, n):
+    start = haystack.find(needle)
+    while start >= 0 and n > 1:
+        start = haystack.find(needle, start+len(needle))
+        n -= 1
+    return start
 
 if __name__ == '__main__':
     week_list, lk_table_mascot, lk_table = init()
     standings_df = standings(lk_table)
-    url = 'https://www.nfl.com/stats/team-stats/defense/passing/2023/reg/all'
+
+    url = 'https://www.cbssports.com/nfl/stats/player/rushing/nfl/regular/qualifiers/?page=1'
+    rush_df1 = Player_DF_Creator(url, lk_table_mascot)
+    url = 'https://www.cbssports.com/nfl/stats/player/rushing/nfl/regular/qualifiers/?page=2'
+    rush_df2 = Player_DF_Creator(url, lk_table_mascot)
+    rush_df = pd.concat([rush_df1,rush_df2]).reset_index(drop=True)
+    rush_yd_per_gp_df = rush_df.sort_values(by='YDS/G', ascending=False).reset_index(drop=True)
+
+    url = 'https://cbssports.com/nfl/stats/player/passing/nfl/regular/qualifiers/?page=1'
+    pass_df1 = Player_DF_Creator(url, lk_table_mascot)
+    url = 'https://cbssports.com/nfl/stats/player/passing/nfl/regular/qualifiers/?page=2'
+    pass_df2 = Player_DF_Creator(url, lk_table_mascot)
+    pass_df = pd.concat([pass_df1,pass_df2]).reset_index(drop=True)
+
+    url = 'https://www.cbssports.com/nfl/stats/player/receiving/nfl/regular/qualifiers/?page=1'
+    rec_df1 = Player_DF_Creator(url, lk_table_mascot)
+    url = 'https://www.cbssports.com/nfl/stats/player/receiving/nfl/regular/qualifiers/?page=2'
+    rec_df2 = Player_DF_Creator(url, lk_table_mascot)
+    rec_df = pd.concat([rec_df1,rec_df2]).reset_index(drop=True)
+    rec_df['REC/GP'] = rec_df['REC'].astype(int) / rec_df['GP'].astype(int)
+    rec_rec_per_gp_df = rec_df.sort_values(by='REC/GP', ascending=False).reset_index(drop=True)
+
+
+    url = 'https://www.cbssports.com/nfl/stats/player/kicking/nfl/regular/qualifiers/'
+    kick_df1= Player_DF_Creator(url, lk_table_mascot).reset_index(drop=True)
+
+    url = 'https://www.cbssports.com/nfl/stats/player/scoring/nfl/regular/qualifiers/?page=1'
+    score_df1 = Player_DF_Creator(url, lk_table_mascot)
+    url = 'https://www.cbssports.com/nfl/stats/player/scoring/nfl/regular/qualifiers/?page=2'
+    score_df2 = Player_DF_Creator(url, lk_table_mascot)
+    url = 'https://www.cbssports.com/nfl/stats/player/scoring/nfl/regular/qualifiers/?page=3'
+    score_df3 = Player_DF_Creator(url, lk_table_mascot)
+    score_df = pd.concat([score_df1,score_df2, score_df3]).reset_index(drop=True)
+
+    # url = 'https://www.cbssports.com/nfl/stats/player/defense/nfl/regular/qualifiers/?page=1'
+    # def_df1 = Player_DF_Creator(url, lk_table_mascot)
+    # url = 'https://www.cbssports.com/nfl/stats/player/defense/nfl/regular/qualifiers/?page=2'
+    # def_df2 = Player_DF_Creator(url, lk_table_mascot)
+    # url = 'https://www.cbssports.com/nfl/stats/player/defense/nfl/regular/qualifiers/?page=3'
+    # def_df3 = Player_DF_Creator(url, lk_table_mascot)
+    # def_df = pd.concat([def_df1,def_df2, def_df3])
+
+rush_yd_per_gp_df    url = 'https://www.nfl.com/stats/team-stats/defense/passing/2023/reg/all'
     passing_df = DF_Creator(url, lk_table_mascot)
     url = 'https://www.nfl.com/stats/team-stats/defense/rushing/2023/reg/all'
     rushing_df = DF_Creator(url, lk_table_mascot)
