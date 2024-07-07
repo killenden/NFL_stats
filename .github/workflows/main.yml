@@ -37,7 +37,7 @@ jobs:
           git stash push -u
           git pull --rebase origin main
           git stash pop
-          git add 2024/plots/*.png
+          git add 2024/plots/
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
