@@ -29,7 +29,7 @@ jobs:
       
       - name: Run NFL_stats.py
         run: python NFL_stats.py
-      
+
       - name: Commit and push RB plot
         run: |
           git config --local user.email "tonyillenden@gmail.com"
@@ -37,9 +37,11 @@ jobs:
           git stash push -u
           git pull --rebase origin main
           git stash pop
-          git add 2024/plots/*.png
+          git add NFL_stats/2024/plots/
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
             git commit -m "Update RB Plot"
             git push origin main
+          fi
+
