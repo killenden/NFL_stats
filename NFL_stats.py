@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 import re
+import matplotlib.pyplot as plt
 
 def init():
     lk_table = {'Arizona Cardinals': 'ARI',
@@ -258,7 +259,6 @@ if __name__ == '__main__':
     url = 'https://cbssports.com/nfl/stats/player/passing/nfl/regular/qualifiers/?page=2'
     pass_df2 = Player_DF_Creator(url, lk_table_mascot)
     pass_df = pd.concat([pass_df1,pass_df2]).reset_index(drop=True)
-    print(pass_df) 
 
     url = 'https://www.cbssports.com/nfl/stats/player/receiving/nfl/regular/qualifiers/?page=1'
     rec_df1 = Player_DF_Creator(url, lk_table_mascot)
@@ -267,12 +267,10 @@ if __name__ == '__main__':
     rec_df = pd.concat([rec_df1,rec_df2]).reset_index(drop=True)
     rec_df['REC/GP'] = rec_df['REC'].astype(int) / rec_df['GP'].astype(int)
     rec_rec_per_gp_df = rec_df.sort_values(by='REC/GP', ascending=False).reset_index(drop=True)
-    print(rec_rec_per_gp_df)
 
 
     url = 'https://www.cbssports.com/nfl/stats/player/kicking/nfl/regular/qualifiers/'
     kick_df1= Player_DF_Creator(url, lk_table_mascot).reset_index(drop=True)
-    print(kick_df1)
 
     url = 'https://www.cbssports.com/nfl/stats/player/scoring/nfl/regular/qualifiers/?page=1'
     score_df1 = Player_DF_Creator(url, lk_table_mascot)
@@ -281,7 +279,7 @@ if __name__ == '__main__':
     url = 'https://www.cbssports.com/nfl/stats/player/scoring/nfl/regular/qualifiers/?page=3'
     score_df3 = Player_DF_Creator(url, lk_table_mascot)
     score_df = pd.concat([score_df1,score_df2, score_df3]).reset_index(drop=True)
-    print(score_df)
+
     # url = 'https://www.cbssports.com/nfl/stats/player/defense/nfl/regular/qualifiers/?page=1'
     # def_df1 = Player_DF_Creator(url, lk_table_mascot)
     # url = 'https://www.cbssports.com/nfl/stats/player/defense/nfl/regular/qualifiers/?page=2'
@@ -300,3 +298,14 @@ if __name__ == '__main__':
     rushing_of = DF_Creator(url, lk_table_mascot)
     output = Output(standings_df)
     print('Complete')
+
+    rush_df = rush_df[0:10]
+    top_ten = rush_df.sort_values('YDS/G', ascending=False)
+    plt.bar(top_ten['Player'], top_ten['YDS/G'].astype(float), zorder=2)
+    plt.xticks(rotation=45)
+    plt.title('NFL 2023: Top 10 Rushing Yards Per Game')
+    plt.ylabel('Yards Per Game')
+    plt.ylim(50, 100)
+    plt.grid(axis='y', zorder=1, color='black')
+    plt.tight_layout()
+    plt.savefig('NFL_stats\2024\plots\Top_10_Rushing_Yards_Per_Game.png', dpi=450)
