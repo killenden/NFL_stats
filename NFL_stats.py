@@ -281,7 +281,7 @@ if __name__ == '__main__':
     url = 'https://www.cbssports.com/nfl/stats/player/scoring/nfl/regular/qualifiers/?page=3'
     score_df3 = Player_DF_Creator(url, lk_table_mascot)
     score_df = pd.concat([score_df1,score_df2, score_df3]).reset_index(drop=True)
-
+    print(score_df)
     # url = 'https://www.cbssports.com/nfl/stats/player/defense/nfl/regular/qualifiers/?page=1'
     # def_df1 = Player_DF_Creator(url, lk_table_mascot)
     # url = 'https://www.cbssports.com/nfl/stats/player/defense/nfl/regular/qualifiers/?page=2'
