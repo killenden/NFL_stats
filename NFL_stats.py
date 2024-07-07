@@ -251,6 +251,7 @@ if __name__ == '__main__':
     rush_df2 = Player_DF_Creator(url, lk_table_mascot)
     rush_df = pd.concat([rush_df1,rush_df2]).reset_index(drop=True)
     rush_yd_per_gp_df = rush_df.sort_values(by='YDS/G', ascending=False).reset_index(drop=True)
+    print(rush_yd_per_gp_df)
 
     url = 'https://cbssports.com/nfl/stats/player/passing/nfl/regular/qualifiers/?page=1'
     pass_df1 = Player_DF_Creator(url, lk_table_mascot)
@@ -295,3 +296,4 @@ if __name__ == '__main__':
     url = 'https://www.nfl.com/stats/team-stats/offense/rushing/2023/reg/all'
     rushing_of = DF_Creator(url, lk_table_mascot)
     output = Output(standings_df)
+    print('Complete')
