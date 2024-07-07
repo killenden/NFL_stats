@@ -258,7 +258,7 @@ if __name__ == '__main__':
     url = 'https://cbssports.com/nfl/stats/player/passing/nfl/regular/qualifiers/?page=2'
     pass_df2 = Player_DF_Creator(url, lk_table_mascot)
     pass_df = pd.concat([pass_df1,pass_df2]).reset_index(drop=True)
-    print(pass_df)
+    print(pass_df) 
 
     url = 'https://www.cbssports.com/nfl/stats/player/receiving/nfl/regular/qualifiers/?page=1'
     rec_df1 = Player_DF_Creator(url, lk_table_mascot)
