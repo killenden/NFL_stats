@@ -272,6 +272,7 @@ if __name__ == '__main__':
 
     url = 'https://www.cbssports.com/nfl/stats/player/kicking/nfl/regular/qualifiers/'
     kick_df1= Player_DF_Creator(url, lk_table_mascot).reset_index(drop=True)
+    print(kick_df1)
 
     url = 'https://www.cbssports.com/nfl/stats/player/scoring/nfl/regular/qualifiers/?page=1'
     score_df1 = Player_DF_Creator(url, lk_table_mascot)
