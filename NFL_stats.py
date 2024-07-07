@@ -5,6 +5,7 @@ import re
 import matplotlib.pyplot as plt
 import os
 
+
 def init():
     lk_table = {'Arizona Cardinals': 'ARI',
                 'Atlanta Falcons': 'ATL',
