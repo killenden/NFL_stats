@@ -310,4 +310,4 @@ if __name__ == '__main__':
     plt.ylim(50, 100)
     plt.grid(axis='y', zorder=1, color='black')
     plt.tight_layout()
-    plt.savefig(r'NFL_stats/2024/plots/Top_10_Rushing_Yards_Per_Game.png', dpi=450)
+    plt.savefig(r'2024/plots/Top_10_Rushing_Yards_Per_Game.png', dpi=450)
