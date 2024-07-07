@@ -85,7 +85,6 @@ def init():
 
 def Output(standings_df):
     user_df = pd.DataFrame()
-
     user_df['Team'] = standings_df.index.tolist()
     user_df = user_df.set_index('Team')
     user_df['Win Pct'] = standings_df['PCT'].tolist()
@@ -311,4 +310,4 @@ if __name__ == '__main__':
     plt.ylim(50, 100)
     plt.grid(axis='y', zorder=1, color='black')
     plt.tight_layout()
-    plt.savefig('NFL_stats\2024\plots\Top_10_Rushing_Yards_Per_Game.png', dpi=450)
+    plt.savefig(r'NFL_stats\2024\plots\Top_10_Rushing_Yards_Per_Game.png', dpi=450)
