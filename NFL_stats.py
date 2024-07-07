@@ -71,7 +71,7 @@ def init():
                 'Commanders': 'WSH'}
 
 
-    schedule = pd.read_csv('Schedule.csv',header=0,index_col=0)
+    schedule = pd.read_csv('NFL_stats\Schedule.csv',header=0,index_col=0)
     week = 8
     week_list=[]
     for i in range(0,len(schedule)):
@@ -286,7 +286,7 @@ if __name__ == '__main__':
     # def_df3 = Player_DF_Creator(url, lk_table_mascot)
     # def_df = pd.concat([def_df1,def_df2, def_df3])
 
-rush_yd_per_gp_df    url = 'https://www.nfl.com/stats/team-stats/defense/passing/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/defense/passing/2023/reg/all'
     passing_df = DF_Creator(url, lk_table_mascot)
     url = 'https://www.nfl.com/stats/team-stats/defense/rushing/2023/reg/all'
     rushing_df = DF_Creator(url, lk_table_mascot)
