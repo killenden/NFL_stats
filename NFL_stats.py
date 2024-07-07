@@ -267,6 +267,7 @@ if __name__ == '__main__':
     rec_df = pd.concat([rec_df1,rec_df2]).reset_index(drop=True)
     rec_df['REC/GP'] = rec_df['REC'].astype(int) / rec_df['GP'].astype(int)
     rec_rec_per_gp_df = rec_df.sort_values(by='REC/GP', ascending=False).reset_index(drop=True)
+    print(rec_rec_per_gp_df)
 
 
     url = 'https://www.cbssports.com/nfl/stats/player/kicking/nfl/regular/qualifiers/'
