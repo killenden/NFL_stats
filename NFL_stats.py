@@ -75,7 +75,7 @@ def init():
 
     dirname = os.path.dirname(__file__)
     filename = os.path.join(dirname, 'Schedule.csv')
-    schedule = pd.read_csv(dirname,header=0,index_col=0)
+    schedule = pd.read_csv(filename,header=0,index_col=0)
     week = 8
     week_list=[]
     for i in range(0,len(schedule)):
