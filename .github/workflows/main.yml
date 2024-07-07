@@ -1,6 +1,7 @@
 name: Generate RB plot
 
 on:
+  push:
   schedule:
     - cron: '*/5 * * * *'
 
