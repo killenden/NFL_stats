@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import re
 import matplotlib.pyplot as plt
+import os
 
 def init():
     lk_table = {'Arizona Cardinals': 'ARI',
@@ -71,8 +72,9 @@ def init():
                 'Titans': 'TEN',
                 'Commanders': 'WSH'}
 
-
-    schedule = pd.read_csv('NFL_stats\Schedule.csv',header=0,index_col=0)
+    dirname = os.path.dirname(__file__)
+    filename = os.path.join(dirname, 'Schedule.csv')
+    schedule = pd.read_csv(dirname,header=0,index_col=0)
     week = 8
     week_list=[]
     for i in range(0,len(schedule)):
