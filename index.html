@@ -53,6 +53,7 @@
             max-width: 800px;
             margin: auto;
             margin-top: 40px;
+            text-align: center; /* Center text */
         }
         .controls {
             margin-bottom: 20px;
@@ -70,10 +71,10 @@
             margin-top: 20px;
         }
         img {
-        display: block;
-        margin: 0 auto;
-        max-width: 100%;
-        height: auto; 
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto; 
         }
         .yardageImages img {
             display: none; 
@@ -95,31 +96,35 @@
             <h1>NFL Stats</h1>
         </div>
     </div>
-    <h2>Top 10 Yards Per Game</h2>
-    <label for="unitPosition">Select Position:</label>
-    <select id="unitPosition" onchange="showImage('unitPosition', 'positionImages')">
-        <option value="">Please select</option>
-        <option value="RB">RB</option>
-        <option value="WR">WR</option>
-        <option value="QB">QB</option>
-    </select>
-    <div id="positionImages" class="container">
-        <img id="RB" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2023/plots/Top_10_Rushing_Yards_Per_Game.png">
-        <img id="WR" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2023/plots/Top_10_Recieving_Yards_Per_Game.png">
-        <img id="QB" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2023/plots/Top_10_Passing_Yards_Per_Game.png">
+    
+    <div class="container">
+        <h2>Top 10 Yards Per Game</h2>
+        <label for="unitPosition">Select Position:</label>
+        <select id="unitPosition" onchange="showImage('unitPosition', 'positionImages')">
+            <option value="">Please select</option>
+            <option value="RB">RB</option>
+            <option value="WR">WR</option>
+            <option value="QB">QB</option>
+        </select>
+        <div id="positionImages" class="image-container">
+            <img id="RB" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2023/plots/Top_10_Rushing_Yards_Per_Game.png">
+            <img id="WR" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2023/plots/Top_10_Recieving_Yards_Per_Game.png">
+            <img id="QB" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2023/plots/Top_10_Passing_Yards_Per_Game.png">
+        </div>
     </div>
 
-    <h2>Number of Passing Plays Per Distance</h2>
-    <label for="yardageSelect">Select Yardage Distance:</label>
-    <select id="yardageSelect" onchange="showImage('yardageSelect', 'yardageImages')">
-        <option value="">Please select</option>
-        <option value="20">20+</option>
-        <option value="40">40+</option>
-    </select>
-
-    <div id="yardageImages" class="container">
-        <img id="20" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2023/plots/20yrd_passing_plays.png">
-        <img id="40" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2023/plots/40yrd_passing_plays.png">
+    <div class="container">
+        <h2>Number of Passing Plays Per Distance</h2>
+        <label for="yardageSelect">Select Yardage Distance:</label>
+        <select id="yardageSelect" onchange="showImage('yardageSelect', 'yardageImages')">
+            <option value="">Please select</option>
+            <option value="20">20+</option>
+            <option value="40">40+</option>
+        </select>
+        <div id="yardageImages" class="image-container">
+            <img id="20" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2023/plots/20yrd_passing_plays.png">
+            <img id="40" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2023/plots/40yrd_passing_plays.png">
+        </div>
     </div>
 
     <script>
