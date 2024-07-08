@@ -1,4 +1,4 @@
-name: Generate RB plot
+name: Generate plots
 
 on:
   push:
@@ -25,22 +25,24 @@ jobs:
 
       - name: Delete old plots if they exist
         run: |
-          if ls 2024/plots/*.png 1> /dev/null 2>&1; then rm 2024/plots/*.png; fi
-      
+          find 2023/plots/ -name '*.png' -exec rm {} +
+
       - name: Run NFL_stats.py
         run: python NFL_stats.py
       
-      - name: Commit and push RB plot
+      - name: Commit and push changes
         run: |
           git config --local user.email "tonyillenden@gmail.com"
           git config --local user.name "anthony-illenden"
           git stash push -u
           git pull --rebase origin main
+          # Pop the stash
           git stash pop
-          git add 2024/plots/
+          git add 2023/plots/*.png
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "Update RB Plot"
+            git commit -m "Update Plots"
             git push origin main
           fi
+      
