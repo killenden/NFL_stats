@@ -6,114 +6,6 @@ import matplotlib.pyplot as plt
 import os
 
 
-def init():
-    lk_table = {'Arizona Cardinals': 'ARI',
-                'Atlanta Falcons': 'ATL',
-                'Baltimore Ravens': 'BAL',
-                'Buffalo Bills': 'BUF',
-                'Carolina Panthers': 'CAR',
-                'Chicago Bears': 'CHI',
-                'Cincinnati Bengals': 'CIN',
-                'Cleveland Browns': 'CLE',
-                'Dallas Cowboys': 'DAL',
-                'Denver Broncos': 'DEN',
-                'Detroit Lions': 'DET',
-                'Green Bay Packers': 'GB',
-                'Houston Texans': 'HOU',
-                'Indianapolis Colts': 'IND',
-                'Jacksonville Jaguars': 'JAX',
-                'Kansas City Chiefs': 'KC',
-                'Las Vegas Raiders': 'LV',
-                'Los Angeles Chargers': 'LAC',
-                'Los Angeles Rams': 'LAR',
-                'Miami Dolphins': 'MIA',
-                'Minnesota Vikings': 'MIN',
-                'New England Patriots': 'NE',
-                'New Orleans Saints': 'NO',
-                'New York Giants': 'NYG',
-                'New York Jets': 'NYJ',
-                'Philadelphia Eagles': 'PHI',
-                'Pittsburgh Steelers': 'PIT',
-                'San Francisco 49ers': 'SF',
-                'Seattle Seahawks': 'SEA',
-                'Tampa Bay Buccaneers': 'TB',
-                'Tennessee Titans': 'TEN',
-                'Washington Commanders': 'WSH'}
-
-    lk_table_mascot = {'Cardinals': 'ARI',
-                'Falcons': 'ATL',
-                'Ravens': 'BAL',
-                'Bills': 'BUF',
-                'Panthers': 'CAR',
-                'Bears': 'CHI',
-                'Bengals': 'CIN',
-                'Browns': 'CLE',
-                'Cowboys': 'DAL',
-                'Broncos': 'DEN',
-                'Lions': 'DET',
-                'Packers': 'GB',
-                'Texans': 'HOU',
-                'Colts': 'IND',
-                'Jaguars': 'JAX',
-                'Chiefs': 'KC',
-                'Raiders': 'LV',
-                'Chargers': 'LAC',
-                'Rams': 'LAR',
-                'Dolphins': 'MIA',
-                'Vikings': 'MIN',
-                'Patriots': 'NE',
-                'Saints': 'NO',
-                'Giants': 'NYG',
-                'Jets': 'NYJ',
-                'Eagles': 'PHI',
-                'Steelers': 'PIT',
-                '49ers': 'SF',
-                'Seahawks': 'SEA',
-                'Buccaneers': 'TB',
-                'Titans': 'TEN',
-                'Commanders': 'WSH'}
-
-    NFL_URLs = ['ARI/arizona-cardinals',
-                'ATL/atlanta-falcons',
-                'BAL/baltimore-ravens',
-                'BUF/buffalo-bills',
-                'CAR/carolina-panthers',
-                'CHI/chicago-bears',
-                'CIN/cincinnati-bengals',
-                'CLE/cleveland-browns',
-                'DAL/dallas-cowboys',
-                'DEN/denver-broncos',
-                'DET/detroit-lions',
-                'GB/green-bay-packers',
-                'HOU/houston-texans',
-                'IND/indianapolis-colts',
-                'JAC/jacksonville-jaguars',
-                'KC/kansas-city-chiefs',
-                'LV/las-vegas-raiders',
-                'LAC/los-angeles-chargers',
-                'LAR/los-angeles-rams',
-                'MIA/miami-dolphins',
-                'MIN/minnesota-vikings',
-                'NE/new-england-patriots',
-                'NO/new-orleans-saints',
-                'NYG/new-york-giants',
-                'NYJ/new-york-jets',
-                'PHI/philadelphia-eagles',
-                'PIT/pittsburgh-steelers',
-                'SF/san-francisco-49ers',
-                'SEA/seattle-seahawks',
-                'TB/tampa-bay-buccaneers',
-                'TEN/tennessee-titans',
-                'WAS/washington-commanders']
-
-    dirname = os.path.dirname(__file__)
-    filename = os.path.join(dirname, 'Schedule.csv')
-    schedule = pd.read_csv(filename,header=0,index_col=0)
-    week = 8
-    week_list=[]
-    for i in range(0,len(schedule)):
-        week_list.append(schedule.iloc[i,week-1])
-    return week_list, lk_table_mascot, lk_table, NFL_URLs
 
 
 def Output(standings_df):
@@ -285,20 +177,11 @@ if __name__ == '__main__':
     
     
     import PullRosters
+    import utils
     
     
-    
-    
-    
-    
-    week_list, lk_table_mascot, lk_table, NFL_URLs = init()
+    week_list, lk_table_mascot, lk_table, NFL_URLs = utils.init()
     standings_df = standings(lk_table)
-
-    database_df_final = pd.DataFrame()
-    for team in NFL_URLs:
-        database_df = PullRosters.PullTeam('https://www.cbssports.com/nfl/teams/'+team+'/roster/',team)
-        print(team)
-        database_df_final = pd.concat([database_df_final,database_df]).reset_index(drop=True)
 
 
     url = 'https://www.cbssports.com/nfl/stats/player/rushing/nfl/regular/qualifiers/?page=1'

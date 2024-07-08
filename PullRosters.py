@@ -30,6 +30,9 @@ def SearchTable(soup,table,team):
         data = x.text.strip()
         if '\n' in data:
             data = data[:data.find('\n')]
+        if '(' in data:
+            end = find_nth(data, '(', 1)
+            data=data[:end]
         if data in table_headers:
             continue
         table_headers.append(data)
@@ -59,6 +62,9 @@ def SearchTable(soup,table,team):
                     data = firstname+' '+lastname
                 if ' ' in data:
                     data = re.sub(r"^\s+", '', data)
+                if '(' in data:
+                    end = find_nth(data, '(', 1)
+                    data=data[:end]
                 row_list.append(data)
             end = find_nth(team, '/', 1)
             row_list.append(team[:end])
