@@ -324,7 +324,6 @@ if __name__ == '__main__':
     plt.savefig(r'2024/plots/40yrd_passing_plays.png', dpi=450)
     plt.close()
 
-
     passing_plays_twenty = passing_of.sort_values('20+', ascending=False)
     plt.bar(passing_of.index, passing_of['20+'].astype(float), zorder=2)
     plt.xticks(rotation=45)
@@ -332,8 +331,8 @@ if __name__ == '__main__':
     plt.ylabel('Frequency')
     plt.grid(axis='y', zorder=1, color='black')
     plt.tight_layout()
-    plt.close()
     plt.savefig(r'2024/plots/20yrd_passing_plays.png', dpi=450)
+    plt.close()
 
     passing_top_ten = pass_df1.sort_values('YDS/G', ascending=False).head(10)
     plt.bar(passing_top_ten['Player'], passing_top_ten['YDS/G'].astype(float), zorder=2)
@@ -355,4 +354,3 @@ if __name__ == '__main__':
     plt.grid(axis='y', zorder=1, color='black')
     plt.tight_layout()
     plt.savefig(r'2024/plots/Top_10_Recieving_Yards_Per_Game.png', dpi=450)
-    plt.show()
