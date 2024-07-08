@@ -319,7 +319,6 @@ if __name__ == '__main__':
     plt.ylabel('Frequency')
     plt.grid(axis='y', zorder=1, color='black')
     plt.tight_layout()
-    plt.show()
     plt.savefig(r'2023/plots/40yrd_passing_plays.png', dpi=450)
     plt.close()
 
@@ -330,6 +329,5 @@ if __name__ == '__main__':
     plt.ylabel('Frequency')
     plt.grid(axis='y', zorder=1, color='black')
     plt.tight_layout()
-    plt.show()
     plt.savefig(r'2023/plots/20yrd_passing_plays.png', dpi=450)
     print('Complete')
