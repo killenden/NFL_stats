@@ -1,7 +1,55 @@
 <!DOCTYPE html>
 <html>
-    <head>
-    <title>Home</title>
-    <h1>Fantasy Stats!</h1>
-    <img src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2024/plots/Top_10_Rushing_Yards_Per_Game.png" width="500" height="333">
+<head>
+    <title>NFL Stats</title>
+    <style>
+        img {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%; 
+            max-height: 500px; 
+        }
+        .yardageImages img {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>Top 10 Yards Per Game</h2>
+    <label for="unitPosition">Select Position:</label>
+    <select id="unitPosition" onchange="showImage('unitPosition', 'positionImages')">
+        <option value="">Please select</option>
+        <option value="RB">RB</option>
+        <option value="WR">WR</option>
+        <option value="QB">QB</option>
+    </select>
+    <div id="positionImages" class="yardageImages">
+        <img id="RB" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2023/plots/Top_10_Rushing_Yards_Per_Game.png">
+        <img id="WR" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2023/plots/Top_10_Recieving_Yards_Per_Game.png">
+        <img id="QB" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2023/plots/Top_10_Passing_Yards_Per_Game.png">
+    </div>
+    
+    <h2>Number of Passing Plays Per Distance</h2>
+    <label for="yardageSelect">Select Yardage Distance:</label>
+    <select id="yardageSelect" onchange="showImage('yardageSelect', 'yardageImages')">
+        <option value="">Please select</option>
+        <option value="20">20+</option>
+        <option value="40">40+</option>
+    </select>
+
+    <div id="yardageImages" class="yardageImages">
+        <img id="20" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2023/plots/20yrd_passing_plays.png">
+        <img id="40" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2023/plots/40yrd_passing_plays.png">
+    </div>
+
+    <script>
+        function showImage(selectId, imagesDivId) {
+            var selectedValue = document.getElementById(selectId).value;
+            var images = document.querySelectorAll('#' + imagesDivId + ' img');
+            images.forEach(function(img) {
+                img.style.display = img.id === selectedValue ? "block" : "none";
+            });
+        }
+    </script>
+</body>
 </html>
