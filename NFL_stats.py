@@ -310,7 +310,7 @@ if __name__ == '__main__':
     plt.ylim(50, 100)
     plt.grid(axis='y', zorder=1, color='black')
     plt.tight_layout()
-    plt.savefig(r'2024/plots/Top_10_Rushing_Yards_Per_Game.png', dpi=450)
+    plt.savefig(r'2023/plots/Top_10_Rushing_Yards_Per_Game.png', dpi=450)
     plt.close()
 
     print(passing_of)
@@ -321,7 +321,7 @@ if __name__ == '__main__':
     plt.ylabel('Frequency')
     plt.grid(axis='y', zorder=1, color='black')
     plt.tight_layout()
-    plt.savefig(r'2024/plots/40yrd_passing_plays.png', dpi=450)
+    plt.savefig(r'2023/plots/40yrd_passing_plays.png', dpi=450)
     plt.close()
 
     passing_plays_twenty = passing_of.sort_values('20+', ascending=False)
@@ -331,7 +331,7 @@ if __name__ == '__main__':
     plt.ylabel('Frequency')
     plt.grid(axis='y', zorder=1, color='black')
     plt.tight_layout()
-    plt.savefig(r'2024/plots/20yrd_passing_plays.png', dpi=450)
+    plt.savefig(r'2023/plots/20yrd_passing_plays.png', dpi=450)
     plt.close()
 
     passing_top_ten = pass_df1.sort_values('YDS/G', ascending=False).head(10)
@@ -342,7 +342,7 @@ if __name__ == '__main__':
     plt.ylabel('Yards')
     plt.grid(axis='y', zorder=1, color='black')
     plt.tight_layout()
-    plt.savefig(r'2024/plots/Top_10_Passing_Yards_Per_Game.png', dpi=450)
+    plt.savefig(r'2023/plots/Top_10_Passing_Yards_Per_Game.png', dpi=450)
     plt.close()
 
     rec_top_ten = rec_df.sort_values('YDS/G', ascending=False).head(10)
@@ -353,4 +353,4 @@ if __name__ == '__main__':
     plt.ylabel('Yards')
     plt.grid(axis='y', zorder=1, color='black')
     plt.tight_layout()
-    plt.savefig(r'2024/plots/Top_10_Recieving_Yards_Per_Game.png', dpi=450)
+    plt.savefig(r'2023/plots/Top_10_Recieving_Yards_Per_Game.png', dpi=450)
