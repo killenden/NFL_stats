@@ -3,12 +3,14 @@ import requests
 import pandas as pd
 import re
 import matplotlib.pyplot as plt
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import os
+from io import BytesIO
 
 
 
 
-def Output(standings_df):
+def Output(standings_df, week_list):
     user_df = pd.DataFrame()
     user_df['Team'] = standings_df.index.tolist()
     user_df = user_df.set_index('Team')
@@ -174,6 +176,10 @@ def find_nth(haystack, needle, n):
 
 
 if __name__ == '__main__':
+    NFL_stats()
+
+def NFL_stats():
+
     
     
     import PullRosters
@@ -234,59 +240,8 @@ if __name__ == '__main__':
     passing_of = DF_Creator(url, lk_table_mascot)
     url = 'https://www.nfl.com/stats/team-stats/offense/rushing/2023/reg/all'
     rushing_of = DF_Creator(url, lk_table_mascot)
-    output = Output(standings_df)
+    output = Output(standings_df, week_list)
     print('Complete')
 
-    rush_df = rush_df[0:10]
-    top_ten = rush_df.sort_values('YDS/G', ascending=False)
-    plt.bar(top_ten['Player'], top_ten['YDS/G'].astype(float), zorder=2)
-    plt.xticks(rotation=45)
-    plt.title('NFL 2023: Top 10 Rushing Yards Per Game')
-    plt.ylabel('Yards Per Game')
-    plt.ylim(50, 100)
-    plt.grid(axis='y', zorder=1, color='black')
-    plt.tight_layout()
-    plt.savefig(r'2023/plots/Top_10_Rushing_Yards_Per_Game.png', dpi=450)
-    plt.close()
+    return rush_df, rush_yd_per_gp_df, pass_df, rec_df, rec_rec_per_gp_df, kick_df1, score_df, passing_df, rushing_df, passing_of, rushing_of, output
 
-    print(passing_of)
-    passing_plays_forty = passing_of.sort_values('40+', ascending=False)
-    plt.bar(passing_of.index, passing_of['40+'].astype(float), zorder=2)
-    plt.xticks(rotation=45)
-    plt.title('NFL 2023: Passing Plays of 40+ Yards')
-    plt.ylabel('Frequency')
-    plt.grid(axis='y', zorder=1, color='black')
-    plt.tight_layout()
-    plt.savefig(r'2023/plots/40yrd_passing_plays.png', dpi=450)
-    plt.close()
-
-    passing_plays_twenty = passing_of.sort_values('20+', ascending=False)
-    plt.bar(passing_of.index, passing_of['20+'].astype(float), zorder=2)
-    plt.xticks(rotation=45)
-    plt.title('NFL 2023: Passing Plays of 20+ Yards')
-    plt.ylabel('Frequency')
-    plt.grid(axis='y', zorder=1, color='black')
-    plt.tight_layout()
-    plt.savefig(r'2023/plots/20yrd_passing_plays.png', dpi=450)
-    plt.close()
-
-    passing_top_ten = pass_df1.sort_values('YDS/G', ascending=False).head(10)
-    plt.bar(passing_top_ten['Player'], passing_top_ten['YDS/G'].astype(float), zorder=2)
-    plt.ylim(220, 350)
-    plt.xticks(rotation=45)
-    plt.title('NFL 2023: Top 10 Passing Yards Per Game')
-    plt.ylabel('Yards')
-    plt.grid(axis='y', zorder=1, color='black')
-    plt.tight_layout()
-    plt.savefig(r'2023/plots/Top_10_Passing_Yards_Per_Game.png', dpi=450)
-    plt.close()
-
-    rec_top_ten = rec_df.sort_values('YDS/G', ascending=False).head(10)
-    plt.bar(rec_top_ten['Player'], rec_top_ten['YDS/G'].astype(float), zorder=2)
-    plt.ylim(50, 100)
-    plt.xticks(rotation=45)
-    plt.title('NFL 2023: Top 10 Recieving Yards Per Game')
-    plt.ylabel('Yards')
-    plt.grid(axis='y', zorder=1, color='black')
-    plt.tight_layout()
-    plt.savefig(r'2023/plots/Top_10_Recieving_Yards_Per_Game.png', dpi=450)
