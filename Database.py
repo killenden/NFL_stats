@@ -120,14 +120,14 @@ def get_team_id(db_file,team_name):
         cursor = conn.cursor()
 
         # Assuming 'teams' table structure in 'teams.db' with id and team_name columns
-        cursor.execute('''SELECT id FROM teams WHERE shortname = ?;''', (team_name,))
+        cursor.execute('SELECT team_id FROM teams WHERE shortname = ?', (team_name,))
         team_id = cursor.fetchone()[0]  # Assuming team_name is unique
 
         conn.close()
         return team_id
 
     except sqlite3.Error as e:
-        print(f"Error retrieving team ID from SQLite database: {e}")
+        print(f"Error retrieving team_id from SQLite database: {e}")
         return None
     
 def get_player_id(team_name):
@@ -136,14 +136,14 @@ def get_player_id(team_name):
         cursor = conn.cursor()
 
         # Assuming 'teams' table structure in 'teams.db' with id and team_name columns
-        cursor.execute('''SELECT id FROM teams WHERE shortname = ?;''', (team_name,))
+        cursor.execute('''SELECT team_id FROM teams WHERE shortname = ?;''', (team_name))
         team_id = cursor.fetchone()[0]  # Assuming team_name is unique
 
         conn.close()
         return team_id
 
     except sqlite3.Error as e:
-        print(f"Error retrieving team ID from SQLite database: {e}")
+        print(f"Error retrieving team_id from SQLite database: {e}")
         return None
 
 # def fetch_players_info(db_file):

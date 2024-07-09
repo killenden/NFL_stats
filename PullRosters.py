@@ -52,11 +52,17 @@ def SearchTable(soup,table,team):
                     start = find_nth(data, '\n', 2)
                     end = find_nth(data, '\n', 3)
                     data=data[start+len('\n'):end]
-                if '.' in data:
+                if '.' in data and find_nth(data, '.', 1) < 2:
                     start = find_nth(data, ' ', 1)
                     end = find_nth(data, ' ', 2)
                     lastname_firstname=data[start+len(' '):end]
+                    if find_nth_capital(lastname_firstname, 2) == -1:
+                        start = find_nth(data, ' ', 1)
+                        end = find_nth(data, ' ', 3)
+                        lastname_firstname=data[start+len(' '):end]
                     end = find_nth_capital(lastname_firstname, 2)
+                    if '-' in lastname_firstname or '.' in lastname_firstname or find_nth_capital(lastname_firstname, 3)!= -1:
+                        end = find_nth_capital(lastname_firstname, 3)
                     lastname = lastname_firstname[:end]
                     firstname = lastname_firstname[end:]
                     data = firstname+' '+lastname
