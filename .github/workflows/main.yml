@@ -3,7 +3,7 @@ name: Generate plots
 on:
   push:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '0 12 * * *'
 
 jobs:
   generate_rb_plots:
