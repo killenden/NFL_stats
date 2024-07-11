@@ -1,12 +1,12 @@
 import NFL_stats 
 import utils
-import UpdateDatabase
+import NFL_stats.UpdatePlayerDatabase as UpdatePlayerDatabase
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
 
 def export_stats(filename, df):
-    if UpdateDatabase.check_csv_file(filename+'.csv') == False:
+    if UpdatePlayerDatabase.check_csv_file(filename+'.csv') == False:
         current_dir = os.getcwd()  # Get current working directory
         file_path = os.path.join(current_dir, filename+'.csv')  # Create file path
         os.remove(file_path)

@@ -71,7 +71,7 @@ def init():
                 'Titans': 'TEN',
                 'Commanders': 'WSH'}
 
-    NFL_URLs = ['ARI/arizona-cardinals',
+    CBS_URLs = ['ARI/arizona-cardinals',
                 'ATL/atlanta-falcons',
                 'BAL/baltimore-ravens',
                 'BUF/buffalo-bills',
@@ -103,6 +103,39 @@ def init():
                 'TB/tampa-bay-buccaneers',
                 'TEN/tennessee-titans',
                 'WAS/washington-commanders']
+    
+    NFL_URLs = ['arizona-cardinals',
+                'atlanta-falcons',
+                'baltimore-ravens',
+                'buffalo-bills',
+                'carolina-panthers',
+                'chicago-bears',
+                'cincinnati-bengals',
+                'cleveland-browns',
+                'dallas-cowboys',
+                'denver-broncos',
+                'detroit-lions',
+                'green-bay-packers',
+                'houston-texans',
+                'indianapolis-colts',
+                'jacksonville-jaguars',
+                'kansas-city-chiefs',
+                'las-vegas-raiders',
+                'los-angeles-chargers',
+                'los-angeles-rams',
+                'miami-dolphins',
+                'minnesota-vikings',
+                'new-england-patriots',
+                'new-orleans-saints',
+                'new-york-giants',
+                'new-york-jets',
+                'philadelphia-eagles',
+                'pittsburgh-steelers',
+                'san-francisco-49ers',
+                'seattle-seahawks',
+                'tampa-bay-buccaneers',
+                'tennessee-titans',
+                'washington-commanders']
 
     dirname = os.path.dirname(__file__)
     filename = os.path.join(dirname, 'Schedule.csv')
@@ -111,4 +144,42 @@ def init():
     week_list=[]
     for i in range(0,len(schedule)):
         week_list.append(schedule.iloc[i,week-1])
-    return week_list, lk_table_mascot, lk_table, NFL_URLs
+    return week_list, lk_table_mascot, lk_table, CBS_URLs, NFL_URLs
+
+def capitalize_after_space(input_string):
+    result = []
+    capitalize_next = False
+
+    
+    for char in input_string:
+        if capitalize_next and char.isalpha():
+            result.append(char.upper())
+            capitalize_next = False
+        else:
+            result.append(char)
+        
+        if char == ' ':
+            capitalize_next = True
+        elif result[-1] != ' ':
+            capitalize_next = False
+
+    
+    return ''.join(result)
+
+def capitalize_first_character(input_string):
+    if not input_string:
+        return input_string
+
+    return input_string[0].upper() + input_string[1:]
+
+    
+def string_to_float(string_num):
+    try:
+        string_num = float(string_num)
+    except:
+        try:
+            string_num = int(string_num)
+        except:
+            pass
+    return string_num
+

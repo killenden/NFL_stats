@@ -94,7 +94,7 @@ def create_nfl_analytics_db(db_file):
             ('Seattle Seahawks', 'SEA', 'Seattle', 'Washington', 'NFC', 'West'),
             ('Tampa Bay Buccaneers', 'TB', 'Tampa', 'Florida', 'NFC', 'South'),
             ('Tennessee Titans', 'TEN', 'Nashville', 'Tennessee', 'AFC', 'South'),
-            ('Washington Football Team', 'WAS', 'Landover', 'Maryland', 'NFC', 'East');
+            ('Washington Commanders', 'WAS', 'Landover', 'Maryland', 'NFC', 'East');
             ''')
 
     
@@ -120,7 +120,7 @@ def get_team_id(db_file,team_name):
         cursor = conn.cursor()
 
         # Assuming 'teams' table structure in 'teams.db' with id and team_name columns
-        cursor.execute('SELECT team_id FROM teams WHERE shortname = ?', (team_name,))
+        cursor.execute('SELECT team_id FROM teams WHERE team_name = ?', (team_name,))
         team_id = cursor.fetchone()[0]  # Assuming team_name is unique
 
         conn.close()
@@ -130,21 +130,43 @@ def get_team_id(db_file,team_name):
         print(f"Error retrieving team_id from SQLite database: {e}")
         return None
     
-def get_player_id(team_name):
+def get_player_id(db_file,players):
     try:
-        conn = sqlite3.connect('teams.db')
+        conn = sqlite3.connect(db_file)
         cursor = conn.cursor()
 
         # Assuming 'teams' table structure in 'teams.db' with id and team_name columns
-        cursor.execute('''SELECT team_id FROM teams WHERE shortname = ?;''', (team_name))
-        team_id = cursor.fetchone()[0]  # Assuming team_name is unique
-
+        try:
+            cursor.execute('SELECT player_id FROM players WHERE Player = ?', (players,))
+            player_id = cursor.fetchone()[0]  # Assuming team_name is unique
+        except:
+            player_id = ''
         conn.close()
-        return team_id
+        return player_id
 
     except sqlite3.Error as e:
-        print(f"Error retrieving team_id from SQLite database: {e}")
+        print(f"Error retrieving player_id from SQLite database: {e}")
         return None
+    
+def add_database_information(table_name,db_file,df):
+    # Connect to SQLite database
+    conn = sqlite3.connect(db_file)
+    cursor = conn.cursor()
+    
+    #TODO: Make this work! Do a for loop across the columns for the keys and the first row for the values. Then use something like utils.string_to_float to check if it is a float or not
+    # Could also just do type()
+    
+    # dtype = {
+    # 'Player': 'TEXT',
+    # 'TD': 'INTEGER',
+    # 'team_name': 'TEXT',
+    # 'score': 'REAL'  # Specify as REAL (floating point)
+    # }
+    
+    #df.to_sql(table_name, conn, if_exists='replace', index=False, dtype=dtype)
+    df.to_sql(table_name, conn, if_exists='replace', index=False)
+    
+    conn.close()
 
 # def fetch_players_info(db_file):
 #     # Connect to SQLite database

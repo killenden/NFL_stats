@@ -23,7 +23,38 @@ def find_nth_capital(input_string, n):
     
     return -1  # Return -1 if nth capital letter is not found
 
-def SearchTable(soup,table,team):
+def SearchTable_NFL(soup,table,team):
+    import utils
+    
+    table_headers=[]
+    for x in soup.find_all('th'):
+        data = x.text.strip()
+        if data in table_headers:
+            continue
+        table_headers.append(data)
+        
+    table_headers.append('Team')
+
+    final = []
+    team_list=[]
+    for row in table.tbody.find_all('tr'):    
+        # Find all data for each column
+        columns = row.find_all('td')
+        row_list=[]
+        if(columns != []):
+            for i in range(0,len(columns)):
+                data = columns[i].text.strip()
+                data = utils.string_to_float(data)
+                row_list.append(data)
+            team = team.replace('-',' ')
+            team = utils.capitalize_first_character(team)
+            team = utils.capitalize_after_space(team)
+            row_list.append(team)
+        final.append(row_list)
+    df = pd.DataFrame(final,columns = table_headers)
+    return df
+
+def SearchTable_CBS(soup,table,team):
     
     table_headers=[]
     for x in soup.find_all('th'):
@@ -83,7 +114,7 @@ def SwitchTables(table):
     next_table = table.find_next_sibling('table', class_='TableBase-table')
     return next_table
 
-def PullTeam(url,team):
+def PullTeam_CBS(url,team):
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
     # print('Classes of each table:')
@@ -102,6 +133,36 @@ def PullTeam(url,team):
                 database_df_final = pd.concat([database_df_final,df]).reset_index(drop=True)
             else:
                 print(f"No table found for '{wrapper.text}'")
+    # for i in range(1,len(soup.find_all('h4'))):
+        
+    #     if i != 1:
+    #         table = SwitchTables(table)
+        
+    #     df = SearchTable(soup,table,team)
+    #     database_df_final = pd.concat([database_df_final,df]).reset_index(drop=True)
+    
+    
+    # for table in soup.find_all('table'):
+    #     table = soup.find('table', class_='TableBase-table')
+    #     df = SearchTable(soup,table,team)
+    #     database_df_final = pd.concat([database_df_final,df]).reset_index(drop=True)
+    
+    return database_df_final
+
+def PullTeam_NFL(url,team):
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'html.parser')
+    # print('Classes of each table:')
+    # for table in soup.find_all('table'):
+    #     print(table.get('class'))
+    
+    #  Looking for the table with the classes 'wikitable' and 'sortable'
+    database_df_final = pd.DataFrame()
+    #table = soup.find('table', class_='d3-o-table d3-o-table--row-striping d3-o-table--detailed d3-o-table--sortable')
+    for table in soup.find_all('table'):
+        df = SearchTable_NFL(soup,table,team)
+        database_df_final = pd.concat([database_df_final,df]).reset_index(drop=True)
+
     # for i in range(1,len(soup.find_all('h4'))):
         
     #     if i != 1:
