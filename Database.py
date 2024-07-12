@@ -39,26 +39,11 @@ def create_nfl_analytics_db(db_file):
     cursor.executescript('''
         -- Create table for positions
         CREATE TABLE IF NOT EXISTS positions (
-            position_id INTEGER PRIMARY KEY,
-            position_name TEXT NOT NULL
+            POS TEXT NOT NULL,
+            pos_id INTEGER PRIMARY KEY 
         );
         ''')
-    
-    cursor.executescript('''
-        -- Example data for positions
-        INSERT OR IGNORE INTO positions (position_name) VALUES
-            ('Quarterback'),
-            ('Running back'),
-            ('Wide receiver'),
-            ('Tight end'),
-            ('Offensive lineman'),
-            ('Defensive lineman'),
-            ('Linebacker'),
-            ('Cornerback'),
-            ('Safety'),
-            ('Kicker'),
-            ('Punter');
-            ''')
+
     
     cursor.executescript('''
         -- Example data for teams
@@ -77,7 +62,7 @@ def create_nfl_analytics_db(db_file):
             ('Green Bay Packers', 'GB', 'Green Bay', 'Wisconsin', 'NFC', 'North'),
             ('Houston Texans', 'HOU', 'Houston', 'Texas', 'AFC', 'South'),
             ('Indianapolis Colts', 'IND', 'Indianapolis', 'Indiana', 'AFC', 'South'),
-            ('Jacksonville Jaguars', 'JAC', 'Jacksonville', 'Florida', 'AFC', 'South'),
+            ('Jacksonville Jaguars', 'JAX', 'Jacksonville', 'Florida', 'AFC', 'South'),
             ('Kansas City Chiefs', 'KC', 'Kansas City', 'Missouri', 'AFC', 'West'),
             ('Las Vegas Raiders', 'LV', 'Las Vegas', 'Nevada', 'AFC', 'West'),
             ('Los Angeles Chargers', 'LAC', 'Los Angeles', 'California', 'AFC', 'West'),
@@ -94,8 +79,17 @@ def create_nfl_analytics_db(db_file):
             ('Seattle Seahawks', 'SEA', 'Seattle', 'Washington', 'NFC', 'West'),
             ('Tampa Bay Buccaneers', 'TB', 'Tampa', 'Florida', 'NFC', 'South'),
             ('Tennessee Titans', 'TEN', 'Nashville', 'Tennessee', 'AFC', 'South'),
-            ('Washington Commanders', 'WAS', 'Landover', 'Maryland', 'NFC', 'East');
+            ('Washington Commanders', 'WSH', 'Landover', 'Maryland', 'NFC', 'East');
             ''')
+    
+
+    cursor.executescript('''
+        -- Example data for teams
+        INSERT OR IGNORE INTO positions (POS, pos_id) VALUES
+        ('G', 1), ('WR', 2), ('LB', 3), ('S', 4), ('OT', 5), ('RB', 6), ('SAF', 7), ('LS', 8), ('C', 9), 
+        ('CB', 10), ('DB', 11), ('DE', 12), ('P', 13), ('TE', 14), ('DT', 15), ('DL', 16), ('QB', 17), 
+        ('K', 18), ('OLB', 19), ('OL', 20), ('FS', 21), ('NT', 22), ('FB', 23), ('ILB', 24), ('MLB', 25);
+                ''')
 
     
     
@@ -114,6 +108,22 @@ def add_players_info(db_file,df):
     
     conn.close()
 
+def get_pos_id(db_file,pos_name):
+    try:
+        conn = sqlite3.connect(db_file)
+        cursor = conn.cursor()
+
+        # Assuming 'teams' table structure in 'teams.db' with id and team_name columns
+        cursor.execute('SELECT pos_id FROM positions WHERE POS = ?', (pos_name,))
+        pos_id = cursor.fetchone()[0]  # Assuming team_name is unique
+
+        conn.close()
+        return pos_id
+
+    except sqlite3.Error as e:
+        print(f"Error retrieving pos_id from SQLite database: {e}")
+        return None
+
 def get_team_id(db_file,team_name):
     try:
         conn = sqlite3.connect(db_file)
@@ -121,6 +131,22 @@ def get_team_id(db_file,team_name):
 
         # Assuming 'teams' table structure in 'teams.db' with id and team_name columns
         cursor.execute('SELECT team_id FROM teams WHERE team_name = ?', (team_name,))
+        team_id = cursor.fetchone()[0]  # Assuming team_name is unique
+
+        conn.close()
+        return team_id
+
+    except sqlite3.Error as e:
+        print(f"Error retrieving team_id from SQLite database: {e}")
+        return None
+    
+def get_team_id_shortname(db_file,team_name):
+    try:
+        conn = sqlite3.connect(db_file)
+        cursor = conn.cursor()
+
+        # Assuming 'teams' table structure in 'teams.db' with id and team_name columns
+        cursor.execute('SELECT team_id FROM teams WHERE shortname = ?', (team_name,))
         team_id = cursor.fetchone()[0]  # Assuming team_name is unique
 
         conn.close()
@@ -148,7 +174,26 @@ def get_player_id(db_file,players):
         print(f"Error retrieving player_id from SQLite database: {e}")
         return None
     
-def add_database_information(table_name,db_file,df):
+    
+def datatypes(df):
+    import utils
+    
+    dtype = {}
+    
+    for column in df.columns:
+        value = df[column].iloc[0]
+        format = type(utils.string_to_float(value))
+        if format is str:
+            dict_value = 'TEXT'
+        elif format is int:
+            dict_value = 'INTEGER'
+        elif format is float:
+            dict_value = 'REAL'
+        dtype[column] = dict_value
+    
+    return dtype
+    
+def add_database_information(table_name,db_file,df,dtypes):
     # Connect to SQLite database
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
@@ -163,8 +208,8 @@ def add_database_information(table_name,db_file,df):
     # 'score': 'REAL'  # Specify as REAL (floating point)
     # }
     
-    #df.to_sql(table_name, conn, if_exists='replace', index=False, dtype=dtype)
-    df.to_sql(table_name, conn, if_exists='replace', index=False)
+    df.to_sql(table_name, conn, if_exists='replace', index=False, dtype=dtypes)
+    #df.to_sql(table_name, conn, if_exists='replace', index=False)
     
     conn.close()
 

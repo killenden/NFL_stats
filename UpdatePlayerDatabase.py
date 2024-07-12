@@ -25,9 +25,16 @@ def check_csv_file(filename):
     else:
         return False
 
+def insert_player_stats(df, table_name, dict, db_name):
+    df['Player'] = df['Player'].map(dict)
+    dtypes = Database.datatypes(df)
+    Database.add_database_information(table_name,db_name,df,dtypes)
 
-
-
+def insert_team_stats(df, table_name, dict, db_name):
+    df['Team'] = df.index.map(dict)
+    df = df.reset_index(drop=True) 
+    dtypes = Database.datatypes(df)
+    Database.add_database_information(table_name,db_name,df,dtypes)
 
 
 if __name__ == '__main__':
@@ -35,7 +42,8 @@ if __name__ == '__main__':
     import PullRosters
     import utils
     import Database
-    db_name = r'NFL_stats\database\2023_database.db'
+    #db_name = r'NFL_stats\database\2023_database.db'
+    db_name = r'database\2023_database.db'
     
     print(os.path.dirname(os.path.realpath(__file__)))
     
@@ -91,34 +99,59 @@ if __name__ == '__main__':
         file_path = os.path.join(current_dir, filename)  # Create file path
         database_df_final.to_csv(file_path+'.csv', index=False)
     else:
-        database_df_final = pd.read_csv(filename+'.csv')
+        if check_csv_file(filename+'.csv') == True:
+            current_dir = os.getcwd()  # Get current working directory
+            file_path = os.path.join(current_dir, filename+'.csv')  # Create file path
+        database_df_final = pd.read_csv(file_path)
     
-            
-    Database.add_database_information('players',db_name,database_df_final)
+    db_posid_dict = {}
+    for value in database_df_final['Pos'].unique():
+        db_posid_dict[value] = Database.get_pos_id(db_name,value)
+    database_df_final['Pos'] = database_df_final['Pos'].map(db_posid_dict) 
+    dtypes = Database.datatypes(database_df_final)
+    Database.add_database_information('players',db_name,database_df_final,dtypes)
     
     
     import PullStats
     week_list, lk_table_mascot, lk_table, CBS_URLs, NFL_URLs = utils.init()
     standings_df = PullStats.standings(lk_table)
     
-    (qb_df, rb_df, rec_df) = PullStats.NFL_stats(lk_table_mascot)
+    (passing_df, rushing_df, receiving_df, int_df, fg_df, ko_df, kor_df, punt_df, puntr_df) = PullStats.NFL_stats(lk_table_mascot)
             
-    all_df = pd.concat([qb_df,rb_df,rec_df]).reset_index(drop=True)
+    all_df = pd.concat([passing_df, rushing_df, receiving_df, int_df, fg_df, ko_df, kor_df, punt_df, puntr_df]).reset_index(drop=True)
     
     db_playerid_dict = {}
     for value in all_df['Player'].unique():
         db_playerid_dict[value] = Database.get_player_id(db_name,value)
+        
+    dataframes = {
+    'passing_df': [passing_df, 'passing'], 'rushing_df': [rushing_df, 'rushing'], 'receiving_df': [receiving_df, 'receiving'],
+    'int_df': [int_df, 'interception'], 'fg_df': [fg_df, 'field_goal'], 'ko_df': [ko_df, 'kickoff'],
+    'kor_df': [kor_df, 'kickoff_return'], 'punt_df': [punt_df, 'punt'], 'puntr_df': [puntr_df, 'punt_return']}
     
-    qb_df['Player'] = qb_df['Player'].map(db_playerid_dict)    
-    rb_df['Player'] = rb_df['Player'].map(db_playerid_dict)
-    rec_df['Player'] = rec_df['Player'].map(db_playerid_dict)
+    for key,value in dataframes.items():
+        insert_player_stats(value[0], value[1], db_playerid_dict, db_name)
     
+    (passing_off_df, rushing_off_df, receiving_off_df, scoring_off_df, downs_off_df) = PullStats.NFL_stats_off(lk_table_mascot)
+    (passing_def_df, rushing_def_df, receiving_def_df, scoring_def_df, tackles_def_df, downs_def_df, fumbles_def_df, interception_def_df) = PullStats.NFL_stats_def(lk_table_mascot)
+    (special_fg_df, special_scoring_df, special_kickoff_df, special_kickoff_return_df, special_punting_df, special_punting_returns_df) = PullStats.NFL_stats_st(lk_table_mascot)
     
-    Database.add_database_information('passing',db_name,qb_df)
-    Database.add_database_information('rushing',db_name,rb_df)
-    Database.add_database_information('receiving',db_name,rec_df)
+    db_teamid_dict = {}
+    for value in passing_off_df.index.to_list():
+        db_teamid_dict[value] = Database.get_team_id_shortname(db_name,value)
     
-    
+    dataframes = {
+    "passing_off_df": [passing_off_df, 'team_passing_off'], "rushing_off_df": [rushing_off_df, 'team_rushing_off'], "receiving_off_df": [receiving_off_df, 'team_receiving_off'], "scoring_off_df": [scoring_off_df, 'team_scoring_off'],"downs_off_df": [downs_off_df, 'team_downs_off'],
+    "passing_def_df": [passing_def_df, 'team_passing_def'], "rushing_def_df": [rushing_def_df, 'team_rushing_def'], "receiving_def_df": [receiving_def_df, 'team_receiving_def'], "scoring_def_df": [scoring_def_df, 'team_scoring_def'], "tackles_def_df": [tackles_def_df, 'team_tackles_def'], 
+    "downs_def_df": [downs_def_df, 'team_downs_def'], "fumbles_def_df": [fumbles_def_df, 'team_fumbles_def'], "interception_def_df": [interception_def_df, 'team_ints_def'],
+    "special_fg_df": [special_fg_df, 'team_fg_st'], "special_scoring_df": [special_scoring_df, 'team_scoring_st'], "special_kickoff_df": [special_kickoff_df, "team_kickoff_st"], "special_kickoff_return_df": [special_kickoff_return_df, "team_kick_return_st"],
+    "special_punting_df": [special_punting_df, "team_punt_st"], "special_punt_return_df": [special_punting_returns_df, "team_punt_return_st"]}
+        
+    for key,value in dataframes.items():
+        insert_team_stats(value[0], value[1], db_teamid_dict, db_name)
+        
+    print('Script has completed')
+        
 '''
 SELECT players.Player, players.POS, teams.team_name
 FROM players

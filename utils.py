@@ -175,10 +175,10 @@ def capitalize_first_character(input_string):
     
 def string_to_float(string_num):
     try:
-        string_num = float(string_num)
+        string_num = int(string_num)
     except:
         try:
-            string_num = int(string_num)
+            string_num = float(string_num)
         except:
             pass
     return string_num

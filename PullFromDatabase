@@ -16,7 +16,8 @@ def pull_db(query,db_name):
 
 if __name__ == '__main__':
     
-    db_name = r'NFL_stats\database\2023_database.db'
+    #db_name = r'NFL_stats\database\2023_database.db'
+    db_name = r'database\2023_database.db'
     
     query = '''
     SELECT players.Player, rushing.TD, teams.team_name
@@ -27,3 +28,27 @@ if __name__ == '__main__':
     '''
     rushing_TDs_df = pull_db(query,db_name)
     print(rushing_TDs_df.sort_values(by='TD', ascending=False))
+    
+    query = '''
+    SELECT players.Player, positions.pos, passing."Pass Yds", passing."Yds/Att", passing."Att", passing."Cmp", passing."Cmp %", passing.TD as PassTD, rushing.TD as RushTD, rushing."Rush Yds" as RushYards, rushing."Rush FUM" as Fum, passing."INT", passing."Rate", passing."1st", passing."1st%", passing."20+", passing."40+", passing."Sck", passing."SckY", teams.team_name
+    FROM players
+    INNER JOIN teams ON players.Team = teams.team_id
+    LEFT JOIN passing ON players.player_id = passing.Player
+    LEFT JOIN rushing ON players.player_id = rushing.Player
+    LEFT JOIN positions ON players.Pos = positions.pos_id
+    WHERE positions.pos = 'QB';
+    '''
+    passing_TDs_df = pull_db(query,db_name)
+    print(passing_TDs_df.sort_values(by='RushYards', ascending=True))
+    
+    query = '''
+    SELECT players.Player, receiving.Rec, receiving.Tgts, receiving.TD, receiving.Yds, receiving."20+", receiving."40+", receiving."Rec FUM", receiving."Rec YAC/R", teams.team_name
+    FROM players
+    INNER JOIN teams ON players.Team = teams.team_id
+    INNER JOIN receiving ON players.player_id = receiving.Player;
+    '''
+    receiving_df = pull_db(query,db_name)
+    print(receiving_df.sort_values(by='TD', ascending=False))
+    
+    
+    #LEFT JOIN IS INCLUSIVE OFF ALL RESULTS
