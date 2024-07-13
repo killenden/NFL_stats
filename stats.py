@@ -1,9 +1,12 @@
-import NFL_stats 
+
 import utils
-import NFL_stats.UpdatePlayerDatabase as UpdatePlayerDatabase
-import matplotlib.pyplot as plt
 import pandas as pd
 import os
+import PullFromDatabase
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+import matplotlib.colors as mcolors
 
 def export_stats(filename, df):
     if UpdatePlayerDatabase.check_csv_file(filename+'.csv') == False:
@@ -116,10 +119,215 @@ def plots():
     plt.savefig('logos.png', dpi=450)
     plt.show()
     #plt.close()
+    
+def get_team_logo(team_abbr):
+    current_dir = os.getcwd()
+    logo_dir = os.path.join(current_dir,'logos')
+    file_path = os.path.join(logo_dir,team_abbr+'.png')
+    return file_path
+
+def Team_Attempts():
+    df = PullFromDatabase.team_off_plays()
+
+    # Create scatter plot with team logos as markers
+    fig, ax = plt.subplots(figsize=(12, 9))
+
+    zoom = 0.05
+
+    for i, team in enumerate(df['shortname']):
+        logo_url = get_team_logo(team)
+        img = plt.imread(logo_url)
+        imagebox = OffsetImage(img, zoom=zoom)
+        ab = AnnotationBbox(imagebox, (df['Rush_Att'][i], df['Pass_Att'][i]), frameon=False)
+        ax.add_artist(ab)
+
+    x_mean = (df['Rush_Att']).mean()
+    y_mean = (df['Pass_Att']).mean()
+    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+
+    # Set labels and title
+    ax.set_xlabel('Rush Att')
+    ax.set_ylabel('Pass Att')
+    ax.set_title('Scatter Plot of Rush Att vs Pass Att with Team Logos')
+    ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
+
+    # Adjust plot limits
+    plt.xlim(df['Rush_Att'].min() - 1, df['Rush_Att'].max() + 1)
+    plt.ylim(df['Pass_Att'].min() - 1, df['Pass_Att'].max() + 1)
+    plt.savefig('logos.png', dpi=450)
+    plt.show()
+    
+def Team_Attempts_Pct():
+    df = PullFromDatabase.team_off_plays()
+    
+    total_att = []
+    for i in range(len(df)):
+        total_att.append(df['Rush_Att'].iloc[i] + df['Pass_Att'].iloc[i])
+        
+    df['Tot_Att'] = total_att
+    
+    
+        
+    # Create scatter plot with team logos as markers
+    fig, ax = plt.subplots(figsize=(12, 9))
+
+    zoom = 0.05
+
+    for i, team in enumerate(df['shortname']):
+        logo_url = get_team_logo(team)
+        img = plt.imread(logo_url)
+        imagebox = OffsetImage(img, zoom=zoom)
+        ab = AnnotationBbox(imagebox, (df['Rush_Att'][i]/df['Tot_Att'][i], df['Pass_Att'][i]/df['Tot_Att'][i]), frameon=False)
+        ax.add_artist(ab)
+
+    x_mean = (df['Rush_Att']/df['Tot_Att']).mean()
+    y_mean = (df['Pass_Att']/df['Tot_Att']).mean()
+    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+
+    # Set labels and title
+    ax.set_xlabel('Rush Att')
+    ax.set_ylabel('Pass Att')
+    ax.set_title('Scatter Plot of Rush Att vs Pass Att with Team Logos')
+    ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
+
+    # Adjust plot limits
+    plt.xlim((df['Rush_Att']/df['Tot_Att']).min() - 0.025, (df['Rush_Att']/df['Tot_Att']).max() + 0.025)
+    plt.ylim((df['Pass_Att']/df['Tot_Att']).min() - 0.025, (df['Pass_Att']/df['Tot_Att']).max() + 0.025)
+    plt.savefig('logos.png', dpi=450)
+    plt.show()
+
+def Team_Attempts_Both():
+    df = PullFromDatabase.team_both_plays()
+    
+    total_off_att = []
+    total_def_att = []
+    for i in range(len(df)):
+        total_off_att.append(df['Rush_Off_Att'].iloc[i] + df['Pass_Off_Att'].iloc[i])
+        
+    for i in range(len(df)):
+        total_def_att.append(df['Rush_Def_Att'].iloc[i] + df['Pass_Def_Att'].iloc[i])
+        
+    df['Tot_Off_Att'] = total_off_att
+    df['Tot_Def_Att'] = total_def_att
+    df['Tot_Att'] = df['Tot_Off_Att'] + df['Tot_Def_Att']
+    
+        
+    # Create scatter plot with team logos as markers
+    fig, ax = plt.subplots(figsize=(12, 9))
+
+    zoom = 0.05
+
+    for i, team in enumerate(df['shortname']):
+        logo_url = get_team_logo(team)
+        img = plt.imread(logo_url)
+        imagebox = OffsetImage(img, zoom=zoom)
+        ab = AnnotationBbox(imagebox, (df['Tot_Def_Att'][i], df['Tot_Off_Att'][i]), frameon=False)
+        ax.add_artist(ab)
+
+    x_mean = (df['Tot_Def_Att']).mean()
+    y_mean = (df['Tot_Off_Att']).mean()
+    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+
+    # Set labels and title
+    ax.set_xlabel('Def %')
+    ax.set_ylabel('Off %')
+    ax.set_title('Scatter Plot of Rush Att vs Pass Att with Team Logos')
+    ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
+
+    # Adjust plot limits
+    plt.xlim((df['Tot_Def_Att']).min() - 0.025, (df['Tot_Off_Att']).max() + 0.025)
+    plt.ylim((df['Tot_Off_Att']).min() - 0.025, (df['Tot_Off_Att']).max() + 0.025)
+    plt.savefig('logos.png', dpi=450)
+    plt.show()
+
+
+def Team_Attempts_Both_Pct():
+    df = PullFromDatabase.team_both_plays()
+    
+    total_off_att = []
+    total_def_att = []
+    for i in range(len(df)):
+        total_off_att.append(df['Rush_Off_Att'].iloc[i] + df['Pass_Off_Att'].iloc[i])
+        
+    for i in range(len(df)):
+        total_def_att.append(df['Rush_Def_Att'].iloc[i] + df['Pass_Def_Att'].iloc[i])
+        
+    df['Tot_Off_Att'] = total_off_att
+    df['Tot_Def_Att'] = total_def_att
+    df['Tot_Att'] = df['Tot_Off_Att'] + df['Tot_Def_Att']
+    
+        
+    # Create scatter plot with team logos as markers
+    fig, ax = plt.subplots(figsize=(12, 9))
+
+    zoom = 0.05
+
+    for i, team in enumerate(df['shortname']):
+        logo_url = get_team_logo(team)
+        img = plt.imread(logo_url)
+        imagebox = OffsetImage(img, zoom=zoom)
+        ab = AnnotationBbox(imagebox, (df['Tot_Def_Att'][i]/df['Tot_Att'][i], df['Tot_Off_Att'][i]/df['Tot_Att'][i]), frameon=False)
+        ax.add_artist(ab)
+
+    x_mean = (df['Tot_Def_Att']/df['Tot_Att']).mean()
+    y_mean = (df['Tot_Off_Att']/df['Tot_Att']).mean()
+    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+
+    # Set labels and title
+    ax.set_xlabel('Def %')
+    ax.set_ylabel('Off %')
+    ax.set_title('Scatter Plot of Rush Att vs Pass Att with Team Logos')
+    ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
+
+    # Adjust plot limits
+    plt.xlim((df['Tot_Def_Att']/df['Tot_Att']).min() - 0.025, (df['Tot_Off_Att']/df['Tot_Att']).max() + 0.025)
+    plt.ylim((df['Tot_Off_Att']/df['Tot_Att']).min() - 0.025, (df['Tot_Off_Att']/df['Tot_Att']).max() + 0.025)
+    plt.savefig('logos.png', dpi=450)
+    plt.show()
+    
+def Target_Share():
+    df = PullFromDatabase.team_off_target_share_plays()
+    
+        
+    df['Tgt_Share'] = df['Tgts'] / df['Pass_Off_Att']
+    
+    df = df[df['Tgt_Share'] > df['Tgt_Share'].mean()]
+    
+        
+    # Create scatter plot with team logos as markers
+    fig, ax = plt.subplots(figsize=(12, 9))
+
+    zoom = 0.05
+
+    for index, row in df.iterrows():
+        plt.text(row['Pass_Off_Att'], row['Tgt_Share'], row['Player'], fontsize=9, ha='right', weight = 'bold', family = 'cursive')
+        
+    ax.scatter(df['Pass_Off_Att'], df['Tgt_Share'])
+
+    x_mean = (df['Pass_Off_Att']).mean()
+    y_mean = (df['Tgt_Share']).mean()
+    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+
+    # Set labels and title
+    ax.set_xlabel('Total Team Passing Attempts')
+    ax.set_ylabel('Target Share')
+    ax.set_title('Scatter Plot of Rush Att vs Pass Att with Team Logos')
+    ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
+
+    # Adjust plot limits
+    plt.xlim((df['Pass_Off_Att']).min() - 10, (df['Pass_Off_Att']).max() + 10)
+    plt.ylim((df['Tgt_Share']).min() - 0.0125, (df['Tgt_Share']).max() + 0.0125)
+    plt.savefig('logos.png', dpi=450)
+    plt.show()
+
+
 
 if __name__ == '__main__':
-    filename = 'stats'
-
-    rush_df, rush_yd_per_gp_df, pass_df, rec_df, rec_rec_per_gp_df, kick_df1, score_df, passing_df, rushing_df, passing_of, rushing_of, output = NFL_stats.NFL_stats()
-
-    export_stats(filename, rush_df)
+    Target_Share()
+    
+    
