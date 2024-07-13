@@ -116,9 +116,9 @@ if __name__ == '__main__':
     week_list, lk_table_mascot, lk_table, CBS_URLs, NFL_URLs = utils.init()
     standings_df = PullStats.standings(lk_table)
     
-    (passing_df, rushing_df, receiving_df, int_df, fg_df, ko_df, kor_df, punt_df, puntr_df) = PullStats.NFL_stats(lk_table_mascot)
+    (passing_df, rushing_df, receiving_df, int_df, fg_df, ko_df, kor_df, punt_df, puntr_df, fum_df) = PullStats.NFL_stats(lk_table_mascot)
             
-    all_df = pd.concat([passing_df, rushing_df, receiving_df, int_df, fg_df, ko_df, kor_df, punt_df, puntr_df]).reset_index(drop=True)
+    all_df = pd.concat([passing_df, rushing_df, receiving_df, int_df, fg_df, ko_df, kor_df, punt_df, puntr_df, fum_df]).reset_index(drop=True)
     
     db_playerid_dict = {}
     for value in all_df['Player'].unique():
@@ -127,7 +127,7 @@ if __name__ == '__main__':
     dataframes = {
     'passing_df': [passing_df, 'passing'], 'rushing_df': [rushing_df, 'rushing'], 'receiving_df': [receiving_df, 'receiving'],
     'int_df': [int_df, 'interception'], 'fg_df': [fg_df, 'field_goal'], 'ko_df': [ko_df, 'kickoff'],
-    'kor_df': [kor_df, 'kickoff_return'], 'punt_df': [punt_df, 'punt'], 'puntr_df': [puntr_df, 'punt_return']}
+    'kor_df': [kor_df, 'kickoff_return'], 'punt_df': [punt_df, 'punt'], 'puntr_df': [puntr_df, 'punt_return'], 'fum_df': [fum_df, 'fumbles']}
     
     for key,value in dataframes.items():
         insert_player_stats(value[0], value[1], db_playerid_dict, db_name)
