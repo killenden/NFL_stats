@@ -28,7 +28,7 @@ def team_off_plays():
     return team_off_plays_df
 
 def team_def_plays():
-    db_name = r'database\2023_database.db'
+    db_name = r'database\2023_database.db' 
     
     query = '''
     SELECT DISTINCT teams.team_name, teams.shortname, team_passing_def.Att AS Pass_Att, team_rushing_def.Att AS Rush_Att
