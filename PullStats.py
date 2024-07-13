@@ -310,7 +310,7 @@ def NFL_stats(lk_table_mascot):
     fum_df9 = Player_DF_Creator_NFL(url, lk_table_mascot)
     url = 'https://www.nfl.com/stats/player-stats/category/fumbles/2023/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAA4QAAAF8_8AAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhJaXdpTXpJd01EUmtOR1l0TlRJM01DMDVOemd4TFdWa1lUSXRPRGxrWVdGbFpHSTBPR1kzSWl3aU1qQXlNeUpkZlE9PQ=='
     fum_df10 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    rb_df = pd.concat([fum_df1,fum_df2,fum_df3,fum_df4,fum_df5,fum_df6,fum_df7,fum_df8,fum_df9,fum_df10]).reset_index(drop=True)
+    fum_df = pd.concat([fum_df1,fum_df2,fum_df3,fum_df4,fum_df5,fum_df6,fum_df7,fum_df8,fum_df9,fum_df10]).reset_index(drop=True)
     print('fum_df Complete')
     
     
@@ -375,7 +375,7 @@ def NFL_stats(lk_table_mascot):
 
     print('Complete')
 
-    return qb_df, rb_df, rec_df, int_df, fg_df, ko_df, kor_df, punt_df, puntr_df
+    return qb_df, rb_df, rec_df, int_df, fg_df, ko_df, kor_df, punt_df, puntr_df, fum_df
 
 def NFL_stats_off(lk_table_mascot):
     url = 'https://www.nfl.com/stats/team-stats/offense/passing/2023/reg/all'
