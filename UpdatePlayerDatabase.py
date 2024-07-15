@@ -43,16 +43,17 @@ if __name__ == '__main__':
     import utils
     import Database
     #db_name = r'NFL_stats\database\2023_database.db'
-    db_name = r'database\1979_database.db'
-    
-    print(os.path.dirname(os.path.realpath(__file__)))
-    
-    reset_db = input('Do you want to init the db? (y/n)   ')
-    if reset_db == 'y':
-        reset_db1 = input('Are you sure? (y/n)   ')
-        if reset_db1 == 'y':
-            Database.create_nfl_analytics_db(db_name)
-    week_list, lk_table_mascot, lk_table, CBS_URLs, NFL_URLs = utils.init()
+    for year in range(2023, 2021, -1): 
+        db_name = rf'database\{year}_database.db' 
+        
+        print(os.path.dirname(os.path.realpath(__file__)))
+        
+        reset_db = input('Do you want to init the db? (y/n)   ')
+        if reset_db == 'y':
+            reset_db1 = input('Are you sure? (y/n)   ')
+            if reset_db1 == 'y':
+                Database.create_nfl_analytics_db(db_name)
+        week_list, lk_table_mascot, lk_table, CBS_URLs, NFL_URLs = utils.init()
 
     filename = 'temp_db'
     
@@ -144,7 +145,7 @@ if __name__ == '__main__':
     week_list, lk_table_mascot, lk_table, CBS_URLs, NFL_URLs = utils.init()
     standings_df = PullStats.standings(lk_table)
     
-    (passing_df, rushing_df, receiving_df, int_df, fg_df, ko_df, kor_df, punt_df, puntr_df, fum_df) = PullStats.NFL_stats(lk_table_mascot)
+    (passing_df, rushing_df, receiving_df, int_df, fg_df, ko_df, kor_df, punt_df, puntr_df, fum_df) = PullStats.NFL_stats(lk_table_mascot, year)
             
     all_df = pd.concat([passing_df, rushing_df, receiving_df, int_df, fg_df, ko_df, kor_df, punt_df, puntr_df, fum_df]).reset_index(drop=True)
     
@@ -160,9 +161,9 @@ if __name__ == '__main__':
     for key,value in dataframes.items():
         insert_player_stats(value[0], value[1], db_playerid_dict, db_name)
     
-    (passing_off_df, rushing_off_df, receiving_off_df, scoring_off_df, downs_off_df) = PullStats.NFL_stats_off(lk_table_mascot)
-    (passing_def_df, rushing_def_df, receiving_def_df, scoring_def_df, tackles_def_df, downs_def_df, fumbles_def_df, interception_def_df) = PullStats.NFL_stats_def(lk_table_mascot)
-    (special_fg_df, special_scoring_df, special_kickoff_df, special_kickoff_return_df, special_punting_df, special_punting_returns_df) = PullStats.NFL_stats_st(lk_table_mascot)
+    (passing_off_df, rushing_off_df, receiving_off_df, scoring_off_df, downs_off_df) = PullStats.NFL_stats_off(lk_table_mascot, year)
+    (passing_def_df, rushing_def_df, receiving_def_df, scoring_def_df, tackles_def_df, downs_def_df, fumbles_def_df, interception_def_df) = PullStats.NFL_stats_def(lk_table_mascot, year)
+    (special_fg_df, special_scoring_df, special_kickoff_df, special_kickoff_return_df, special_punting_df, special_punting_returns_df) = PullStats.NFL_stats_st(lk_table_mascot, year)
     
     db_teamid_dict = {}
     for value in passing_off_df.index.to_list():
