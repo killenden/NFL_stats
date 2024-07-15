@@ -120,7 +120,7 @@ if __name__ == '__main__':
         start = db_name.find('\\') + len('\\')
         end = db_name.find('_')
         year = db_name[start:end]
-        database_df_final = PullRosters.PullTeam_ProFootballArchives('https://www.profootballarchives.com/'+year+'.html')
+        database_df_final = PullRosters.PullTeam_ProFootballArchives('https://www.profootballarchives.com/'+year+'.html') 
         
         db_teamid_dict = {}
         for value in database_df_final['Team'].unique():
