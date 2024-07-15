@@ -7,9 +7,6 @@ from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import os
 from io import BytesIO
 
-
-
-
 def Output(standings_df, week_list):
     user_df = pd.DataFrame()
     user_df['Team'] = standings_df.index.tolist()
@@ -216,179 +213,173 @@ def Player_DF_Creator_NFL(url, lk_table_mascot):
     #df['Team'] = team_list
     return df
 
-
-
-
-
-    
-
-def NFL_stats(lk_table_mascot):    
-
-    url = 'https://www.nfl.com/stats/player-stats/category/passing/2023/reg/all/passingyards/desc'
+def NFL_stats(lk_table_mascot, year):    
+    year = str(year)
+    url = 'https://www.nfl.com/stats/player-stats/category/passing/'+year+'/reg/all/passingyards/desc'
     qb_df1 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/passing/2023/REG/all/passingyards/DESC?aftercursor=AAAAGQAAABlAogoAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlNekE1SWl3aU16SXdNRFF5TlRVdE5USTJOeTA1TnpNeExUZ3hZemd0TkRnMk56TmtZMlZqTldVeUlpd2lNakF5TXlKZGZRPT0='
+    url = 'https://www.nfl.com/stats/player-stats/category/passing/'+year+'/REG/all/passingyards/DESC?aftercursor=AAAAGQAAABlAogoAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlNekE1SWl3aU16SXdNRFF5TlRVdE5USTJOeTA1TnpNeExUZ3hZemd0TkRnMk56TmtZMlZqTldVeUlpd2lNakF5TXlKZGZRPT0='
     qb_df2 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/passing/2023/REG/all/passingyards/DESC?aftercursor=AAAAMgAAADJAgPgAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STFORE1pTENJek1qQXdOR00wWmkwME16TTNMVFEwT0RJdE9UQTBZeTFoTkRkbU9HUm1NV1EwTVdJaUxDSXlNREl6SWwxOQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/passing/'+year+'/REG/all/passingyards/DESC?aftercursor=AAAAMgAAADJAgPgAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STFORE1pTENJek1qQXdOR00wWmkwME16TTNMVFEwT0RJdE9UQTBZeTFoTkRkbU9HUm1NV1EwTVdJaUxDSXlNREl6SWwxOQ=='
     qb_df3 = Player_DF_Creator_NFL(url, lk_table_mascot)
     qb_df = pd.concat([qb_df1,qb_df2,qb_df3]).reset_index(drop=True)
     print('qb_df Complete')
     
-    url = 'https://www.nfl.com/stats/player-stats/category/rushing/2023/reg/all/rushingyards/desc'
+    url = 'https://www.nfl.com/stats/player-stats/category/rushing/'+year+'/reg/all/rushingyards/desc'
     rb_df1 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/rushing/2023/REG/all/rushingyards/DESC?aftercursor=AAAAGQAAABlAiSgAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STRNRFVpTENJek1qQXdOR0UwTVMwME16Y3pMVFEyTVRVdE5qQmpZUzA1T0RKa01EY3dORFk0TkRFaUxDSXlNREl6SWwxOQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/rushing/'+year+'/REG/all/rushingyards/DESC?aftercursor=AAAAGQAAABlAiSgAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STRNRFVpTENJek1qQXdOR0UwTVMwME16Y3pMVFEyTVRVdE5qQmpZUzA1T0RKa01EY3dORFk0TkRFaUxDSXlNREl6SWwxOQ=='
     rb_df2 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/rushing/2023/REG/all/rushingyards/DESC?aftercursor=AAAAMgAAADJAelAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STBNakVpTENJek1qQXdORFEwWmkwME1qTXdMVEl6TmpBdE9HVXhOQzFrWW1KbE1XUmxaR1V4TWpBaUxDSXlNREl6SWwxOQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/rushing/'+year+'/REG/all/rushingyards/DESC?aftercursor=AAAAMgAAADJAelAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STBNakVpTENJek1qQXdORFEwWmkwME1qTXdMVEl6TmpBdE9HVXhOQzFrWW1KbE1XUmxaR1V4TWpBaUxDSXlNREl6SWwxOQ=='
     rb_df3 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/rushing/2023/REG/all/rushingyards/DESC?aftercursor=AAAASwAAAEtAboAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlORFFpTENJek1qQXdOR1ExTlMwMU1qWTNMVEEwTVRNdE9HUXpOaTFoTldNelptUTNPREZoWVRBaUxDSXlNREl6SWwxOQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/rushing/'+year+'/REG/all/rushingyards/DESC?aftercursor=AAAASwAAAEtAboAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlORFFpTENJek1qQXdOR1ExTlMwMU1qWTNMVEEwTVRNdE9HUXpOaTFoTldNelptUTNPREZoWVRBaUxDSXlNREl6SWwxOQ=='
     rb_df4 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/rushing/2023/REG/all/rushingyards/DESC?aftercursor=AAAAZAAAAGRAY4AAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhOVFlpTENJek1qQXdOR1EwT1MwMFl6TTJMVGt3T0RVdE4ySTBNQzAyTnpKaU5EY3pNMk5pWXpZaUxDSXlNREl6SWwxOQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/rushing/'+year+'/REG/all/rushingyards/DESC?aftercursor=AAAAZAAAAGRAY4AAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhOVFlpTENJek1qQXdOR1EwT1MwMFl6TTJMVGt3T0RVdE4ySTBNQzAyTnpKaU5EY3pNMk5pWXpZaUxDSXlNREl6SWwxOQ=='
     rb_df5 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/rushing/2023/REG/all/rushingyards/DESC?aftercursor=AAAAfQAAAH1AV8AAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STVOU0lzSWpNeU1EQTBZVFJtTFRSbE56WXROREF4T0MwelpXVmpMV0UxWVRRNU1UWTBPVE00TWlJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/rushing/'+year+'/REG/all/rushingyards/DESC?aftercursor=AAAAfQAAAH1AV8AAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STVOU0lzSWpNeU1EQTBZVFJtTFRSbE56WXROREF4T0MwelpXVmpMV0UxWVRRNU1UWTBPVE00TWlJc0lqSXdNak1pWFgwPQ=='
     rb_df6 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/rushing/2023/REG/all/rushingyards/DESC?aftercursor=AAAAlgAAAJZATgAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STJNQ0lzSWpNeU1EQTBaRFF6TFRSaU5qVXROamMyTkMxbE5qZzFMVFppTURkbU5HUmlZV015T0NJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/rushing/'+year+'/REG/all/rushingyards/DESC?aftercursor=AAAAlgAAAJZATgAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STJNQ0lzSWpNeU1EQTBaRFF6TFRSaU5qVXROamMyTkMxbE5qZzFMVFppTURkbU5HUmlZV015T0NJc0lqSXdNak1pWFgwPQ=='
     rb_df7 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/rushing/2023/REG/all/rushingyards/DESC?aftercursor=AAAArwAAAKxARAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STBNQ0lzSWpNeU1EQTFOalF4TFRVMU5ESXRORGszT1MwME1UVmtMVGswTURObFlUYzVNMlk1WWlJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/rushing/'+year+'/REG/all/rushingyards/DESC?aftercursor=AAAArwAAAKxARAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STBNQ0lzSWpNeU1EQTFOalF4TFRVMU5ESXRORGszT1MwME1UVmtMVGswTURObFlUYzVNMlk1WWlJc0lqSXdNak1pWFgwPQ=='
     rb_df8 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/rushing/2023/REG/all/rushingyards/DESC?aftercursor=AAAAyAAAAMdAOQAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlOU0lzSWpNeU1EQTBaRFUxTFRSak5EZ3ROall4TWkxaU1ETmlMVFV3WmpobVl6WmhZbVV5TkNJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/rushing/'+year+'/REG/all/rushingyards/DESC?aftercursor=AAAAyAAAAMdAOQAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlOU0lzSWpNeU1EQTBaRFUxTFRSak5EZ3ROall4TWkxaU1ETmlMVFV3WmpobVl6WmhZbVV5TkNJc0lqSXdNak1pWFgwPQ=='
     rb_df9 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/rushing/2023/REG/all/rushingyards/DESC?aftercursor=AAAA4QAAAN5AMgAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhPQ0lzSWpNeU1EQTFNRFE1TFRRek5UY3ROakUxTmkwMk5UTm1MV1V6WXpKaU5tUXhZamxpWXlJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/rushing/'+year+'/REG/all/rushingyards/DESC?aftercursor=AAAA4QAAAN5AMgAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhPQ0lzSWpNeU1EQTFNRFE1TFRRek5UY3ROakUxTmkwMk5UTm1MV1V6WXpKaU5tUXhZamxpWXlJc0lqSXdNak1pWFgwPQ=='
     rb_df10 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/rushing/2023/REG/all/rushingyards/DESC?aftercursor=AAAA-gAAAPlAJAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhNQ0lzSWpNeU1EQTBOalUxTFRSbE5qSXRNamt6TmkxallqZG1MVGc1TXpobU56Y3dOV1U0WVNJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/rushing/'+year+'/REG/all/rushingyards/DESC?aftercursor=AAAA-gAAAPlAJAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhNQ0lzSWpNeU1EQTBOalUxTFRSbE5qSXRNamt6TmkxallqZG1MVGc1TXpobU56Y3dOV1U0WVNJc0lqSXdNak1pWFgwPQ=='
     rb_df11 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/rushing/2023/REG/all/rushingyards/DESC?aftercursor=AAABEwAAARNAFAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STFJaXdpTXpJd01EUXlOR1l0TlRrMk9TMDJOVGd3TFRNd1lXSXRNRGN6WWpjd1pHSmtORGhpSWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/rushing/'+year+'/REG/all/rushingyards/DESC?aftercursor=AAABEwAAARNAFAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STFJaXdpTXpJd01EUXlOR1l0TlRrMk9TMDJOVGd3TFRNd1lXSXRNRGN6WWpjd1pHSmtORGhpSWl3aU1qQXlNeUpkZlE9PQ=='
     rb_df12 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/rushing/2023/REG/all/rushingyards/DESC?aftercursor=AAABLAAAASRAAAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlJaXdpTXpJd01EVTBOVFV0TlRJek1DMDBOamsxTFRVMllUZ3RZemRqTmprME1XVXdPV1k1SWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/rushing/'+year+'/REG/all/rushingyards/DESC?aftercursor=AAABLAAAASRAAAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlJaXdpTXpJd01EVTBOVFV0TlRJek1DMDBOamsxTFRVMllUZ3RZemRqTmprME1XVXdPV1k1SWl3aU1qQXlNeUpkZlE9PQ=='
     rb_df13 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/rushing/2023/REG/all/rushingyards/DESC?aftercursor=AAABRQAAATQAAAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXdJaXdpTXpJd01EVmhORFV0TkdVM015MDRNREEwTFRnM09HRXRZVEUwTnpJNE9EQmlZVFpsSWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/rushing/'+year+'/REG/all/rushingyards/DESC?aftercursor=AAABRQAAATQAAAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXdJaXdpTXpJd01EVmhORFV0TkdVM015MDRNREEwTFRnM09HRXRZVEUwTnpJNE9EQmlZVFpsSWl3aU1qQXlNeUpkZlE9PQ=='
     rb_df14 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/rushing/2023/REG/all/rushingyards/DESC?aftercursor=AAABWgAAAVrAKAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXRNVElpTENJek1qQXdOR0UwTlMwME5qSTJMVGt5T0RjdFl6UTFOQzAwTnpsaU9UUXlZMkprTWpZaUxDSXlNREl6SWwxOQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/rushing/'+year+'/REG/all/rushingyards/DESC?aftercursor=AAABWgAAAVrAKAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXRNVElpTENJek1qQXdOR0UwTlMwME5qSTJMVGt5T0RjdFl6UTFOQzAwTnpsaU9UUXlZMkprTWpZaUxDSXlNREl6SWwxOQ=='
     rb_df15 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    rb_df = pd.concat(rb_df1, rb_df2, rb_df3, rb_df4, rb_df5, rb_df6, rb_df7, rb_df8, rb_df9, rb_df10, rb_df11, rb_df12, rb_df13, rb_df14, rb_df15]).reset_index(drop=True)
+    rb_df = pd.concat([rb_df1, rb_df2, rb_df3, rb_df4, rb_df5, rb_df6, rb_df7, rb_df8, rb_df9, rb_df10, rb_df11, rb_df12, rb_df13, rb_df14, rb_df15]).reset_index(drop=True)
     print('rb_df Complete')
     
-    url = 'https://www.nfl.com/stats/player-stats/category/receiving/2023/reg/all/receivingreceptions/desc'
+    url = 'https://www.nfl.com/stats/player-stats/category/receiving/'+year+'/reg/all/receivingreceptions/desc'
     rec_df1 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/receiving/2023/REG/all/receivingreceptions/DESC?aftercursor=AAAAGQAAABhAU8AAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STNPU0lzSWpNeU1EQTBZelJtTFRRek5ESXRNRGt4TlMweFlXWTNMV1ZqTlRCbU5ETTNPRGczWXlJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/receiving/'+year+'/REG/all/receivingreceptions/DESC?aftercursor=AAAAGQAAABhAU8AAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STNPU0lzSWpNeU1EQTBZelJtTFRRek5ESXRNRGt4TlMweFlXWTNMV1ZqTlRCbU5ETTNPRGczWXlJc0lqSXdNak1pWFgwPQ=='
     rec_df2 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/receiving/2023/REG/all/receivingreceptions/DESC?aftercursor=AAAAMgAAADJAT4AAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STJNeUlzSWpNeU1EQTFNRFE1TFRRek5UY3ROakUxTmkwMk5UTm1MV1V6WXpKaU5tUXhZamxpWXlJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/receiving/'+year+'/REG/all/receivingreceptions/DESC?aftercursor=AAAAMgAAADJAT4AAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STJNeUlzSWpNeU1EQTFNRFE1TFRRek5UY3ROakUxTmkwMk5UTm1MV1V6WXpKaU5tUXhZamxpWXlJc0lqSXdNak1pWFgwPQ=='
     rec_df3 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/receiving/2023/REG/all/receivingreceptions/DESC?aftercursor=AAAASwAAAEhASgAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STFNaUlzSWpNeU1EQTFOelF4TFRSak5UQXRPVEEwTUMwMk4yUTJMVEEwTWpZNU1XWmlOVE0xWVNJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/receiving/'+year+'/REG/all/receivingreceptions/DESC?aftercursor=AAAASwAAAEhASgAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STFNaUlzSWpNeU1EQTFOelF4TFRSak5UQXRPVEEwTUMwMk4yUTJMVEEwTWpZNU1XWmlOVE0xWVNJc0lqSXdNak1pWFgwPQ=='
     rec_df4 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/receiving/2023/REG/all/receivingreceptions/DESC?aftercursor=AAAAZAAAAGNARQAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STBNaUlzSWpNeU1EQTBPRFE1TFRRM016Z3ROemM1TVMwNVpqZzVMV1ExTlRaak5HSTFPV0k1WVNJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/receiving/'+year+'/REG/all/receivingreceptions/DESC?aftercursor=AAAAZAAAAGNARQAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STBNaUlzSWpNeU1EQTBPRFE1TFRRM016Z3ROemM1TVMwNVpqZzVMV1ExTlRaak5HSTFPV0k1WVNJc0lqSXdNak1pWFgwPQ=='
     rec_df5 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/receiving/2023/REG/all/receivingreceptions/DESC?aftercursor=AAAAfQAAAHlAQYAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXpOU0lzSWpNeU1EQTFNelJrTFRVNU1qZ3RNekl6Tmkwell6VTVMVE0wTTJGaU56TTJZMk5oTXlJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/receiving/'+year+'/REG/all/receivingreceptions/DESC?aftercursor=AAAAfQAAAHlAQYAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXpOU0lzSWpNeU1EQTFNelJrTFRVNU1qZ3RNekl6Tmkwell6VTVMVE0wTTJGaU56TTJZMk5oTXlJc0lqSXdNak1pWFgwPQ=='
     rec_df6 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/receiving/2023/REG/all/receivingreceptions/DESC?aftercursor=AAAAlgAAAJVAPQAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlPU0lzSWpNeU1EQTBPRFF4TFRVeU5Ea3RNekUyTXkxbU9HWTFMVGN6WXpVMVpqaGhOV013WkNJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/receiving/'+year+'/REG/all/receivingreceptions/DESC?aftercursor=AAAAlgAAAJVAPQAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlPU0lzSWpNeU1EQTBPRFF4TFRVeU5Ea3RNekUyTXkxbU9HWTFMVGN6WXpVMVpqaGhOV013WkNJc0lqSXdNak1pWFgwPQ=='
     rec_df7 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/receiving/2023/REG/all/receivingreceptions/DESC?aftercursor=AAAArwAAAKpAOQAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlOU0lzSWpNeU1EQTFNRFF4TFRVeU5EZ3RNemMwTmkxaU5XWmlMV0ZsTnpNM1pHUmtNVEUwTWlJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/receiving/'+year+'/REG/all/receivingreceptions/DESC?aftercursor=AAAArwAAAKpAOQAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlOU0lzSWpNeU1EQTFNRFF4TFRVeU5EZ3RNemMwTmkxaU5XWmlMV0ZsTnpNM1pHUmtNVEUwTWlJc0lqSXdNak1pWFgwPQ=='
     rec_df8 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/receiving/2023/REG/all/receivingreceptions/DESC?aftercursor=AAAAyAAAAMFANQAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlNU0lzSWpNeU1EQTFOalF4TFRSak1UUXRNakV4TmkxbE5tUTVMVGcwWTJKbE1tSmtZV05tTlNJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/receiving/'+year+'/REG/all/receivingreceptions/DESC?aftercursor=AAAAyAAAAMFANQAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlNU0lzSWpNeU1EQTFOalF4TFRSak1UUXRNakV4TmkxbE5tUTVMVGcwWTJKbE1tSmtZV05tTlNJc0lqSXdNak1pWFgwPQ=='
     rec_df9 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/receiving/2023/REG/all/receivingreceptions/DESC?aftercursor=AAAA4QAAANtAMQAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhOeUlzSWpNeU1EQTBaRFUxTFRSbE16RXRNakUxTXkwNU0yRTJMVFpqT1dSaU9UTmtPVGt5WlNJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/receiving/'+year+'/REG/all/receivingreceptions/DESC?aftercursor=AAAA4QAAANtAMQAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhOeUlzSWpNeU1EQTBaRFUxTFRSbE16RXRNakUxTXkwNU0yRTJMVFpqT1dSaU9UTmtPVGt5WlNJc0lqSXdNak1pWFgwPQ=='
     rec_df10 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/receiving/2023/REG/all/receivingreceptions/DESC?aftercursor=AAAA-gAAAPlALAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhOQ0lzSWpNeU1EQTBNalExTFRSak1qWXRPVGd5TUMxbFpXTXlMVGsyTVRjeU1tRmxNemMwTWlJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/receiving/'+year+'/REG/all/receivingreceptions/DESC?aftercursor=AAAA-gAAAPlALAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhOQ0lzSWpNeU1EQTBNalExTFRSak1qWXRPVGd5TUMxbFpXTXlMVGsyTVRjeU1tRmxNemMwTWlJc0lqSXdNak1pWFgwPQ=='
     rec_df11 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/receiving/2023/REG/all/receivingreceptions/DESC?aftercursor=AAABEwAAARJAJgAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhNU0lzSWpNeU1EQTBNalExTFRRek1EUXROalUyTmkxaU5XWmhMVE0xWWpsaE9HVm1NVEJpTUNJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/receiving/'+year+'/REG/all/receivingreceptions/DESC?aftercursor=AAABEwAAARJAJgAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhNU0lzSWpNeU1EQTBNalExTFRRek1EUXROalUyTmkxaU5XWmhMVE0xWWpsaE9HVm1NVEJpTUNJc0lqSXdNak1pWFgwPQ=='
     rec_df12 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/receiving/2023/REG/all/receivingreceptions/DESC?aftercursor=AAABLAAAASlAIgAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STVJaXdpTXpJd01EVXdOREV0TlRRek9DMDNNRGMxTFRSbE1qVXRZVEV3TnpKalpUSm1OV0ZqSWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/receiving/'+year+'/REG/all/receivingreceptions/DESC?aftercursor=AAABLAAAASlAIgAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STVJaXdpTXpJd01EVXdOREV0TlRRek9DMDNNRGMxTFRSbE1qVXRZVEV3TnpKalpUSm1OV0ZqSWl3aU1qQXlNeUpkZlE9PQ=='
     rec_df13 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/receiving/2023/REG/all/receivingreceptions/DESC?aftercursor=AAABRQAAATpAHAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STNJaXdpTXpJd01EVTNORGt0TkdNeE9DMDFNekkxTFRNeE56a3RaR1ExTWpGaE1UaGpOekEySWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/receiving/'+year+'/REG/all/receivingreceptions/DESC?aftercursor=AAABRQAAATpAHAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STNJaXdpTXpJd01EVTNORGt0TkdNeE9DMDFNekkxTFRNeE56a3RaR1ExTWpGaE1UaGpOekEySWl3aU1qQXlNeUpkZlE9PQ=='
     rec_df14 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/receiving/2023/REG/all/receivingreceptions/DESC?aftercursor=AAABXgAAAVJAFAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STFJaXdpTXpJd01EVXlORGt0TkRNd01TMHlOVEk1TFRreE9UWXRaamRoWmpGbVpXTXhNekZqSWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/receiving/'+year+'/REG/all/receivingreceptions/DESC?aftercursor=AAABXgAAAVJAFAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STFJaXdpTXpJd01EVXlORGt0TkRNd01TMHlOVEk1TFRreE9UWXRaamRoWmpGbVpXTXhNekZqSWl3aU1qQXlNeUpkZlE9PQ=='
     rec_df15 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/receiving/2023/REG/all/receivingreceptions/DESC?aftercursor=AAABdwAAAWVAEAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STBJaXdpTXpJd01EVTNORGt0TkdNMk9DMHlNall3TFRWbE4yWXRNbVZtTlRGbVpEWTRZbVk0SWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/receiving/'+year+'/REG/all/receivingreceptions/DESC?aftercursor=AAABdwAAAWVAEAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STBJaXdpTXpJd01EVTNORGt0TkdNMk9DMHlNall3TFRWbE4yWXRNbVZtTlRGbVpEWTRZbVk0SWl3aU1qQXlNeUpkZlE9PQ=='
     rec_df16 = Player_DF_Creator_NFL(url, lk_table_mascot)
     rec_df = pd.concat([rec_df1, rec_df2, rec_df3, rec_df4, rec_df5, rec_df6, rec_df7, rec_df8, rec_df9, rec_df10, rec_df11, rec_df12, rec_df13, rec_df14, rec_df15, rec_df16]).reset_index(drop=True)
     print('rec_df Complete')
     
     
-    url = 'https://www.nfl.com/stats/player-stats/category/tackles/2023/reg/all/defensivecombinetackles/desc'
+    url = 'https://www.nfl.com/stats/player-stats/category/tackles/'+year+'/reg/all/defensivecombinetackles/desc'
     tack_df1 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/tackles/2023/REG/all/defensivecombinetackles/DESC?aftercursor=AAAAGQAAABlAXoAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhNakl1TUNJc0lqTXlNREEwTWpVNUxUUXhNalV0TVRNMk1TMW1OR0psTFdSaU1qazBZemhrT1dFd1ppSXNJakl3TWpNaVhYMD0='
+    url = 'https://www.nfl.com/stats/player-stats/category/tackles/'+year+'/REG/all/defensivecombinetackles/DESC?aftercursor=AAAAGQAAABlAXoAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhNakl1TUNJc0lqTXlNREEwTWpVNUxUUXhNalV0TVRNMk1TMW1OR0psTFdSaU1qazBZemhrT1dFd1ppSXNJakl3TWpNaVhYMD0='
     tack_df2 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/tackles/2023/REG/all/defensivecombinetackles/DESC?aftercursor=AAAAMgAAADJAWoAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhNRFl1TUNJc0lqTXlNREEwTXpReExUVXpNekV0TmpFNE5TMHlZak0zTFRCa056RXlNR0pqT1RJeE1pSXNJakl3TWpNaVhYMD0='
+    url = 'https://www.nfl.com/stats/player-stats/category/tackles/'+year+'/REG/all/defensivecombinetackles/DESC?aftercursor=AAAAMgAAADJAWoAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhNRFl1TUNJc0lqTXlNREEwTXpReExUVXpNekV0TmpFNE5TMHlZak0zTFRCa056RXlNR0pqT1RJeE1pSXNJakl3TWpNaVhYMD0='
     tack_df3 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/tackles/2023/REG/all/defensivecombinetackles/DESC?aftercursor=AAAASwAAAEtAVwAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STVNaTR3SWl3aU16SXdNRFV3TkRndE5Ea3lNUzAxTVRReUxUVmxaalV0TVRNellUTTJaR1JoTnpKbUlpd2lNakF5TXlKZGZRPT0='
+    url = 'https://www.nfl.com/stats/player-stats/category/tackles/'+year+'/REG/all/defensivecombinetackles/DESC?aftercursor=AAAASwAAAEtAVwAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STVNaTR3SWl3aU16SXdNRFV3TkRndE5Ea3lNUzAxTVRReUxUVmxaalV0TVRNellUTTJaR1JoTnpKbUlpd2lNakF5TXlKZGZRPT0='
     tack_df4 = Player_DF_Creator_NFL(url, lk_table_mascot)
     tack_df = pd.concat([tack_df1,tack_df2,tack_df3,tack_df4]).reset_index(drop=True)
     print('tack_df Complete')
     
     
-    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/2023/reg/all/defensiveforcedfumble/desc'
+    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/'+year+'/reg/all/defensiveforcedfumble/desc'
     fum_df1 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/2023/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAAGQAAAAtACAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXpJaXdpTXpJd01EUmpORFV0TlRjME1TMDVOVGszTFRZMllXSXRZakU0WkRWbVlqWTFPV0UxSWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/'+year+'/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAAGQAAAAtACAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXpJaXdpTXpJd01EUmpORFV0TlRjME1TMDVOVGszTFRZMllXSXRZakU0WkRWbVlqWTFPV0UxSWl3aU1qQXlNeUpkZlE9PQ=='
     fum_df2 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/2023/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAAMgAAACBAAAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlJaXdpTXpJd01EUTBOREV0TlRZME1pMDROVGt5TFRrNU16WXRNRGM0T1RabU5UVTVNV05qSWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/'+year+'/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAAMgAAACBAAAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlJaXdpTXpJd01EUTBOREV0TlRZME1pMDROVGt5TFRrNU16WXRNRGM0T1RabU5UVTVNV05qSWl3aU1qQXlNeUpkZlE9PQ=='
     fum_df3 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/2023/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAASwAAACBAAAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlJaXdpTXpJd01EVXdOREV0TlRreE5pMDRPVGcyTFdRNVptSXRaRFZqWWpGa01UZGxZalF5SWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/'+year+'/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAASwAAACBAAAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlJaXdpTXpJd01EVXdOREV0TlRreE5pMDRPVGcyTFdRNVptSXRaRFZqWWpGa01UZGxZalF5SWl3aU1qQXlNeUpkZlE9PQ=='
     fum_df4 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/2023/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAAlgAAAF8_8AAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhJaXdpTXpJd01EUTFORFF0TlRjMk9DMDROelkzTFdOaU1XVXROVEJrWWpKaFlXWmhaRFUySWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/'+year+'/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAAlgAAAF8_8AAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhJaXdpTXpJd01EUTFORFF0TlRjMk9DMDROelkzTFdOaU1XVXROVEJrWWpKaFlXWmhaRFUySWl3aU1qQXlNeUpkZlE9PQ=='
     fum_df5 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/2023/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAArwAAAF8_8AAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhJaXdpTXpJd01EUTNOVEl0TkRVek9TMDNPVFE0TFRaak9EVXRaalJoWm1RMk1XWmhaR1EySWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/'+year+'/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAArwAAAF8_8AAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhJaXdpTXpJd01EUTNOVEl0TkRVek9TMDNPVFE0TFRaak9EVXRaalJoWm1RMk1XWmhaR1EySWl3aU1qQXlNeUpkZlE9PQ=='
     fum_df6 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/2023/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAAyAAAAF8_8AAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhJaXdpTXpJd01EUmhOR1l0TkRnek1pMHhPRFF6TFRobVltVXRPVEZsTjJGa016WmhPV1ppSWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/'+year+'/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAAyAAAAF8_8AAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhJaXdpTXpJd01EUmhOR1l0TkRnek1pMHhPRFF6TFRobVltVXRPVEZsTjJGa016WmhPV1ppSWl3aU1qQXlNeUpkZlE9PQ=='
     fum_df7 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/2023/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAAyAAAAF8_8AAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhJaXdpTXpJd01EUmhOR1l0TkRnek1pMHhPRFF6TFRobVltVXRPVEZsTjJGa016WmhPV1ppSWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/'+year+'/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAAyAAAAF8_8AAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhJaXdpTXpJd01EUmhOR1l0TkRnek1pMHhPRFF6TFRobVltVXRPVEZsTjJGa016WmhPV1ppSWl3aU1qQXlNeUpkZlE9PQ=='
     fum_df8 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/2023/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAA4QAAAF8_8AAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhJaXdpTXpJd01EUmtOR1l0TlRJM01DMDVOemd4TFdWa1lUSXRPRGxrWVdGbFpHSTBPR1kzSWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/'+year+'/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAA4QAAAF8_8AAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhJaXdpTXpJd01EUmtOR1l0TlRJM01DMDVOemd4TFdWa1lUSXRPRGxrWVdGbFpHSTBPR1kzSWl3aU1qQXlNeUpkZlE9PQ=='
     fum_df9 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/2023/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAA4QAAAF8_8AAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhJaXdpTXpJd01EUmtOR1l0TlRJM01DMDVOemd4TFdWa1lUSXRPRGxrWVdGbFpHSTBPR1kzSWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/'+year+'/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAA4QAAAF8_8AAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhJaXdpTXpJd01EUmtOR1l0TlRJM01DMDVOemd4TFdWa1lUSXRPRGxrWVdGbFpHSTBPR1kzSWl3aU1qQXlNeUpkZlE9PQ=='
     fum_df10 = Player_DF_Creator_NFL(url, lk_table_mascot)
     fum_df = pd.concat([fum_df1,fum_df2,fum_df3,fum_df4,fum_df5,fum_df6,fum_df7,fum_df8,fum_df9,fum_df10]).reset_index(drop=True)
     print('fum_df Complete')
     
     
-    url = 'https://www.nfl.com/stats/player-stats/category/interceptions/2023/reg/all/defensiveinterceptions/desc'
+    url = 'https://www.nfl.com/stats/player-stats/category/interceptions/'+year+'/reg/all/defensiveinterceptions/desc'
     int_df1 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/interceptions/2023/REG/all/defensiveinterceptions/DESC?aftercursor=AAAAGQAAABlACAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXpJaXdpTXpJd01EUXhORFF0TkRFMk55MDVOVFV3TFRGa05UUXRNekUwWXpJNE56TXlPVFE0SWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/interceptions/'+year+'/REG/all/defensiveinterceptions/DESC?aftercursor=AAAAGQAAABlACAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXpJaXdpTXpJd01EUXhORFF0TkRFMk55MDVOVFV3TFRGa05UUXRNekUwWXpJNE56TXlPVFE0SWl3aU1qQXlNeUpkZlE9PQ=='
     int_df2 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/interceptions/2023/REG/all/defensiveinterceptions/DESC?aftercursor=AAAAMgAAACxAAAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlJaXdpTXpJd01EUXlOVEl0TkdZM015MDVNVFUzTFRSaE16Y3RZMkkxWlRobFlXUTJNR1F4SWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/interceptions/'+year+'/REG/all/defensiveinterceptions/DESC?aftercursor=AAAAMgAAACxAAAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlJaXdpTXpJd01EUXlOVEl0TkdZM015MDVNVFUzTFRSaE16Y3RZMkkxWlRobFlXUTJNR1F4SWl3aU1qQXlNeUpkZlE9PQ=='
     int_df3 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/interceptions/2023/REG/all/defensiveinterceptions/DESC?aftercursor=AAAASwAAACxAAAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlJaXdpTXpJd01EUmhOR1l0TkdVeE1DMHlNVFV4TFRGalpqa3ROalkyTlRFMU1Ua3hZV0UxSWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/interceptions/'+year+'/REG/all/defensiveinterceptions/DESC?aftercursor=AAAASwAAACxAAAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlJaXdpTXpJd01EUmhOR1l0TkdVeE1DMHlNVFV4TFRGalpqa3ROalkyTlRFMU1Ua3hZV0UxSWl3aU1qQXlNeUpkZlE9PQ=='
     int_df4 = Player_DF_Creator_NFL(url, lk_table_mascot)
     int_df = pd.concat([int_df1,int_df2,int_df3,int_df4]).reset_index(drop=True)
     print('int_df Complete')
 
-    url = 'https://www.nfl.com/stats/player-stats/category/field-goals/2023/reg/all/kickingfgmade/desc'
+    url = 'https://www.nfl.com/stats/player-stats/category/field-goals/'+year+'/reg/all/kickingfgmade/desc'
     fg_df1 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/field-goals/2023/REG/all/kickingfgmade/DESC?aftercursor=AAAAGQAAABhAOAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlOQ0lzSWpNeU1EQTBZVFJtTFRVek1qQXRPRFEyTkMwMFptUmhMVFF3TnpFM1pXUTVOMlJoWlNJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/field-goals/'+year+'/REG/all/kickingfgmade/DESC?aftercursor=AAAAGQAAABhAOAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlOQ0lzSWpNeU1EQTBZVFJtTFRVek1qQXRPRFEyTkMwMFptUmhMVFF3TnpFM1pXUTVOMlJoWlNJc0lqSXdNak1pWFgwPQ=='
     fg_df2 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/2023/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAAMgAAACBAAAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlJaXdpTXpJd01EUTBOREV0TlRZME1pMDROVGt5TFRrNU16WXRNRGM0T1RabU5UVTVNV05qSWl3aU1qQXlNeUpkZlE9PQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/fumbles/'+year+'/REG/all/defensiveforcedfumble/DESC?aftercursor=AAAAMgAAACBAAAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlJaXdpTXpJd01EUTBOREV0TlRZME1pMDROVGt5TFRrNU16WXRNRGM0T1RabU5UVTVNV05qSWl3aU1qQXlNeUpkZlE9PQ=='
     fg_df = pd.concat([fg_df1,fg_df2]).reset_index(drop=True)
     print('fum_df Complete')
     
-    url = 'https://www.nfl.com/stats/player-stats/category/kickoffs/2023/reg/all/kickofftotal/desc'
-    ko_df1 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/kickoffs/2023/REG/all/kickofftotal/DESC?aftercursor=AAAAGQAAABdAUwAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STNOaUlzSWpNeU1EQTFNelF4TFRSbE56a3ROakk1T1MwNE5USmxMV0l4TnpkbFpXVTVNamM0TUNJc0lqSXdNak1pWFgwPQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/kickoffs/'+year+'/reg/all/kickofftotal/desc'
+    ko_df1 = Player_DF_Creator_NFL(url, lk_table_mascot) 
+    url = 'https://www.nfl.com/stats/player-stats/category/kickoffs/'+year+'/REG/all/kickofftotal/DESC?aftercursor=AAAAGQAAABdAUwAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STNOaUlzSWpNeU1EQTFNelF4TFRSbE56a3ROakk1T1MwNE5USmxMV0l4TnpkbFpXVTVNamM0TUNJc0lqSXdNak1pWFgwPQ=='
     ko_df2 = Player_DF_Creator_NFL(url, lk_table_mascot)
     ko_df = pd.concat([ko_df1,ko_df2]).reset_index(drop=True)
     print('ko_df Complete')
 
-    url = 'https://www.nfl.com/stats/player-stats/category/kickoff-returns/2023/reg/all/kickreturnsaverageyards/desc'
+    url = 'https://www.nfl.com/stats/player-stats/category/kickoff-returns/'+year+'/reg/all/kickreturnsaverageyards/desc'
     kor_df1 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/kickoff-returns/2023/REG/all/kickreturnsaverageyards/DESC?aftercursor=AAAAGQAAABlAOQAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlOUzR3SWl3aU16SXdNRFE1TlRNdE5ERTFOaTB5TnpJeUxXSm1Nall0TmpJeE9ERXpOVEZoTWpJMElpd2lNakF5TXlKZGZRPT0='
+    url = 'https://www.nfl.com/stats/player-stats/category/kickoff-returns/'+year+'/REG/all/kickreturnsaverageyards/DESC?aftercursor=AAAAGQAAABlAOQAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXlOUzR3SWl3aU16SXdNRFE1TlRNdE5ERTFOaTB5TnpJeUxXSm1Nall0TmpJeE9ERXpOVEZoTWpJMElpd2lNakF5TXlKZGZRPT0='
     kor_df2 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/kickoff-returns/2023/REG/all/kickreturnsaverageyards/DESC?aftercursor=AAAAMgAAADJANVR64UeuFDFleUp6WldGeVkyaEJablJsY2lJNld5SXlNUzR6TXlJc0lqTXlNREEwTWpSbUxUVTNNRFl0T0RZMk9DMWlORE01TFdFNU9UTmhZekJsT1dRMVpDSXNJakl3TWpNaVhYMD0='
+    url = 'https://www.nfl.com/stats/player-stats/category/kickoff-returns/'+year+'/REG/all/kickreturnsaverageyards/DESC?aftercursor=AAAAMgAAADJANVR64UeuFDFleUp6WldGeVkyaEJablJsY2lJNld5SXlNUzR6TXlJc0lqTXlNREEwTWpSbUxUVTNNRFl0T0RZMk9DMWlORE01TFdFNU9UTmhZekJsT1dRMVpDSXNJakl3TWpNaVhYMD0='
     kor_df3 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/kickoff-returns/2023/REG/all/kickreturnsaverageyards/DESC?aftercursor=AAAASwAAAEtAMQAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhOeTR3SWl3aU16SXdNRFF4TkdNdE5HTXhNQzA0T1RreExUSTVOVFV0WWpWaU5qSTRPR001WVdabElpd2lNakF5TXlKZGZRPT0='
+    url = 'https://www.nfl.com/stats/player-stats/category/kickoff-returns/'+year+'/REG/all/kickreturnsaverageyards/DESC?aftercursor=AAAASwAAAEtAMQAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5SXhOeTR3SWl3aU16SXdNRFF4TkdNdE5HTXhNQzA0T1RreExUSTVOVFV0WWpWaU5qSTRPR001WVdabElpd2lNakF5TXlKZGZRPT0='
     kor_df4 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/kickoff-returns/2023/REG/all/kickreturnsaverageyards/DESC?aftercursor=AAAAZAAAAGJAHAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STNMakFpTENJek1qQXdOV0UwTVMwME16RXpMVE14T0RBdFltRXdNUzFoWlRneE1ETXpNVFJtWVRJaUxDSXlNREl6SWwxOQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/kickoff-returns/'+year+'/REG/all/kickreturnsaverageyards/DESC?aftercursor=AAAAZAAAAGJAHAAAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STNMakFpTENJek1qQXdOV0UwTVMwME16RXpMVE14T0RBdFltRXdNUzFoWlRneE1ETXpNVFJtWVRJaUxDSXlNREl6SWwxOQ=='
     kor_df5 = Player_DF_Creator_NFL(url, lk_table_mascot)
     kor_df = pd.concat([kor_df1,kor_df2,kor_df3,kor_df4,kor_df5]).reset_index(drop=True)
     print('kor_df Complete')
     
-    url = 'https://www.nfl.com/stats/player-stats/category/punts/2023/reg/all/puntingaverageyards/desc'
+    url = 'https://www.nfl.com/stats/player-stats/category/punts/'+year+'/reg/all/puntingaverageyards/desc'
     punt_df1 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://nfl.com/stats/player-stats/category/punts/2023/REG/all/puntingaverageyards/DESC?aftercursor=AAAAGQAAABlARxrhR64UezFleUp6WldGeVkyaEJablJsY2lJNld5STBOaTR5TVNJc0lqTXlNREExTnpRNExUUTFOelV0TlRNMk5TMWxPVFF4TFRWaFpqUTJZMlV4WmpKa01TSXNJakl3TWpNaVhYMD0='
+    url = 'https://nfl.com/stats/player-stats/category/punts/'+year+'/REG/all/puntingaverageyards/DESC?aftercursor=AAAAGQAAABlARxrhR64UezFleUp6WldGeVkyaEJablJsY2lJNld5STBOaTR5TVNJc0lqTXlNREExTnpRNExUUTFOelV0TlRNMk5TMWxPVFF4TFRWaFpqUTJZMlV4WmpKa01TSXNJakl3TWpNaVhYMD0='
     punt_df2 = Player_DF_Creator_NFL(url, lk_table_mascot)
     punt_df = pd.concat([punt_df1,punt_df2]).reset_index(drop=True)
     print('punt_df Complete')
 
-    url = 'https://www.nfl.com/stats/player-stats/category/punt-returns/2023/reg/all/puntreturnsaverageyards/desc'
+    url = 'https://www.nfl.com/stats/player-stats/category/punt-returns/'+year+'/reg/all/puntreturnsaverageyards/desc'
     puntr_df1 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/punt-returns/2023/REG/all/puntreturnsaverageyards/DESC?aftercursor=AAAAGQAAABlAI4AAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STVMamMxSWl3aU16SXdNRFEwTkRFdE5USXlOaTB4TXpRMkxUaG1ORFV0T0dRd1lXSTNOakU0WVRrNUlpd2lNakF5TXlKZGZRPT0='
+    url = 'https://www.nfl.com/stats/player-stats/category/punt-returns/'+year+'/REG/all/puntreturnsaverageyards/DESC?aftercursor=AAAAGQAAABlAI4AAAAAAADFleUp6WldGeVkyaEJablJsY2lJNld5STVMamMxSWl3aU16SXdNRFEwTkRFdE5USXlOaTB4TXpRMkxUaG1ORFV0T0dRd1lXSTNOakU0WVRrNUlpd2lNakF5TXlKZGZRPT0='
     puntr_df2 = Player_DF_Creator_NFL(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/player-stats/category/punt-returns/2023/REG/all/puntreturnsaverageyards/DESC?aftercursor=AAAAMgAAADJAHZmZmZmZmjFleUp6WldGeVkyaEJablJsY2lJNld5STNMalFpTENJek1qQXdOVE0wT0MwME1URXdMVGMwTWpjdFpqTTBZUzFpWWpCaFlURmtPR1UxTlRZaUxDSXlNREl6SWwxOQ=='
+    url = 'https://www.nfl.com/stats/player-stats/category/punt-returns/'+year+'/REG/all/puntreturnsaverageyards/DESC?aftercursor=AAAAMgAAADJAHZmZmZmZmjFleUp6WldGeVkyaEJablJsY2lJNld5STNMalFpTENJek1qQXdOVE0wT0MwME1URXdMVGMwTWpjdFpqTTBZUzFpWWpCaFlURmtPR1UxTlRZaUxDSXlNREl6SWwxOQ=='
     puntr_df2 = Player_DF_Creator_NFL(url, lk_table_mascot)
     puntr_df = pd.concat([puntr_df1,puntr_df2]).reset_index(drop=True)
     print('puntr_df Complete')
@@ -401,52 +392,55 @@ def NFL_stats(lk_table_mascot):
 
     return qb_df, rb_df, rec_df, int_df, fg_df, ko_df, kor_df, punt_df, puntr_df, fum_df
 
-def NFL_stats_off(lk_table_mascot):
-    url = 'https://www.nfl.com/stats/team-stats/offense/passing/2023/reg/all'
+def NFL_stats_off(lk_table_mascot, year):
+    year = str(year)
+    url = 'https://www.nfl.com/stats/team-stats/offense/passing/'+year+'/reg/all'
     passing_off_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/offense/rushing/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/offense/rushing/'+year+'/reg/all'
     rushing_off_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/offense/receiving/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/offense/receiving/'+year+'/reg/all'
     receiving_off_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/offense/scoring/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/offense/scoring/'+year+'/reg/all'
     scoring_off_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/offense/downs/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/offense/downs/'+year+'/reg/all'
     downs_off_df = DF_Creator(url, lk_table_mascot)
     print('teams offense complete')
     return passing_off_df, rushing_off_df, receiving_off_df, scoring_off_df, downs_off_df
 
-def NFL_stats_def(lk_table_mascot):
-    url = 'https://www.nfl.com/stats/team-stats/defense/passing/2023/reg/all'
+def NFL_stats_def(lk_table_mascot, year):
+    year = str(year)
+    url = 'https://www.nfl.com/stats/team-stats/defense/passing/'+year+'/reg/all'
     passing_def_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/defense/rushing/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/defense/rushing/'+year+'/reg/all'
     rushing_def_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/defense/receiving/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/defense/receiving/'+year+'/reg/all'
     receiving_def_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/defense/scoring/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/defense/scoring/'+year+'/reg/all'
     scoring_def_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/defense/tackles/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/defense/tackles/'+year+'/reg/all'
     tackles_def_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/defense/downs/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/defense/downs/'+year+'/reg/all'
     downs_def_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/defense/fumbles/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/defense/fumbles/'+year+'/reg/all'
     fumbles_def_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/defense/interceptions/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/defense/interceptions/'+year+'/reg/all'
     interception_def_df = DF_Creator(url, lk_table_mascot)
     print('teams defense complete')
     return passing_def_df, rushing_def_df, receiving_def_df, scoring_def_df, tackles_def_df, downs_def_df, fumbles_def_df, interception_def_df
 
-def NFL_stats_st(lk_table_mascot):
-    url = 'https://www.nfl.com/stats/team-stats/special-teams/field-goals/2023/reg/all'
+def NFL_stats_st(lk_table_mascot, year):
+    year = str(year)
+    url = 'https://www.nfl.com/stats/team-stats/special-teams/field-goals/'+year+'/reg/all'
     special_fg_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/special-teams/scoring/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/special-teams/scoring/'+year+'/reg/all'
     special_scoring_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/special-teams/kickoffs/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/special-teams/kickoffs/'+year+'/reg/all'
     special_kickoff_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/special-teams/kickoff-returns/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/special-teams/kickoff-returns/'+year+'/reg/all'
     special_kickoff_return_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/special-teams/punts/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/special-teams/punts/'+year+'/reg/all'
     special_punting_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/special-teams/punt-returns/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/special-teams/punt-returns/'+year+'/reg/all'
     special_punting_returns_df = DF_Creator(url, lk_table_mascot)
     print('teams special teams complete')
     return special_fg_df, special_scoring_df, special_kickoff_df, special_kickoff_return_df, special_punting_df, special_punting_returns_df
@@ -499,13 +493,13 @@ def CBS_Stats(lk_table_mascot):
     # def_df3 = Player_DF_Creator(url, lk_table_mascot)
     # def_df = pd.concat([def_df1,def_df2, def_df3])
 
-    url = 'https://www.nfl.com/stats/team-stats/defense/passing/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/defense/passing/2021/reg/all'
     passing_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/defense/rushing/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/defense/rushing/2021/reg/all'
     rushing_df = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/offense/passing/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/offense/passing/2021/reg/all'
     passing_of = DF_Creator(url, lk_table_mascot)
-    url = 'https://www.nfl.com/stats/team-stats/offense/rushing/2023/reg/all'
+    url = 'https://www.nfl.com/stats/team-stats/offense/rushing/2021/reg/all'
     rushing_of = DF_Creator(url, lk_table_mascot)
     print('Complete')
 
