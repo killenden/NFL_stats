@@ -54,6 +54,17 @@ if __name__ == '__main__':
             if reset_db1 == 'y':
                 Database.create_nfl_analytics_db(db_name)
         week_list, lk_table_mascot, lk_table, CBS_URLs, NFL_URLs = utils.init()
+    for year in range(2023, 2021, -1): 
+        db_name = rf'database\{year}_database.db' 
+        
+        print(os.path.dirname(os.path.realpath(__file__)))
+        
+        reset_db = input('Do you want to init the db? (y/n)   ')
+        if reset_db == 'y':
+            reset_db1 = input('Are you sure? (y/n)   ')
+            if reset_db1 == 'y':
+                Database.create_nfl_analytics_db(db_name)
+        week_list, lk_table_mascot, lk_table, CBS_URLs, NFL_URLs = utils.init()
 
     filename = 'temp_db'
     
