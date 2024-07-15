@@ -54,6 +54,74 @@ def SearchTable_NFL(soup,table,team):
     df = pd.DataFrame(final,columns = table_headers)
     return df
 
+def SearchTable_ProFootballArchives(soup,table):
+    import utils
+        
+
+    table_headers = ['Team', 'Link']
+    final = []
+    for tr in soup.find_all('tr'):
+        team_found = False
+        if 'canadian' in tr.text.strip().lower():
+            break
+        for value in tr.find_all('td'):   
+            row_list=[] 
+            if any(exc in value.text.strip().lower() for exc in ['season', 'playoff']):
+                break
+            else:
+                team_found = True
+        
+    
+            try:
+                team_name = value.text.strip()
+                if '*' in team_name:
+                    team_name = team_name[:-1]
+                row_list.append(team_name)
+                if value.contents[0].attrs['href']:
+                    row_list.append(value.contents[0].attrs['href'])
+            except:
+                pass
+            if team_found == True:
+                break
+        if row_list != []:
+            final.append(row_list)
+    df = pd.DataFrame(final,columns = table_headers)
+    df.drop_duplicates(subset=['Team'],inplace=True)
+    return df
+
+def SearchTable_ProFootballArchives_Team(soup,table,team):
+    import utils
+    
+    table_headers=[]
+    for tr in table.find_all('tr'):
+        if len(tr) > 1 and len(tr.find_all('th')) > 1:
+            for x in tr.find_all('th'):
+                data = x.text.strip()
+                if data in table_headers:
+                    continue
+                table_headers.append(data)
+            table_headers.append('Team')
+            break
+        
+    final = []
+    for row in table.find_all('tr'): 
+        columns = row.find_all('td')
+        row_list=[]
+        if(columns != []):
+            for i in range(0,len(columns)):
+                data = columns[i].text.strip()
+                data = utils.string_to_float(data)
+                row_list.append(data)
+            team = team.replace('-',' ')
+            team = utils.capitalize_first_character(team)
+            team = utils.capitalize_after_space(team)
+            row_list.append(team)
+        if row_list != []:
+            final.append(row_list)
+    df = pd.DataFrame(final,columns = table_headers)
+                
+    return df
+
 def SearchTable_CBS(soup,table,team):
     
     table_headers=[]
@@ -162,6 +230,61 @@ def PullTeam_NFL(url,team):
     for table in soup.find_all('table'):
         df = SearchTable_NFL(soup,table,team)
         database_df_final = pd.concat([database_df_final,df]).reset_index(drop=True)
+
+    # for i in range(1,len(soup.find_all('h4'))):
+        
+    #     if i != 1:
+    #         table = SwitchTables(table)
+        
+    #     df = SearchTable(soup,table,team)
+    #     database_df_final = pd.concat([database_df_final,df]).reset_index(drop=True)
+    
+    
+    # for table in soup.find_all('table'):
+    #     table = soup.find('table', class_='TableBase-table')
+    #     df = SearchTable(soup,table,team)
+    #     database_df_final = pd.concat([database_df_final,df]).reset_index(drop=True)
+    
+    return database_df_final
+
+
+
+def PullTeam_ProFootballArchives(url):
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'html.parser')
+    # print('Classes of each table:')
+    # for table in soup.find_all('table'):
+    #     print(table.get('class'))
+    
+    #  Looking for the table with the classes 'wikitable' and 'sortable'
+    database_df_final = pd.DataFrame()
+    #table = soup.find('table', class_='d3-o-table d3-o-table--row-striping d3-o-table--detailed d3-o-table--sortable')
+    for table in soup.find_all('table'):
+        database_df_final = pd.DataFrame()
+        df = SearchTable_ProFootballArchives(soup,table)
+        for i in range(len(df)):
+            team_name = df.iloc[i,0]
+            link = df.iloc[i,1]
+            url = 'https://www.profootballarchives.com/'+link
+            r = requests.get(url)
+            soup = BeautifulSoup(r.text, 'html.parser')
+            # print('Classes of each table:')
+            # for table in soup.find_all('table'):
+            #     print(table.get('class'))
+            
+            #  Looking for the table with the classes 'wikitable' and 'sortable'
+            first = True
+            for table in soup.find_all(class_ = 'stats'):
+                if first == True:
+                    first = False
+                    continue
+                df_archive = SearchTable_ProFootballArchives_Team(soup,table,team_name)
+                if len(df_archive) > 0:
+                    break
+            database_df_final = pd.concat([database_df_final,df_archive]).reset_index(drop=True)
+            print(f'{team_name} complete')
+            #table = soup.find('table', class_='d3-o-table d3-o-table--row-striping d3-o-table--detailed d3-o-table--sortable')
+        break
 
     # for i in range(1,len(soup.find_all('h4'))):
         

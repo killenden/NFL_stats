@@ -43,7 +43,7 @@ if __name__ == '__main__':
     import utils
     import Database
     #db_name = r'NFL_stats\database\2023_database.db'
-    db_name = r'database\2023_database.db'
+    db_name = r'database\1979_database.db'
     
     print(os.path.dirname(os.path.realpath(__file__)))
     
@@ -62,24 +62,64 @@ if __name__ == '__main__':
         reset_csv1 = input('Are you sure? (y/n)   ')
         if reset_csv1 == 'y':
            reset_csv_out = True
-    
-    if reset_csv_out or check_csv_file(filename+'.csv') == False:
-        if check_csv_file(filename+'.csv') == True:
-            current_dir = os.getcwd()  # Get current working directory
-            file_path = os.path.join(current_dir, filename+'.csv')  # Create file path
-            try:
-                os.remove(file_path)
-            except:
-                pass
+    if '2024' in db_name: 
+        if reset_csv_out or check_csv_file(filename+'.csv') == False:
+            if check_csv_file(filename+'.csv') == True:
+                current_dir = os.getcwd()  # Get current working directory
+                file_path = os.path.join(current_dir, filename+'.csv')  # Create file path
+                try:
+                    os.remove(file_path)
+                except:
+                    pass
+            database_df_final = pd.DataFrame()
+            # for team in CBS_URLs:
+            #     database_df = PullRosters.PullTeam_CBS('https://www.cbssports.com/nfl/teams/'+team+'/roster/',team)
+            #     print(team)
+            #     database_df_final = pd.concat([database_df_final,database_df]).reset_index(drop=True)
+            for team in NFL_URLs: 
+                database_df = PullRosters.PullTeam_NFL('https://www.nfl.com/teams/'+team+'/roster',team) #https://www.nfl.com/teams/buffalo-bills/roster
+                print(team)
+                database_df_final = pd.concat([database_df_final,database_df]).reset_index(drop=True)
+            
+            
+            db_teamid_dict = {}
+            for value in database_df_final['Team'].unique():
+                value = utils.capitalize_first_character(value)
+                value = utils.capitalize_after_space(value)
+                db_teamid_dict[value] = Database.get_team_id(db_name,value)
+                
+            database_df_final['Team'] = database_df_final['Team'].map(db_teamid_dict)
+            
+            database_df_final['player_id'] = None
+            database_df_final['player_id'] = database_df_final.index + 1
+            
+            database_df_final = database_df_final[database_df_final['Player'].notna() & (database_df_final['Player'] != '')]
+            
+            current_dir = os.path.dirname(os.path.realpath(__file__))
+            file_path = os.path.join(current_dir, filename)  # Create file path
+            database_df_final.to_csv(file_path+'.csv', index=False)
+        else:
+            if check_csv_file(filename+'.csv') == True:
+                current_dir = os.getcwd()  # Get current working directory
+                file_path = os.path.join(current_dir, filename+'.csv')  # Create file path
+            database_df_final = pd.read_csv(file_path)
+        
+        db_posid_dict = {}
+        for value in database_df_final['Pos'].unique():
+            db_posid_dict[value] = Database.get_pos_id(db_name,value)
+        database_df_final['Pos'] = database_df_final['Pos'].map(db_posid_dict) 
+        dtypes = Database.datatypes(database_df_final)
+        Database.add_database_information('players',db_name,database_df_final,dtypes)
+    else:
         database_df_final = pd.DataFrame()
         # for team in CBS_URLs:
         #     database_df = PullRosters.PullTeam_CBS('https://www.cbssports.com/nfl/teams/'+team+'/roster/',team)
         #     print(team)
-        #     database_df_final = pd.concat([database_df_final,database_df]).reset_index(drop=True)
-        for team in NFL_URLs: 
-            database_df = PullRosters.PullTeam_NFL('https://www.nfl.com/teams/'+team+'/roster',team) #https://www.nfl.com/teams/buffalo-bills/roster
-            print(team)
-            database_df_final = pd.concat([database_df_final,database_df]).reset_index(drop=True)
+        #     database_df_final = pd.concat([database_df_final,database_df]).reset_index(drop=True)+
+        start = db_name.find('\\') + len('\\')
+        end = db_name.find('_')
+        year = db_name[start:end]
+        database_df_final = PullRosters.PullTeam_ProFootballArchives('https://www.profootballarchives.com/'+year+'.html')
         
         
         db_teamid_dict = {}
@@ -98,18 +138,6 @@ if __name__ == '__main__':
         current_dir = os.path.dirname(os.path.realpath(__file__))
         file_path = os.path.join(current_dir, filename)  # Create file path
         database_df_final.to_csv(file_path+'.csv', index=False)
-    else:
-        if check_csv_file(filename+'.csv') == True:
-            current_dir = os.getcwd()  # Get current working directory
-            file_path = os.path.join(current_dir, filename+'.csv')  # Create file path
-        database_df_final = pd.read_csv(file_path)
-    
-    db_posid_dict = {}
-    for value in database_df_final['Pos'].unique():
-        db_posid_dict[value] = Database.get_pos_id(db_name,value)
-    database_df_final['Pos'] = database_df_final['Pos'].map(db_posid_dict) 
-    dtypes = Database.datatypes(database_df_final)
-    Database.add_database_information('players',db_name,database_df_final,dtypes)
     
     
     import PullStats

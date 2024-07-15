@@ -107,6 +107,16 @@ def add_players_info(db_file,df):
     df.to_sql('players', conn, if_exists='replace', index=False)
     
     conn.close()
+    
+def add_team_info(db_file,df):
+    # Connect to SQLite database
+    conn = sqlite3.connect(db_file)
+    cursor = conn.cursor()
+    
+    df.to_sql('players', conn, if_exists='replace', index=False)
+    
+    conn.close()
+
 
 def get_pos_id(db_file,pos_name):
     try:
@@ -130,8 +140,16 @@ def get_team_id(db_file,team_name):
         cursor = conn.cursor()
 
         # Assuming 'teams' table structure in 'teams.db' with id and team_name columns
-        cursor.execute('SELECT team_id FROM teams WHERE team_name = ?', (team_name,))
-        team_id = cursor.fetchone()[0]  # Assuming team_name is unique
+        try:
+            cursor.execute('SELECT team_id FROM teams WHERE team_name = ?', (team_name,))
+            team_id = cursor.fetchone()[0]  # Assuming team_name is unique
+        except:
+            import numpy as np
+            team_id = max(cursor.execute('SELECT team_id FROM teams').fetchall())[0] + 1
+            data = [(team_id, team_name, team_name[0]+str(team_id), np.nan,np.nan,np.nan,np.nan),]
+            cursor.executemany("INSERT INTO teams VALUES(?, ?, ?, ?, ?, ?, ?)", data)
+            conn.commit()  # Remember to commit the transaction after executing INSERT.
+        
 
         conn.close()
         return team_id
