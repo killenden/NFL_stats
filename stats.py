@@ -126,8 +126,8 @@ def get_team_logo(team_abbr):
     file_path = os.path.join(logo_dir,team_abbr+'.png')
     return file_path
 
-def Team_Attempts():
-    df = PullFromDatabase.team_off_plays()
+def Team_Attempts(db_name):
+    df = PullFromDatabase.team_off_plays(db_name)
 
     # Create scatter plot with team logos as markers
     fig, ax = plt.subplots(figsize=(12, 9))
@@ -158,8 +158,8 @@ def Team_Attempts():
     plt.savefig('logos.png', dpi=450)
     plt.show()
     
-def Team_Attempts_Pct():
-    df = PullFromDatabase.team_off_plays()
+def Team_Attempts_Pct(db_name):
+    df = PullFromDatabase.team_off_plays(db_name)
     
     total_att = []
     for i in range(len(df)):
@@ -198,8 +198,8 @@ def Team_Attempts_Pct():
     plt.savefig('logos.png', dpi=450)
     plt.show()
 
-def Team_Attempts_Both():
-    df = PullFromDatabase.team_both_plays()
+def Team_Attempts_Both(db_name):
+    df = PullFromDatabase.team_both_plays(db_name)
     
     total_off_att = []
     total_def_att = []
@@ -244,8 +244,8 @@ def Team_Attempts_Both():
     plt.show()
 
 
-def Team_Attempts_Both_Pct():
-    df = PullFromDatabase.team_both_plays()
+def Team_Attempts_Both_Pct(db_name):
+    df = PullFromDatabase.team_both_plays(db_name)
     
     total_off_att = []
     total_def_att = []
@@ -289,8 +289,8 @@ def Team_Attempts_Both_Pct():
     plt.savefig('logos.png', dpi=450)
     plt.show()
     
-def Target_Share():
-    df = PullFromDatabase.team_off_target_share_plays()
+def Target_Share(db_name):
+    df = PullFromDatabase.team_off_target_share_plays(db_name)
     
         
     df['Tgt_Share'] = df['Tgts'] / df['Pass_Off_Att']
@@ -328,6 +328,8 @@ def Target_Share():
 
 
 if __name__ == '__main__':
-    Target_Share()
+    year = 2021
+    db_name = rf'database\{year}_database.db'
+    Target_Share(db_name)
     
     

@@ -15,8 +15,7 @@ def pull_db(query,db_name):
     return df
 
 
-def team_off_plays():
-    db_name = r'database\2023_database.db'
+def team_off_plays(db_name):
     
     query = '''
     SELECT DISTINCT teams.team_name, teams.shortname, team_passing_off.Att AS Pass_Att, team_rushing_off.Att AS Rush_Att
@@ -27,8 +26,7 @@ def team_off_plays():
     team_off_plays_df = pull_db(query,db_name)
     return team_off_plays_df
 
-def team_def_plays():
-    db_name = r'database\2023_database.db' 
+def team_def_plays(db_name):
     
     query = '''
     SELECT DISTINCT teams.team_name, teams.shortname, team_passing_def.Att AS Pass_Att, team_rushing_def.Att AS Rush_Att
@@ -40,8 +38,7 @@ def team_def_plays():
     return team_def_plays_df
     
 
-def team_both_plays():
-    db_name = r'database\2023_database.db'
+def team_both_plays(db_name):
     
     query = '''
     SELECT DISTINCT teams.team_name, teams.shortname, team_passing_off.Att AS Pass_Off_Att, team_rushing_off.Att AS Rush_Off_Att, team_passing_def.Att AS Pass_Def_Att, team_rushing_def.Att AS Rush_Def_Att
@@ -54,8 +51,7 @@ def team_both_plays():
     team_both_plays_df = pull_db(query,db_name)
     return team_both_plays_df
 
-def team_off_target_share_plays():
-    db_name = r'database\2023_database.db'
+def team_off_target_share_plays(db_name):
     
     query = '''
     SELECT DISTINCT players.Player, teams.shortname, team_passing_off.Att AS Pass_Off_Att, receiving.Tgts
@@ -74,7 +70,8 @@ def team_off_target_share_plays():
 if __name__ == '__main__':
     
     #db_name = r'NFL_stats\database\2023_database.db'
-    db_name = r'database\2023_database.db'
+    year = 2020
+    db_name = rf'database\{year}_database.db'
     
     query = '''
     SELECT players.Player, rushing.TD, teams.team_name

@@ -62,7 +62,7 @@ def SearchTable_ProFootballArchives(soup,table):
     final = []
     for tr in soup.find_all('tr'):
         team_found = False
-        if 'canadian' in tr.text.strip().lower():
+        if any(exclude in tr.text.strip().lower() for exclude in ['canadian', 'usfl', 'xfl']):
             break
         for value in tr.find_all('td'):   
             row_list=[] 
