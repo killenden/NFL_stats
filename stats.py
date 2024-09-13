@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import matplotlib.colors as mcolors
+from sklearn.cluster import KMeans
 
 def export_stats(filename, df):
     if UpdatePlayerDatabase.check_csv_file(filename+'.csv') == False:
@@ -232,9 +233,9 @@ def Team_Attempts_Both(db_name):
     ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
 
     # Set labels and title
-    ax.set_xlabel('Def %')
-    ax.set_ylabel('Off %')
-    ax.set_title('Scatter Plot of Rush Att vs Pass Att with Team Logos')
+    ax.set_xlabel('Tot_Def_Att')
+    ax.set_ylabel('Tot_Off_Att')
+    ax.set_title('Scatter Plot of Defense Att vs Offense Att with Team Logos')
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
@@ -326,10 +327,331 @@ def Target_Share(db_name):
     plt.show()
 
 
+def TPG_vs_YPR(db_name, weeks):
+    df = PullFromDatabase.receiving(db_name)
+    df.drop_duplicates(inplace=True)
+    
+    threshold = 1
+    
+    wr_receiving_df_parsed = df[(df['Tgts'] > threshold) & (df['Rec'] > 0) & (df['POS'] == 'WR')]
+        
+    fig, ax = plt.subplots(figsize=(12,9))
+    ax.scatter(wr_receiving_df_parsed['Tgts'] / weeks, wr_receiving_df_parsed['Yds'] / wr_receiving_df_parsed['Rec'], alpha=0.5)
+
+    for index, row in wr_receiving_df_parsed.iterrows():
+        plt.text(row['Tgts'] / weeks, row['Yds'] / row['Rec'], row['Player'], fontsize=9, ha='right')
+
+    x_mean = (wr_receiving_df_parsed['Tgts'] / weeks).mean()
+    y_mean = (wr_receiving_df_parsed['Yds'] / wr_receiving_df_parsed['Rec']).mean()
+    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+
+
+
+    ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
+
+    plt.title('NFL 2023: WR Targets per Game vs Yards per Reception')
+    plt.xlabel('Targets per Game')
+    plt.ylabel('Yards per Reception')
+    plt.savefig('logos.png', dpi=450)
+    plt.show()
+
+
+def RPG_YPG(db_name, weeks):
+    df = PullFromDatabase.receiving(db_name)
+    df.drop_duplicates(inplace=True)
+    
+    threshold = 1
+    
+    wr_receiving_df_parsed = df[(df['Tgts'] > threshold) & (df['Rec'] > 0) & (df['POS'] == 'WR')]
+    
+    fig, ax = plt.subplots(figsize=(12,9))
+
+    ax.scatter(wr_receiving_df_parsed['Rec'] / weeks, wr_receiving_df_parsed['Yds'] / weeks, alpha=0.5)
+
+    for index, row in wr_receiving_df_parsed.iterrows():
+        plt.text(row['Rec'] / weeks, row['Yds'] / weeks, row['Player'], fontsize=9, ha='right')
+
+    x_mean = (wr_receiving_df_parsed['Rec'] / weeks).mean()
+    y_mean = (wr_receiving_df_parsed['Yds'] / weeks).mean()
+    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+
+
+    ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
+
+    plt.title('NFL 2023: WR Receptions per Game vs Yards per Game')
+    plt.xlabel('Receptions per Game')
+    plt.ylabel('Yards per Game')
+    plt.tight_layout()
+    plt.savefig('logos.png', dpi=450)
+    plt.show()
+    
+    
+
+def TPG_RPG(db_name, weeks):
+    df = PullFromDatabase.receiving(db_name)
+    df.drop_duplicates(inplace=True)
+    
+    threshold = 1
+    
+    wr_receiving_df_parsed = df[(df['Tgts'] > threshold) & (df['Rec'] > 0) & (df['POS'] == 'WR')]
+    fig, ax = plt.subplots(figsize=(12,9))
+
+    ax.scatter(wr_receiving_df_parsed['Tgts'] / weeks, wr_receiving_df_parsed['Rec'] / wr_receiving_df_parsed['Tgts'], alpha=0.5)
+
+    for index, row in wr_receiving_df_parsed.iterrows():
+        plt.text(row['Tgts'] / weeks, row['Rec'] / row['Tgts'], row['Player'], fontsize=9, ha='right')
+
+    x_mean = (wr_receiving_df_parsed['Tgts'] / weeks).mean()
+    y_mean = (wr_receiving_df_parsed['Rec'] / wr_receiving_df_parsed['Tgts']).mean()
+    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+
+    ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
+
+    plt.title('NFL 2023: WR Targets per Game vs Receptions per Target')
+    plt.xlabel('Targets per Game')
+    plt.ylabel('Receptions per Target')
+    plt.tight_layout()
+    plt.savefig('logos.png', dpi=450)
+    plt.show()
+    
+    
+def RPG_vs_TDPR(db_name, weeks):
+    df = PullFromDatabase.receiving(db_name)
+    df.drop_duplicates(inplace=True)
+    
+    threshold = 1
+    
+    wr_receiving_df_parsed = df[(df['Tgts'] > threshold) & (df['Rec'] > 0) & (df['POS'] == 'WR')]
+    fig, ax = plt.subplots(figsize=(12,9))
+
+    ax.scatter(wr_receiving_df_parsed['Rec'] / weeks, wr_receiving_df_parsed['TD'] / wr_receiving_df_parsed['Rec'], alpha=0.5)
+
+    for index, row in wr_receiving_df_parsed.iterrows():
+        plt.text(row['Rec'] / weeks, row['TD'] / row['Rec'], row['Player'], fontsize=9, ha='right')
+
+    x_mean = (wr_receiving_df_parsed['Rec'] / weeks).mean()
+    y_mean = (wr_receiving_df_parsed['TD'] / wr_receiving_df_parsed['Rec']).mean()
+    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+
+    ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
+
+    plt.title('NFL 2023: WR Receptions per Game vs TDs per Reception')
+    plt.xlabel('Receptions per Game')
+    plt.ylabel('TDs per Reception')
+    plt.savefig('logos.png', dpi=450)
+    plt.show()
+
+
+def RB_YPG_vs_TDPG(db_name, weeks):
+    receiving_df = PullFromDatabase.receiving(db_name)
+    receiving_df.drop_duplicates(inplace=True)
+    rushing_df = PullFromDatabase.rushing(db_name)
+    rushing_df.drop_duplicates(inplace=True)
+    
+    threshold = 1
+    
+    rb_receiving_df_parsed = receiving_df[(receiving_df['Tgts'] > threshold) & (receiving_df['POS'] == 'RB')]
+    rb_rushing_df_parsed = rushing_df[(rushing_df['Att'] > threshold) & (rushing_df['POS'] == "RB")]
+
+    fig, ax = plt.subplots(figsize=(12,9))
+
+    rb_rushing_df_parsed['Rush Yds'] = rb_rushing_df_parsed['Rush Yds'].astype(float)
+    rb_rushing_df_parsed['TD'] = rb_rushing_df_parsed['TD'].astype(float)
+
+    ax.scatter(rb_rushing_df_parsed['Rush Yds'].astype(float) / weeks, rb_rushing_df_parsed['TD'].astype(float) / weeks, alpha=0.5)
+
+    for index, row in rb_rushing_df_parsed.iterrows():
+        plt.text(row['Rush Yds'] / weeks, row['TD'] / weeks, row['Player'], fontsize=9, ha='right')
+
+    x_mean = (rb_rushing_df_parsed['Rush Yds'].astype(float) / weeks).mean()
+    y_mean = (rb_rushing_df_parsed['TD'].astype(float) / weeks).mean()
+    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+
+    ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
+
+    plt.title('NFL 2023: RB Yards and TDs per Game')
+    plt.xlabel('Yards per Game')
+    plt.ylabel('TDs per Game')
+    plt.savefig('logos.png', dpi=450)
+    plt.show()
+    
+    
+def RB_YPG(db_name, weeks):
+    receiving_df = PullFromDatabase.receiving(db_name)
+    receiving_df.drop_duplicates(inplace=True)
+    rushing_df = PullFromDatabase.rushing(db_name)
+    rushing_df.drop_duplicates(inplace=True)
+    
+    threshold = 1
+    rush_yards_threshold = 20
+    yards_threshold = 5
+    
+    rb_receiving_df_parsed = receiving_df[(receiving_df['Tgts'] > threshold) & (receiving_df['POS'] == 'RB')]
+    rb_rushing_df_parsed = rushing_df[(rushing_df['Att'] > threshold) & (rushing_df['POS'] == "RB")]
+    
+    rb_rushing_df_parsed['Rush Yds'] = rb_rushing_df_parsed['Rush Yds'].astype(float)
+    rb_receiving_df_parsed['Yds'] = rb_receiving_df_parsed['Yds'].astype(float)
+
+    rb_df = pd.merge(rb_rushing_df_parsed, rb_receiving_df_parsed, on='Player')
+    rb_parsed = rb_df[((rb_df['Rush Yds'].astype(float) / weeks) > rush_yards_threshold) & ((rb_df['Yds'].astype(float)/weeks) > yards_threshold)]
+    
+    
+    fig, ax = plt.subplots(figsize=(12,9))
+
+    kmeans = KMeans(n_clusters = 8)
+    kmeans.fit(rb_parsed[['Rush Yds', 'Yds']])
+
+    #labels = kmeans.predict(rb_parsed[['Rush Yds', 'Yds']])
+
+    plt.scatter(rb_parsed['Rush Yds'].astype(float) / weeks, rb_parsed['Yds'].astype(float) / weeks, c=kmeans.labels_, cmap='gist_rainbow')
+
+    #ax.scatter(rb_parsed['Rush Yds'].astype(float) / 17, rb_parsed['Yds'].astype(float) / 17, alpha=0.5)
+
+    for index, row in rb_parsed.iterrows():
+        plt.text(row['Rush Yds'] / weeks, row['Yds'] / weeks, row['Player'], fontsize=9, ha='right')
+
+
+
+
+    x_mean = (rb_parsed['Rush Yds'].astype(float) / weeks).mean()
+    y_mean = (rb_parsed['Yds'].astype(float) / weeks).mean()
+    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+
+    ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
+
+    plt.title('NFL 2023: RB Rushing and Recieving Yards per Game', fontsize=16, fontweight='bold')
+    plt.xlabel('Rushing Yards per Game', fontsize=12)
+    plt.ylabel('Recieving Yards per Game', fontsize=12)
+    plt.tight_layout()
+    plt.savefig('NFL_2023_RB_Rushing_Recieving_Yards_per_Game.png', dpi=450, bbox_inches='tight')
+    plt.show()
+
+def Top12QB(db_name, weeks):
+    qb_df = PullFromDatabase.qb(db_name)
+    qb_df.replace(np.nan, 0, inplace=True)
+    qb_df['fantasy_points'] = (qb_df['Pass Yds'].astype(float)*0.04) + (qb_df['Pass_TD'].astype(float)*4) + (qb_df['Rush Yds'].astype(float)*0.1) + (qb_df['Rush_TD'].astype(float)*6) - (qb_df['INT'].astype(float)*1) - (qb_df['Rush FUM'].astype(float)*2)
+    
+    qb_df_parsed3 = qb_df.sort_values(by='fantasy_points', ascending=False)[:32]
+    
+    qb_df_parsed3['PassYds/G_per_100%'] = ((qb_df_parsed3['Pass Yds'] / weeks) / (qb_df_parsed3['Pass Yds'] / weeks).max()) * 100
+    qb_df_parsed3['Cmp%'] = (qb_df_parsed3['Cmp'] / qb_df_parsed3['Att']).astype(float)
+    qb_df_parsed3['Cmp%_per_100%'] = ((qb_df_parsed3['Cmp%'] / qb_df_parsed3['Cmp%'].max()) * 100)
+    qb_df_parsed3['Yds/Att_per_100%'] = ((qb_df_parsed3['Yds/Att'] / qb_df_parsed3['Yds/Att'].max()) * 100)
+    qb_df_parsed3['PassTD/G_per_100%'] = ((qb_df_parsed3['Pass_TD'] / weeks) / (qb_df_parsed3['Pass_TD'] / weeks).max()) * 100
+    qb_df_parsed3['RushYds/G_per_100%'] = ((qb_df_parsed3['Rush Yds'] / weeks) / (qb_df_parsed3['Rush Yds'] / weeks).max()) * 100
+    qb_df_parsed3['RushTD/G_per_100%'] = ((qb_df_parsed3['Rush_TD'] / weeks) / (qb_df_parsed3['Rush_TD'] / weeks).max()) * 100
+    qb_df_parsed3['anti_int'] = 1 - (qb_df_parsed3['INT'] / qb_df_parsed3['Att'])
+    qb_df_parsed3['anti_int_per_100%'] = (qb_df_parsed3['anti_int'] / qb_df_parsed3['anti_int'].max()) * 100
+    qb_df_parsed3['anti_fum'] = 1 - (qb_df_parsed3['Rush FUM'] / qb_df_parsed3['Rush_Att'])
+    qb_df_parsed3['anti_fum_per_100%'] = (qb_df_parsed3['anti_fum'] / qb_df_parsed3['anti_fum'].max()) * 100
+    
+    qb_df_parsed3_t12 = qb_df_parsed3.sort_values(by='fantasy_points', ascending=False)[:12]
+    qb_df_parsed3_t12[['PassYds/G_per_100%', 'Cmp%_per_100%', 'Yds/Att_per_100%', 'PassTD/G_per_100%', 'anti_int_per_100%','RushTD/G_per_100%', 'anti_fum_per_100%']] = qb_df_parsed3_t12[['PassYds/G_per_100%', 'Cmp%_per_100%', 'Yds/Att_per_100%', 'PassTD/G_per_100%', 'anti_int_per_100%','RushTD/G_per_100%', 'anti_fum_per_100%']].astype(float)
+        
+    categories = ['PassYds/G_per_100%', 'Cmp%_per_100%', 'Yds/Att_per_100%', 'PassTD/G_per_100%', 'anti_int_per_100%', 'RushTD/G_per_100%', 'anti_fum_per_100%']
+    
+    fig, axs = plt.subplots(3, 4, figsize=(20, 15), subplot_kw=dict(polar=True))
+    fig.subplots_adjust(hspace=0.5)
+    axs = axs.flatten() 
+
+    cats = ['PassYds/G', 'Cmp %', 'Yds/PassAtt', 'PassTD/G', 'Anti-Int', 'RushTD/G', 'Anti-Fumble']
+
+
+    for ax, (index, row) in zip(axs, qb_df_parsed3_t12.iterrows()):
+        values = row[categories].tolist()
+        values += values[:1] 
+        angles = np.linspace(0, 2 * np.pi, len(categories), endpoint=False).tolist()
+        angles += angles[:1] 
+        
+        ax.plot(angles, values, linewidth=1, linestyle='solid', label=row['Player'])
+        ax.fill(angles, values, alpha=0.1)
+        ax.set_xticks(angles[:-1])
+        ax.set_xticklabels(cats)
+        ax.set_title(row['Player'], size=12, color='black', y=1.1, fontweight='bold')
+
+    for i in range(len(qb_df_parsed3_t12), len(axs)):
+        axs[i].axis('off')
+
+    plt.suptitle('Top 12 QB Fantasy Performance Radar Charts', fontsize=16, fontweight='bold')
+    plt.tight_layout()
+    plt.show()
+
+def Top12QB_1(db_name):
+    qb_df = PullFromDatabase.qb(db_name)
+    qb_df.replace(np.nan, 0, inplace=True)
+    qb_df['fantasy_points'] = (qb_df['Pass Yds'].astype(float)*0.04) + (qb_df['Pass_TD'].astype(float)*4) + (qb_df['Rush Yds'].astype(float)*0.1) + (qb_df['Rush_TD'].astype(float)*6) - (qb_df['INT'].astype(float)*1) - (qb_df['Rush FUM'].astype(float)*2)
+    
+    qb_df_parsed = qb_df.sort_values(by='fantasy_points', ascending=False)[:12]
+    
+    qb_df_parsed['anti_int'] = 1 - (qb_df_parsed['INT'] / qb_df_parsed['Att'])
+    qb_df_parsed['anti_fum'] = 1 - (qb_df_parsed['Rush FUM'] / qb_df_parsed['Rush_Att'])
+    qb_df_parsed['Cmp%'] = (qb_df_parsed['Cmp'] / qb_df_parsed['Att']).astype(float)
+    qb_df_parsed['PYds/G'] = (qb_df_parsed['Pass Yds'] / qb_df_parsed['Att']).astype(float)
+    qb_df_parsed[['Yds/Att', 'Cmp%', 'anti_int', 'Pass_TD', 'Rush_TD', 'anti_fum']] = qb_df_parsed[['Yds/Att', 'Cmp%', 'anti_int', 'Pass_TD', 'Rush_TD', 'anti_fum']].astype(float)
+
+    qb_df_parsed_2 = qb_df_parsed[['Player', 'Yds/Att', 'Cmp%', 'anti_int', 'Pass_TD', 'Rush_TD', 'anti_fum']]
+    
+    categories = ['Yds/Att', 'Cmp%', 'anti_int', 'Pass_TD', 'Rush_TD', 'anti_fum']
+    N = len(categories)
+
+    # Normalize data function by dividing by max values
+    def normalize(df):
+        result = df.copy()
+        for feature_name in df.columns:
+            max_value = df[feature_name].max()
+            result[feature_name] = df[feature_name] / max_value
+        return result
+
+    # Radar plot function
+    def create_radar_chart(ax, angles, player_data):
+        ax.plot(angles, player_data, linewidth=2)
+        ax.fill(angles, player_data, alpha=0.25)
+        ax.set_yticklabels([])
+
+    # Prepare data
+    qb_df_parsed_normalized = normalize(qb_df_parsed[categories])
+    data_to_plot = qb_df_parsed_normalized.values
+
+    # Create radar chart for each quarterback
+    angles = np.linspace(0, 2 * np.pi, N, endpoint=False).tolist()
+    angles += angles[:1]  # Complete the loop
+
+    player_names = qb_df_parsed['Player'].values
+
+    fig, axs = plt.subplots(3, 4, subplot_kw=dict(polar=True), figsize=(15, 10))
+    plt.suptitle('NFL 2024 Week 1: Top 12 Fantasy QBs', fontsize=16, fontweight='bold')
+
+    for i, ax in enumerate(axs.flatten()):
+        if i < len(data_to_plot):
+            create_radar_chart(ax, angles, np.concatenate((data_to_plot[i], [data_to_plot[i][0]])))
+            ax.set_xticks(angles[:-1])
+            ax.set_xticklabels(categories)
+            ax.set_title(player_names[i], size=12, color='black', y=1.1)
+
+    plt.tight_layout(rect=[0, 0, 1, 0.96])
+    plt.savefig('NFL_2024_QB_Top_12_QBs.png', dpi=450, bbox_inches='tight')
+    plt.show()
 
 if __name__ == '__main__':
-    year = 2021
+    year = 2024
+    weeks = 1
     db_name = rf'database\{year}_database.db'
-    Target_Share(db_name)
+    Top12QB_1(db_name)
+    #Top12QB(db_name, weeks)
+    #RB_YPG(db_name, weeks)
+    #RB_YPG_vs_TDPG(db_name, weeks)
+    #RPG_vs_TDPR(db_name, weeks)
+    #TPG_RPG(db_name, weeks)
+    #RPG_YPG(db_name, weeks)
+    #TPG_vs_YPR(db_name, weeks)
+    #Target_Share(db_name)
+    #Team_Attempts_Pct(db_name)
+    #Team_Attempts_Both(db_name)
     
     

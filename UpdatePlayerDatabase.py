@@ -43,7 +43,7 @@ if __name__ == '__main__':
     import utils
     import Database
     #db_name = r'NFL_stats\database\2023_database.db'
-    for year in range(2020, 2022): 
+    for year in range(2024, 2025): 
         db_name = rf'database\{year}_database.db' 
         
         print(os.path.dirname(os.path.realpath(__file__)))

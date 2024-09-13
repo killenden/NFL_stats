@@ -14,6 +14,78 @@ def pull_db(query,db_name):
     
     return df
 
+def receiving(db_name):
+    
+    query = '''
+    SELECT players.Player, positions.POS, receiving.Rec, receiving.Tgts, receiving.TD, receiving.Yds, receiving."20+", receiving."40+", receiving."Rec FUM", receiving."Rec YAC/R", teams.team_name
+    FROM players
+    INNER JOIN teams ON players.Team = teams.team_id
+    INNER JOIN positions ON players.Pos = positions.pos_id
+    INNER JOIN receiving ON players.player_id = receiving.Player;
+    '''
+    receiving_df = pull_db(query,db_name)
+    #print(receiving_df.sort_values(by='TD', ascending=False))
+    return receiving_df
+
+def rushing(db_name):
+    query = '''
+    SELECT DISTINCT players.Player, positions.POS, rushing."Rush Yds", rushing."Att", rushing."TD", rushing."Lng", rushing."20+", rushing."40+", rushing."Rush FUM", rushing."Rush 1st", rushing."Rush 1st%", teams.team_name
+    FROM players
+    INNER JOIN teams ON players.Team = teams.team_id
+    INNER JOIN positions ON players.Pos = positions.pos_id
+    INNER JOIN rushing ON players.player_id = rushing.Player
+    '''
+    rushing_df = pull_db(query, db_name)
+    #print(rushing_df.sort_values(by='TD', ascending=False))
+    return rushing_df
+
+def passing(db_name):
+    query = '''
+    SELECT DISTINCT players.Player, positions.POS, passing."Pass Yds", passing."Yds/Att", passing."Att", passing."Cmp", passing."TD", passing."INT", passing."Rate", passing."Lng", passing."20+", passing."40+", passing."Sck", passing."SckY", passing."1st%", teams.team_name
+    FROM players
+    INNER JOIN teams ON players.Team = teams.team_id
+    INNER JOIN positions ON players.Pos = positions.pos_id
+    INNER JOIN passing ON players.player_id = passing.Player
+    '''
+    passing_df = pull_db(query, db_name)
+    #print(passing_df.sort_values(by='TD', ascending=False))
+    return passing_df
+
+def qb(db_name):
+    query = '''
+    SELECT DISTINCT players.Player, positions.POS, passing."Pass Yds", passing."Yds/Att", passing."Att", passing."Cmp", passing."TD" AS "Pass_TD", passing."INT", passing."Rate", passing."Lng", passing."20+", passing."40+", passing."Sck", passing."SckY", passing."1st%", rushing."Rush Yds", rushing."Att" AS "Rush_Att", rushing."TD" AS "Rush_TD", rushing."Rush FUM", rushing."Rush 1st", rushing."Rush 1st%", teams.team_name
+    FROM players
+    INNER JOIN teams ON players.Team = teams.team_id
+    INNER JOIN positions ON players.Pos = positions.pos_id
+    INNER JOIN passing ON players.player_id = passing.Player
+    LEFT JOIN rushing ON players.player_id = rushing.Player
+    '''
+    qb_df = pull_db(query, db_name)
+    #print(qb_df)
+    return qb_df
+
+def turnover(db_name):
+    query = '''
+    SELECT DISTINCT teams."shortname", team_fumbles_def."FR", team_ints_def."INT", teams.team_name
+    FROM players
+    INNER JOIN teams ON players.Team = teams.team_id
+    LEFT JOIN team_fumbles_def ON teams.team_id = team_fumbles_def.Team
+    LEFT JOIN team_ints_def ON teams.team_id = team_ints_def.Team
+    '''
+    to_df = pull_db(query, db_name)
+    #print(to_df)
+    return to_df
+
+def tackles(db_name):
+    query = '''
+    SELECT DISTINCT teams."shortname", team_tackles_def."Comb", team_tackles_def."Asst", team_tackles_def."Solo", teams.team_name
+    FROM players
+    INNER JOIN teams ON players.Team = teams.team_id
+    LEFT JOIN team_tackles_def ON teams.team_id = team_tackles_def.Team
+    '''
+    tackles_df = pull_db(query, db_name)
+    #print(tackles_df)
+    return tackles_df
 
 def team_off_plays(db_name):
     
