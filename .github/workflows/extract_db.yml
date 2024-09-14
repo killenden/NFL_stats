@@ -1,0 +1,43 @@
+name: Extract DB Number from Commit Message and Run Python Script
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  extract_db_number:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Get the last commit message
+      id: get_commit_message
+      run: echo "::set-output name=message::$(git log -1 --pretty=%B)"
+      
+    - name: Search for DB number in commit message
+      id: extract_db_number
+      run: |
+        echo "Commit message: ${{ steps.get_commit_message.outputs.message }}"
+        DB_NUMBER=$(echo "${{ steps.get_commit_message.outputs.message }}" | grep -oP '(?<=DB:)\d+')
+        if [ -z "$DB_NUMBER" ]; then
+          echo "No DB number found"
+          DB_NUMBER="undefined"
+        else
+          echo "DB number found: $DB_NUMBER"
+        fi
+        echo "::set-output name=db_number::$DB_NUMBER"
+      
+    - name: Run Python script with DB number
+      run: |
+        if [ "${{ steps.extract_db_number.outputs.db_number }}" != "undefined" ]; then
+          DB_NUMBER=${{ steps.extract_db_number.outputs.db_number }}
+          echo "Running Python script with DB number: $DB_NUMBER"
+          python your_script.py $DB_NUMBER
+        else
+          echo "No valid DB number found, skipping Python script."
+      env:
+        DB_NUMBER: ${{ steps.extract_db_number.outputs.db_number }}
+
