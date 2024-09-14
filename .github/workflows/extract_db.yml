@@ -31,4 +31,4 @@ jobs:
         else
           echo "No valid DB number found, skipping Python script."
       env:
-        DB_NUMBER: ${{ steps.extract_db_number.outputs.db_number }}
+        db_number: ${{ steps.set_year.outputs.db_number }}
