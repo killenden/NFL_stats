@@ -27,55 +27,55 @@ def plots():
     top_ten = rush_df.sort_values('YDS/G', ascending=False)
     plt.bar(top_ten['Player'], top_ten['YDS/G'].astype(float), zorder=2)
     plt.xticks(rotation=45)
-    plt.title('NFL 2023: Top 10 Rushing Yards Per Game')
+    plt.title('NFL 2024: Top 10 Rushing Yards Per Game')
     plt.ylabel('Yards Per Game')
     plt.ylim(50, 100)
     plt.grid(axis='y', zorder=1, color='black')
     plt.tight_layout()
-    plt.savefig(r'2023/plots/Top_10_Rushing_Yards_Per_Game.png', dpi=450)
+    plt.savefig(r'2024/plots/Top_10_Rushing_Yards_Per_Game.png', dpi=450)
     plt.close()
 
     print(passing_of)
     passing_plays_forty = passing_of.sort_values('40+', ascending=False)
     plt.bar(passing_of.index, passing_of['40+'].astype(float), zorder=2)
     plt.xticks(rotation=45)
-    plt.title('NFL 2023: Passing Plays of 40+ Yards')
+    plt.title('NFL 2024: Passing Plays of 40+ Yards')
     plt.ylabel('Frequency')
     plt.grid(axis='y', zorder=1, color='black')
     plt.tight_layout()
-    plt.savefig(r'2023/plots/40yrd_passing_plays.png', dpi=450)
+    plt.savefig(r'2024/plots/40yrd_passing_plays.png', dpi=450)
     plt.close()
 
     passing_plays_twenty = passing_of.sort_values('20+', ascending=False)
     plt.bar(passing_of.index, passing_of['20+'].astype(float), zorder=2)
     plt.xticks(rotation=45)
-    plt.title('NFL 2023: Passing Plays of 20+ Yards')
+    plt.title('NFL 2024: Passing Plays of 20+ Yards')
     plt.ylabel('Frequency')
     plt.grid(axis='y', zorder=1, color='black')
     plt.tight_layout()
-    plt.savefig(r'2023/plots/20yrd_passing_plays.png', dpi=450)
+    plt.savefig(r'2024/plots/20yrd_passing_plays.png', dpi=450)
     plt.close()
 
     passing_top_ten = pass_df1.sort_values('YDS/G', ascending=False).head(10)
     plt.bar(passing_top_ten['Player'], passing_top_ten['YDS/G'].astype(float), zorder=2)
     plt.ylim(220, 350)
     plt.xticks(rotation=45)
-    plt.title('NFL 2023: Top 10 Passing Yards Per Game')
+    plt.title('NFL 2024: Top 10 Passing Yards Per Game')
     plt.ylabel('Yards')
     plt.grid(axis='y', zorder=1, color='black')
     plt.tight_layout()
-    plt.savefig(r'2023/plots/Top_10_Passing_Yards_Per_Game.png', dpi=450)
+    plt.savefig(r'2024/plots/Top_10_Passing_Yards_Per_Game.png', dpi=450)
     plt.close()
 
     rec_top_ten = rec_df.sort_values('YDS/G', ascending=False).head(10)
     plt.bar(rec_top_ten['Player'], rec_top_ten['YDS/G'].astype(float), zorder=2)
     plt.ylim(50, 100)
     plt.xticks(rotation=45)
-    plt.title('NFL 2023: Top 10 Recieving Yards Per Game')
+    plt.title('NFL 2024: Top 10 Recieving Yards Per Game')
     plt.ylabel('Yards')
     plt.grid(axis='y', zorder=1, color='black')
     plt.tight_layout()
-    plt.savefig(r'2023/plots/Top_10_Recieving_Yards_Per_Game.png', dpi=450)
+    plt.savefig(r'2024/plots/Top_10_Recieving_Yards_Per_Game.png', dpi=450)
 
     team_list = passing_df.index.tolist()
     rushing_df['Team_Name'] = rushing_df.index
@@ -350,7 +350,7 @@ def TPG_vs_YPR(db_name, weeks):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title('NFL 2023: WR Targets per Game vs Yards per Reception')
+    plt.title('NFL 2024: WR Targets per Game vs Yards per Reception')
     plt.xlabel('Targets per Game')
     plt.ylabel('Yards per Reception')
     plt.savefig('2024/plots/TPG_vs_YPR.png', dpi=450)
@@ -380,7 +380,7 @@ def RPG_YPG(db_name, weeks):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title('NFL 2023: WR Receptions per Game vs Yards per Game')
+    plt.title('NFL 2024: WR Receptions per Game vs Yards per Game')
     plt.xlabel('Receptions per Game')
     plt.ylabel('Yards per Game')
     plt.tight_layout()
@@ -410,7 +410,7 @@ def TPG_RPG(db_name, weeks):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title('NFL 2023: WR Targets per Game vs Receptions per Target')
+    plt.title('NFL 2024: WR Targets per Game vs Receptions per Target')
     plt.xlabel('Targets per Game')
     plt.ylabel('Receptions per Target')
     plt.tight_layout()
@@ -439,7 +439,7 @@ def RPG_vs_TDPR(db_name, weeks):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title('NFL 2023: WR Receptions per Game vs TDs per Reception')
+    plt.title('NFL 2024: WR Receptions per Game vs TDs per Reception')
     plt.xlabel('Receptions per Game')
     plt.ylabel('TDs per Reception')
     plt.savefig('2024/plots/RPG_vs_TDPR.png', dpi=450)
@@ -474,7 +474,7 @@ def RB_YPG_vs_TDPG(db_name, weeks):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title('NFL 2023: RB Yards and TDs per Game')
+    plt.title('NFL 2024: RB Yards and TDs per Game')
     plt.xlabel('Yards per Game')
     plt.ylabel('TDs per Game')
     plt.savefig('2024/plots/RB_YPG_vs_TDPG.png', dpi=450)
@@ -525,7 +525,7 @@ def RB_YPG(db_name, weeks):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title('NFL 2023: RB Rushing and Recieving Yards per Game', fontsize=16, fontweight='bold')
+    plt.title('NFL 2024: RB Rushing and Recieving Yards per Game', fontsize=16, fontweight='bold')
     plt.xlabel('Rushing Yards per Game', fontsize=12)
     plt.ylabel('Recieving Yards per Game', fontsize=12)
     plt.tight_layout()
