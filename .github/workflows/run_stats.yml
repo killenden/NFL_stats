@@ -28,10 +28,13 @@ jobs:
     - name: Delete old plots if they exist
       run: |
         db_number=${{ steps.set_values.outputs.db_number }}
-        find $db_number/plots/ -name '*.png' -exec rm {} +
-      env:
-        db_number: ${{ steps.set_values.outputs.db_number }}
-      
+        if [ -d "$db_number/plots" ]; then
+          find "$db_number/plots/" -name '*.png' -exec rm -f {} +
+          echo "Deleted old plots in $db_number/plots/"
+        else
+          echo "Directory $db_number/plots does not exist"
+        fi
+
     - name: Run Python script with DB number
       run: |
         db_number=${{ steps.set_values.outputs.db_number }}
