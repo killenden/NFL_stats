@@ -5,12 +5,12 @@ def pull_db(query,db_name):
     # Connect to your SQLite database
     conn = sqlite3.connect(db_name)  # Replace with your actual database file name
 
+    with conn:
+        # Execute the query and read the results into a DataFrame
+        df = pd.read_sql_query(query, conn)
 
-    # Execute the query and read the results into a DataFrame
-    df = pd.read_sql_query(query, conn)
-
-    # Close the database connection
-    conn.close()
+        # Close the database connection
+        conn.close()
     
     return df
 
