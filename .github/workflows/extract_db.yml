@@ -24,8 +24,6 @@ jobs:
         db_number=${{ steps.set_year.outputs.db_number }}
         echo "The environment variable DB_NUMBER is: $db_number"
         echo "$PWD"
-        cd ../../..
-        echo "$PWD"
         python GitHubActions.py $db_number
       env:
         db_number: ${{ steps.set_year.outputs.db_number }}
