@@ -3,33 +3,7 @@ import sqlite3
 import os
 
 
-def test_connection(db_name):
-    try:
-        # Establish connection
-        conn = sqlite3.connect(db_name)
-        
-        # Create a cursor object using the connection
-        cursor = conn.cursor()
-        
-        # Execute a simple query to list tables
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-        
-        # Fetch and print table names
-        tables = cursor.fetchall()
-        print("Tables in database:", tables)
-        
-        # Close the connection
-        conn.close()
-        
-    except Exception as e:
-        print("Error:", e)
-
 def pull_db(query,db_name):
-    test_connection(db_name)
-    if not os.path.isfile(db_name):
-        print(f"Database file does not exist at: {db_name}")
-    else:
-        print(f"Database file exists at: {db_name}")
     # Connect to your SQLite database
     conn = sqlite3.connect(db_name)  # Replace with your actual database file name
 
