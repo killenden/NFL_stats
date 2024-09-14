@@ -156,7 +156,7 @@ def Team_Attempts(db_name):
     # Adjust plot limits
     plt.xlim(df['Rush_Att'].min() - 1, df['Rush_Att'].max() + 1)
     plt.ylim(df['Pass_Att'].min() - 1, df['Pass_Att'].max() + 1)
-    plt.savefig('logos.png', dpi=450)
+    plt.savefig('2024/plots/Team_Attempts.png', dpi=450)
     plt.show()
     
 def Team_Attempts_Pct(db_name):
@@ -196,7 +196,7 @@ def Team_Attempts_Pct(db_name):
     # Adjust plot limits
     plt.xlim((df['Rush_Att']/df['Tot_Att']).min() - 0.025, (df['Rush_Att']/df['Tot_Att']).max() + 0.025)
     plt.ylim((df['Pass_Att']/df['Tot_Att']).min() - 0.025, (df['Pass_Att']/df['Tot_Att']).max() + 0.025)
-    plt.savefig('logos.png', dpi=450)
+    plt.savefig('2024/plots/Team_Attempts_Pct.png', dpi=450)
     plt.show()
 
 def Team_Attempts_Both(db_name):
@@ -241,7 +241,7 @@ def Team_Attempts_Both(db_name):
     # Adjust plot limits
     plt.xlim((df['Tot_Def_Att']).min() - 0.025, (df['Tot_Off_Att']).max() + 0.025)
     plt.ylim((df['Tot_Off_Att']).min() - 0.025, (df['Tot_Off_Att']).max() + 0.025)
-    plt.savefig('logos.png', dpi=450)
+    plt.savefig('2024/plots/Team_Attempts_Both.png', dpi=450)
     plt.show()
 
 
@@ -287,7 +287,7 @@ def Team_Attempts_Both_Pct(db_name):
     # Adjust plot limits
     plt.xlim((df['Tot_Def_Att']/df['Tot_Att']).min() - 0.025, (df['Tot_Off_Att']/df['Tot_Att']).max() + 0.025)
     plt.ylim((df['Tot_Off_Att']/df['Tot_Att']).min() - 0.025, (df['Tot_Off_Att']/df['Tot_Att']).max() + 0.025)
-    plt.savefig('logos.png', dpi=450)
+    plt.savefig('2024/plots/Team_Attempts_Both_Pct.png', dpi=450)
     plt.show()
     
 def Target_Share(db_name):
@@ -323,7 +323,7 @@ def Target_Share(db_name):
     # Adjust plot limits
     plt.xlim((df['Pass_Off_Att']).min() - 10, (df['Pass_Off_Att']).max() + 10)
     plt.ylim((df['Tgt_Share']).min() - 0.0125, (df['Tgt_Share']).max() + 0.0125)
-    plt.savefig('logos.png', dpi=450)
+    plt.savefig('2024/plots/Target_Share.png', dpi=450)
     plt.show()
 
 
@@ -353,7 +353,7 @@ def TPG_vs_YPR(db_name, weeks):
     plt.title('NFL 2023: WR Targets per Game vs Yards per Reception')
     plt.xlabel('Targets per Game')
     plt.ylabel('Yards per Reception')
-    plt.savefig('logos.png', dpi=450)
+    plt.savefig('2024/plots/TPG_vs_YPR.png', dpi=450)
     plt.show()
 
 
@@ -384,7 +384,7 @@ def RPG_YPG(db_name, weeks):
     plt.xlabel('Receptions per Game')
     plt.ylabel('Yards per Game')
     plt.tight_layout()
-    plt.savefig('logos.png', dpi=450)
+    plt.savefig('2024/plots/RPG_YPG.png', dpi=450)
     plt.show()
     
     
@@ -414,7 +414,7 @@ def TPG_RPG(db_name, weeks):
     plt.xlabel('Targets per Game')
     plt.ylabel('Receptions per Target')
     plt.tight_layout()
-    plt.savefig('logos.png', dpi=450)
+    plt.savefig('2024/plots/TPG_RPG.png', dpi=450)
     plt.show()
     
     
@@ -442,7 +442,7 @@ def RPG_vs_TDPR(db_name, weeks):
     plt.title('NFL 2023: WR Receptions per Game vs TDs per Reception')
     plt.xlabel('Receptions per Game')
     plt.ylabel('TDs per Reception')
-    plt.savefig('logos.png', dpi=450)
+    plt.savefig('2024/plots/RPG_vs_TDPR.png', dpi=450)
     plt.show()
 
 
@@ -477,7 +477,7 @@ def RB_YPG_vs_TDPG(db_name, weeks):
     plt.title('NFL 2023: RB Yards and TDs per Game')
     plt.xlabel('Yards per Game')
     plt.ylabel('TDs per Game')
-    plt.savefig('logos.png', dpi=450)
+    plt.savefig('2024/plots/RB_YPG_vs_TDPG.png', dpi=450)
     plt.show()
     
     
@@ -529,7 +529,7 @@ def RB_YPG(db_name, weeks):
     plt.xlabel('Rushing Yards per Game', fontsize=12)
     plt.ylabel('Recieving Yards per Game', fontsize=12)
     plt.tight_layout()
-    plt.savefig('NFL_2023_RB_Rushing_Recieving_Yards_per_Game.png', dpi=450, bbox_inches='tight')
+    plt.savefig('2024/plots/RB_YPG.png', dpi=450, bbox_inches='tight')
     plt.show()
 
 def Top12QB(db_name, weeks):
@@ -580,6 +580,7 @@ def Top12QB(db_name, weeks):
 
     plt.suptitle('Top 12 QB Fantasy Performance Radar Charts', fontsize=16, fontweight='bold')
     plt.tight_layout()
+    plt.savefig('2024/plots/Top12QB', dpi=450, bbox_inches='tight')
     plt.show()
 
 def Top12QB_1(db_name):
@@ -635,7 +636,7 @@ def Top12QB_1(db_name):
             ax.set_title(player_names[i], size=12, color='black', y=1.1)
 
     plt.tight_layout(rect=[0, 0, 1, 0.96])
-    plt.savefig('NFL_2024_QB_Top_12_QBs.png', dpi=450, bbox_inches='tight')
+    plt.savefig('2024/plots/Top12QB_1.png', dpi=450, bbox_inches='tight')
     plt.show()
 
 if __name__ == '__main__':
