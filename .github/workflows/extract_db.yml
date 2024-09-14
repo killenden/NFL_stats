@@ -15,25 +15,43 @@ jobs:
 
     - name: Get the last commit message
       id: get_commit_message
-      run: echo "::set-output name=message::$(git log -1 --pretty=%B)"
-      
+      run: |
+        COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+        echo "Last commit message: $COMMIT_MESSAGE"
+        echo "::set-output name=message::$COMMIT_MESSAGE"
+
     - name: Search for DB number in commit message
       id: extract_db_number
       run: |
-        echo "Commit message: ${{ steps.get_commit_message.outputs.message }}"
-        DB_NUMBER=$(echo "${{ steps.get_commit_message.outputs.message }}" | grep -oP '(?<=DB:)\d+')
+        COMMIT_MESSAGE="${{ steps.get_commit_message.outputs.message }}"
+        echo "Extracted commit message: $COMMIT_MESSAGE"
+        
+        # Modify the grep regex if needed to fit different message formats
+        DB_NUMBER=$(echo "$COMMIT_MESSAGE" | grep -oP '(?<=DB:)\d+')
+        
+        # Debugging: Output what we captured
+        echo "Captured DB number: $DB_NUMBER"
+        
         if [ -z "$DB_NUMBER" ]; then
-          echo "No DB number found"
+          echo "No DB number found in the commit message"
           DB_NUMBER="undefined"
         else
           echo "DB number found: $DB_NUMBER"
         fi
+        
+        # Set the DB_NUMBER output
         echo "::set-output name=db_number::$DB_NUMBER"
       
+    - name: Debug extracted DB number
+      run: |
+        echo "DB number extracted is: ${{ steps.extract_db_number.outputs.db_number }}"
+
     - name: Run Python script with DB number
       run: |
-        if [ "${{ steps.extract_db_number.outputs.db_number }}" != "undefined" ]; then
-          DB_NUMBER=${{ steps.extract_db_number.outputs.db_number }}
+        DB_NUMBER=${{ steps.extract_db_number.outputs.db_number }}
+        
+        # Ensure we don't run if DB number is undefined
+        if [ "$DB_NUMBER" != "undefined" ]; then
           echo "Running Python script with DB number: $DB_NUMBER"
           cd ../../..
           python GitHubActions.py $DB_NUMBER
@@ -41,4 +59,3 @@ jobs:
           echo "No valid DB number found, skipping Python script."
       env:
         DB_NUMBER: ${{ steps.extract_db_number.outputs.db_number }}
-
