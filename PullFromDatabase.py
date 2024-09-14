@@ -1,16 +1,38 @@
 import pandas as pd
 import sqlite3
 
+
+def test_connection(db_name):
+    try:
+        # Establish connection
+        conn = sqlite3.connect(db_name)
+        
+        # Create a cursor object using the connection
+        cursor = conn.cursor()
+        
+        # Execute a simple query to list tables
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        
+        # Fetch and print table names
+        tables = cursor.fetchall()
+        print("Tables in database:", tables)
+        
+        # Close the connection
+        conn.close()
+        
+    except Exception as e:
+        print("Error:", e)
+
 def pull_db(query,db_name):
+    test_connection(db_name)
     # Connect to your SQLite database
     conn = sqlite3.connect(db_name)  # Replace with your actual database file name
 
-    with conn:
-        # Execute the query and read the results into a DataFrame
-        df = pd.read_sql_query(query, conn)
-
-        # Close the database connection
-        conn.close()
+    # Execute the query and read the results into a DataFrame
+    df = pd.read_sql_query(query, conn)
+    
+    # Close the database connection
+    conn.close()
     
     return df
 
