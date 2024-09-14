@@ -24,6 +24,13 @@ jobs:
         echo "week_number=1" >> $GITHUB_ENV
         echo "::set-output name=db_number::2024"
         echo "::set-output name=week_number::1"
+        
+    - name: Delete old plots if they exist
+      run: |
+        db_number=${{ steps.set_values.outputs.db_number }}
+        find $db_number/plots/ -name '*.png' -exec rm {} +
+      env:
+        db_number: ${{ steps.set_values.outputs.db_number }}
       
     - name: Run Python script with DB number
       run: |
@@ -36,3 +43,21 @@ jobs:
       env:
         db_number: ${{ steps.set_values.outputs.db_number }}
         week_number: ${{ steps.set_values.outputs.week_number }}
+        
+    - name: Commit and push changes
+      run: |
+          git config --local user.email "tonyillenden@gmail.com"
+          git config --local user.name "anthony-illenden"
+          git stash push -u
+          git pull --rebase origin main
+          # Pop the stash
+          git stash pop
+          git add $db_number/plots/*.png
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update Plots"
+            git push origin main
+          fi
+      env:
+        db_number: ${{ steps.set_values.outputs.db_number }}
