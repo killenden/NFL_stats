@@ -25,6 +25,10 @@ def test_connection(db_name):
 
 def pull_db(query,db_name):
     test_connection(db_name)
+    if not os.path.isfile(db_name):
+        print(f"Database file does not exist at: {db_name}")
+    else:
+        print(f"Database file exists at: {db_name}")
     # Connect to your SQLite database
     conn = sqlite3.connect(db_name)  # Replace with your actual database file name
 
