@@ -35,7 +35,8 @@ jobs:
         if [ "${{ steps.extract_db_number.outputs.db_number }}" != "undefined" ]; then
           DB_NUMBER=${{ steps.extract_db_number.outputs.db_number }}
           echo "Running Python script with DB number: $DB_NUMBER"
-          python your_script.py $DB_NUMBER
+          cd ../../..
+          python GitHubActions.py $DB_NUMBER
         else
           echo "No valid DB number found, skipping Python script."
       env:
