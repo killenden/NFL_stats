@@ -1,12 +1,11 @@
-name: Extract DB Number from Commit Message and Run Python Script
-
+name: Run Python Stat File
 on:
   push:
     branches:
       - main
 
 jobs:
-  extract_db_number:
+  run_stats_py_file:
     runs-on: ubuntu-latest
     
     steps:
