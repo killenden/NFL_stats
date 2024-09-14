@@ -10,42 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Get the last commit message
-      id: get_commit_message
+    - name: Set Year
       run: |
-        COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-        echo "Last commit message: $COMMIT_MESSAGE"
-        echo "::set-output name=message::$COMMIT_MESSAGE"
-
-    - name: Search for DB number in commit message
-      id: extract_db_number
-      run: |
-        COMMIT_MESSAGE="${{ steps.get_commit_message.outputs.message }}"
-        echo "Extracted commit message: $COMMIT_MESSAGE"
-        
-        # Modify the grep regex if needed to fit different message formats
-        DB_NUMBER=$(echo "$COMMIT_MESSAGE" | grep -oP '(?<=DB:)\d+')
-        
-        # Debugging: Output what we captured
-        echo "Captured DB number: $DB_NUMBER"
-        
-        if [ -z "$DB_NUMBER" ]; then
-          echo "No DB number found in the commit message"
-          DB_NUMBER="undefined"
-        else
-          echo "DB number found: $DB_NUMBER"
-        fi
-        
-        # Set the DB_NUMBER output
-        echo "::set-output name=db_number::$DB_NUMBER"
+        steps.extract_db_number.outputs.db_number = 2024
       
-    - name: Debug extracted DB number
-      run: |
-        echo "DB number extracted is: ${{ steps.extract_db_number.outputs.db_number }}"
-
     - name: Run Python script with DB number
       run: |
         DB_NUMBER=${{ steps.extract_db_number.outputs.db_number }}
