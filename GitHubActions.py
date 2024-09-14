@@ -8,7 +8,7 @@ def main():
         week_number = sys.argv[2]
         print(f"DB number received: {db_number}")
         print(f"week number received: {week_number}")
-        db_name = rf'database\{db_number}_database.db'
+        db_name = rf'database/{db_number}_database.db'
         current_directory = os.getcwd()
         db_dir = os.path.join(current_directory, db_name)
         weeks = week_number
