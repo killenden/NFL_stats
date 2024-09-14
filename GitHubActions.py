@@ -6,6 +6,17 @@ def main():
     if len(sys.argv) > 1:
         db_number = sys.argv[1]
         week_number = sys.argv[2]
+        try:
+            week_number = int(week_number)
+            print(f"Integer value: {week_number}")
+        except ValueError:
+            # If casting to int fails, try to cast to a float
+            try:
+                week_number = float(week_number)
+                print(f"Float value: {week_number}")
+            except ValueError:
+                # If casting to float also fails, it's not a valid number
+                print(f"Error: '{week_number}' is not a valid number")
         print(f"DB number received: {db_number}")
         print(f"week number received: {week_number}")
         db_name = rf'database/{db_number}_database.db'
