@@ -6,9 +6,15 @@ on:
     - cron: '0 12 * * *'
 
 jobs:
+
+  call_extract_db:
+      uses: ./.github/workflows/extract_db.yml
+      #with:
+        # You can pass inputs here if your reusable workflow accepts inputs.
+      secrets: inherit  # Inherit secrets from the main workflow
+      
   generate_rb_plots:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
