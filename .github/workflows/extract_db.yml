@@ -21,14 +21,13 @@ jobs:
       
     - name: Run Python script with DB number
       run: |
-        echo "The environment variable DB_NUMBER is: $DB_NUMBER"
-        DB_NUMBER=${{ steps.set_year.outputs.db_number }}
-        
+        db_number=${{ steps.set_year.outputs.db_number }}
+        echo "The environment variable DB_NUMBER is: $db_number"
         # Ensure we don't run if DB number is undefined
-        if [ "$DB_NUMBER" != "undefined" ]; then
-          echo "Running Python script with DB number: $DB_NUMBER"
+        if [ "$db_number" != "undefined" ]; then
+          echo "Running Python script with DB number: $db_number"
           cd ../../..
-          python GitHubActions.py $DB_NUMBER
+          python GitHubActions.py $db_number
         else
           echo "No valid DB number found, skipping Python script."
       env:
