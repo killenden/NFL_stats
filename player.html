@@ -97,6 +97,18 @@
         <a href="#rb">RB</a> 
         <a href="#wr">WR</a>
         <a href="#te">TE</a>
+        <a href="#punter">P</a>
+    </div>
+
+    <div class="container" id="qb">
+        <h2>QB Stats</h2>
+        <select id="qbImageSelector">
+            <option value="Passing_YPG_vs_TD">Passing Yards per Game vs Touchdowns</option>
+            <option value="Passing_YPA_vs_CP">Passing Yards per Attempt vs Completion Percentage</option>
+        </select>
+        <div class="image-container">
+            <img id="qbStatImage" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2024/plots/Passing_YPG_vs_TD.png" alt="QB Stats">
+        </div>
     </div>
 
     <div class="container" id="rb">
@@ -121,6 +133,26 @@
         </div>
     </div>
 
+    <div class="container" id="te">
+        <h2>TE Stats</h2>
+        <select id="teImageSelector">
+            <option value="TE_TPG_RPG">Targets per Game vs Receptions per Game</option>
+        </select>
+        <div class="image-container">
+            <img id="teStatImage" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2024/plots/TE_TPG_RPG.png" alt="TE Stats">
+        </div>
+    </div>
+
+    <div class="container" id="punter">
+        <h2>Punter Stats</h2>
+        <select id="punterImageSelector">
+            <option value="NYPP_vs_TB">Net Yards per Punt vs Touchbacks</option>
+        </select>
+        <div class="image-container">
+            <img id="punterStatImage" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2024/plots/NYPP_vs_TB.png" alt="Punter Stats">
+        </div>
+    </div>
+
     <script>
         document.getElementById('imageSelector').addEventListener('change', function() {
             var imageUrl;
@@ -140,6 +172,32 @@
                 imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/2024/plots/RB_YPG_vs_TDPG.png';
             }
             document.getElementById('rbStatImage').src = imageUrl;
+        });
+
+        document.getElementById('qbImageSelector').addEventListener('change', function() {
+            var imageUrl;
+            if (this.value === 'Passing_YPG_vs_TD') {
+                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/2024/plots/Passing_YPG_vs_TD.png';
+            } else if (this.value === 'Passing_YPA_vs_CP') {
+                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/2024/plots/Passing_YPA_vs_CP.png';
+            }
+            document.getElementById('qbStatImage').src = imageUrl;
+        });
+
+        document.getElementById('teImageSelector').addEventListener('change', function() {
+            var imageUrl;
+            if (this.value === 'TE_TPG_RPG') {
+                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/2024/plots/TE_TPG_RPG.png';
+            }
+            document.getElementById('teStatImage').src = imageUrl;
+        });
+
+        document.getElementById('punterImageSelector').addEventListener('change', function() {
+            var imageUrl;
+            if (this.value === 'NYPP_vs_TB') {
+                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/2024/plots/NYPP_vs_TB.png';
+            }
+            document.getElementById('punterStatImage').src = imageUrl;
         });
     </script>
 </body>
