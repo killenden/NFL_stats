@@ -2,6 +2,7 @@ import sys
 import stats
 import os
 
+
 def main():
     if len(sys.argv) > 1:
         db_number = sys.argv[1]
