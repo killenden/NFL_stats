@@ -1,7 +1,8 @@
 import sys
 import stats
 import os
- 
+
+
 def main():
     if len(sys.argv) > 1:
         db_number = sys.argv[1]
@@ -36,6 +37,10 @@ def main():
         stats.RB_YPG(db_dir, weeks)
         stats.Top12QB(db_dir, weeks)
         stats.Top12QB_1(db_dir)
+        stats.TE_TPG_RPG(db_name, weeks)
+        stats.Passing_YPG_vs_TD(db_name, weeks)
+        stats.Passing_YPA_vs_CP(db_name)
+        stats.punting(db_name)
         
     else:
         print("No DB number provided.")

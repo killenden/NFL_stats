@@ -42,7 +42,7 @@ def rushing(db_name):
 
 def passing(db_name):
     query = '''
-    SELECT DISTINCT players.Player, positions.POS, passing."Pass Yds", passing."Yds/Att", passing."Att", passing."Cmp", passing."TD", passing."INT", passing."Rate", passing."Lng", passing."20+", passing."40+", passing."Sck", passing."SckY", passing."1st%", teams.team_name
+    SELECT DISTINCT players.Player, positions.POS, passing."Pass Yds", passing."Yds/Att", passing."Att", passing."Cmp", passing."Cmp %", passing."TD", passing."INT", passing."Rate", passing."Lng", passing."20+", passing."40+", passing."Sck", passing."SckY", passing."1st%", teams.team_name
     FROM players
     INNER JOIN teams ON players.Team = teams.team_id
     INNER JOIN positions ON players.Pos = positions.pos_id
@@ -132,6 +132,40 @@ def team_off_target_share_plays(db_name):
     INNER JOIN teams ON teams.team_id = players.Team
     INNER JOIN team_passing_off ON team_passing_off.Team = players.Team
     INNER JOIN receiving ON receiving.Player = players.player_id;
+    '''
+    df = pull_db(query,db_name)
+    return df
+
+def kickers(db_name):
+    
+    query = '''
+    SELECT DISTINCT players.Player, teams.shortname, kickoff.KO, kickoff.Yds, kickoff."Ret Yds", kickoff.TB, kickoff."TB %", kickoff.Ret, kickoff.Ret_Avg
+    FROM players
+    INNER JOIN teams ON teams.team_id = players.Team
+    INNER JOIN kickoff ON kickoff.Player = players.player_id;
+    '''
+    df = pull_db(query,db_name)
+    return df
+
+def fg_kickers(db_name):
+    
+    query = '''
+    SELECT DISTINCT players.Player, teams.shortname, field_goal.FGM, field_goal.Att, field_goal."FG %", field_goal."1-19 > A-M", field_goal."20-29 > A-M", field_goal."30-39 > A-M", field_goal."40-49 > A-M", field_goal."50-59 > A-M", field_goal."50+ > A-M", field_goal."Lng", field_goal."Fg Blk"
+    FROM players
+    INNER JOIN teams ON teams.team_id = players.Team
+    INNER JOIN field_goal ON field_goal.Player = players.player_id;
+    '''
+    df = pull_db(query,db_name)
+    return df
+
+
+def punters(db_name):
+    
+    query = '''
+    SELECT DISTINCT players.Player, teams.shortname, punt.Avg, punt."Net Avg", punt."Net Yds", punt."Punts", punt."Lng", punt."Yds", punt."IN 20", punt."OOB", punt."Dn", punt."TB", punt."FC", punt."Ret", punt."Ret", punt."RetY", punt."TD", punt."P Blk"
+    FROM players
+    INNER JOIN teams ON teams.team_id = players.Team
+    INNER JOIN punt ON punt.Player = players.player_id;
     '''
     df = pull_db(query,db_name)
     return df
