@@ -1,6 +1,9 @@
 name: Run Python Stat File
 on:
   push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   run_stats_py_file:
