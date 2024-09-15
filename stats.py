@@ -8,21 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import matplotlib.colors as mcolors
 from sklearn.cluster import KMeans
-import UpdatePlayerDatabase
 
-def export_stats(filename, df):
-    if UpdatePlayerDatabase.check_csv_file(filename+'.csv') == False:
-        current_dir = os.getcwd()  # Get current working directory
-        file_path = os.path.join(current_dir, filename+'.csv')  # Create file path
-        os.remove(file_path)
-
-
-        current_dir = os.path.dirname(os.path.realpath(__file__))
-        file_path = os.path.join(current_dir, filename)  # Create file path
-        df.to_csv(file_path+'.csv', index=False)
-    else:
-        df = pd.read_csv(filename.endswith('.csv'))
-    
 def get_team_logo(team_abbr):
     current_dir = os.getcwd()
     logo_dir = os.path.join(current_dir,'logos')
