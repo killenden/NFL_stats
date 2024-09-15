@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import matplotlib.colors as mcolors
 from sklearn.cluster import KMeans
+import UpdatePlayerDatabase
 
 def export_stats(filename, df):
     if UpdatePlayerDatabase.check_csv_file(filename+'.csv') == False:
@@ -21,105 +22,6 @@ def export_stats(filename, df):
         df.to_csv(file_path+'.csv', index=False)
     else:
         df = pd.read_csv(filename.endswith('.csv'))
-
-def plots(): 
-    rush_df = rush_df[0:10]
-    top_ten = rush_df.sort_values('YDS/G', ascending=False)
-    plt.bar(top_ten['Player'], top_ten['YDS/G'].astype(float), zorder=2)
-    plt.xticks(rotation=45)
-    plt.title('NFL 2024: Top 10 Rushing Yards Per Game')
-    plt.ylabel('Yards Per Game')
-    plt.ylim(50, 100)
-    plt.grid(axis='y', zorder=1, color='black')
-    plt.tight_layout()
-    plt.savefig(r'2024/plots/Top_10_Rushing_Yards_Per_Game.png', dpi=450)
-    plt.close()
-
-    print(passing_of)
-    passing_plays_forty = passing_of.sort_values('40+', ascending=False)
-    plt.bar(passing_of.index, passing_of['40+'].astype(float), zorder=2)
-    plt.xticks(rotation=45)
-    plt.title('NFL 2024: Passing Plays of 40+ Yards')
-    plt.ylabel('Frequency')
-    plt.grid(axis='y', zorder=1, color='black')
-    plt.tight_layout()
-    plt.savefig(r'2024/plots/40yrd_passing_plays.png', dpi=450)
-    plt.close()
-
-    passing_plays_twenty = passing_of.sort_values('20+', ascending=False)
-    plt.bar(passing_of.index, passing_of['20+'].astype(float), zorder=2)
-    plt.xticks(rotation=45)
-    plt.title('NFL 2024: Passing Plays of 20+ Yards')
-    plt.ylabel('Frequency')
-    plt.grid(axis='y', zorder=1, color='black')
-    plt.tight_layout()
-    plt.savefig(r'2024/plots/20yrd_passing_plays.png', dpi=450)
-    plt.close()
-
-    passing_top_ten = pass_df1.sort_values('YDS/G', ascending=False).head(10)
-    plt.bar(passing_top_ten['Player'], passing_top_ten['YDS/G'].astype(float), zorder=2)
-    plt.ylim(220, 350)
-    plt.xticks(rotation=45)
-    plt.title('NFL 2024: Top 10 Passing Yards Per Game')
-    plt.ylabel('Yards')
-    plt.grid(axis='y', zorder=1, color='black')
-    plt.tight_layout()
-    plt.savefig(r'2024/plots/Top_10_Passing_Yards_Per_Game.png', dpi=450)
-    plt.close()
-
-    rec_top_ten = rec_df.sort_values('YDS/G', ascending=False).head(10)
-    plt.bar(rec_top_ten['Player'], rec_top_ten['YDS/G'].astype(float), zorder=2)
-    plt.ylim(50, 100)
-    plt.xticks(rotation=45)
-    plt.title('NFL 2024: Top 10 Recieving Yards Per Game')
-    plt.ylabel('Yards')
-    plt.grid(axis='y', zorder=1, color='black')
-    plt.tight_layout()
-    plt.savefig(r'2024/plots/Top_10_Recieving_Yards_Per_Game.png', dpi=450)
-
-    team_list = passing_df.index.tolist()
-    rushing_df['Team_Name'] = rushing_df.index
-    rushing_first_rate = rushing_df['Rush 1st%'].astype(float)
-    passing_df['Team_Name'] = passing_df.index
-    passing_first_rate = passing_df['1st%'].astype(float)
-
-    first_down_df = pd.merge(rushing_df[['Team_Name', 'Rush 1st%']], passing_df[['Team_Name', '1st%']], on='Team_Name')
-
-    print(first_down_df)
-
-    def get_team_logo(team_abbr):
-        current_dir = os.getcwd()
-        logo_dir = os.path.join(current_dir,'logos')
-        file_path = os.path.join(logo_dir,team_abbr+'.png')
-        return file_path
-
-    #Convert columns to float
-    first_down_df['Rush 1st%'] = first_down_df['Rush 1st%'].astype('float')
-    first_down_df['1st%'] = first_down_df['1st%'].astype('float')
-
-    # Create scatter plot with team logos as markers
-    fig, ax = plt.subplots(figsize=(12, 9))
-
-    zoom = 0.05
-
-    for i, team in enumerate(first_down_df['Team_Name']):
-        logo_url = get_team_logo(team)
-        img = plt.imread(logo_url)
-        imagebox = OffsetImage(img, zoom=zoom)
-        ab = AnnotationBbox(imagebox, (first_down_df['Rush 1st%'][i], first_down_df['1st%'][i]), frameon=False)
-        ax.add_artist(ab)
-
-    # Set labels and title
-    ax.set_xlabel('Rush 1st%')
-    ax.set_ylabel('1st%')
-    ax.set_title('Scatter Plot of Rush 1st% vs 1st% with Team Logos')
-
-    # Adjust plot limits
-    plt.xlim(first_down_df['Rush 1st%'].min() - 1, first_down_df['Rush 1st%'].max() + 1)
-    plt.ylim(first_down_df['1st%'].min() - 1, first_down_df['1st%'].max() + 1)
-    plt.savefig('logos.png', dpi=450)
-    plt.show()
-    #plt.close()
     
 def get_team_logo(team_abbr):
     current_dir = os.getcwd()
@@ -148,9 +50,9 @@ def Team_Attempts(db_name):
     ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
 
     # Set labels and title
-    ax.set_xlabel('Rush Att')
-    ax.set_ylabel('Pass Att')
-    ax.set_title('Scatter Plot of Rush Att vs Pass Att with Team Logos')
+    ax.set_xlabel('Rush Att', fontsize=12)
+    ax.set_ylabel('Pass Att', fontsize=12)
+    ax.set_title('Scatter Plot of Rush Att vs Pass Att with Team Logos', fontsize=16, fontweight='bold')
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
@@ -188,9 +90,9 @@ def Team_Attempts_Pct(db_name):
     ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
 
     # Set labels and title
-    ax.set_xlabel('Rush Att')
-    ax.set_ylabel('Pass Att')
-    ax.set_title('Scatter Plot of Rush Att vs Pass Att with Team Logos')
+    ax.set_xlabel('Rush Att', fontsize=12)
+    ax.set_ylabel('Pass Att', fontsize=12)
+    ax.set_title('Scatter Plot of Rush Att vs Pass Att with Team Logos', fontsize=16, fontweight='bold')
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
@@ -233,9 +135,9 @@ def Team_Attempts_Both(db_name):
     ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
 
     # Set labels and title
-    ax.set_xlabel('Tot_Def_Att')
-    ax.set_ylabel('Tot_Off_Att')
-    ax.set_title('Scatter Plot of Defense Att vs Offense Att with Team Logos')
+    ax.set_xlabel('Tot_Def_Att', fontsize=12)
+    ax.set_ylabel('Tot_Off_Att', fontsize=12)
+    ax.set_title('Scatter Plot of Defense Att vs Offense Att with Team Logos', fontsize=16, fontweight='bold')
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
@@ -279,9 +181,9 @@ def Team_Attempts_Both_Pct(db_name):
     ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
 
     # Set labels and title
-    ax.set_xlabel('Def %')
-    ax.set_ylabel('Off %')
-    ax.set_title('Scatter Plot of Rush Att vs Pass Att with Team Logos')
+    ax.set_xlabel('Def %', fontsize=12)
+    ax.set_ylabel('Off %', fontsize=12)
+    ax.set_title('Scatter Plot of Rush Att vs Pass Att with Team Logos', fontsize=16, fontweight='bold')
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
@@ -315,9 +217,9 @@ def Target_Share(db_name):
     ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
 
     # Set labels and title
-    ax.set_xlabel('Total Team Passing Attempts')
-    ax.set_ylabel('Target Share')
-    ax.set_title('Scatter Plot of Rush Att vs Pass Att with Team Logos')
+    ax.set_xlabel('Total Team Passing Attempts', fontsize=12)
+    ax.set_ylabel('Target Share', fontsize=12)
+    ax.set_title('Scatter Plot of Rush Att vs Pass Att with Team Logos', fontsize=16, fontweight='bold')
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
@@ -350,9 +252,9 @@ def TPG_vs_YPR(db_name, weeks):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title('NFL 2024: WR Targets per Game vs Yards per Reception')
-    plt.xlabel('Targets per Game')
-    plt.ylabel('Yards per Reception')
+    plt.title('NFL 2024: WR Targets per Game vs Yards per Reception', fontsize=16, fontweight='bold')
+    plt.xlabel('Targets per Game', fontsize=12)
+    plt.ylabel('Yards per Reception', fontsize=12)
     plt.savefig('2024/plots/TPG_vs_YPR.png', dpi=450)
     plt.show()
 
@@ -380,9 +282,9 @@ def RPG_YPG(db_name, weeks):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title('NFL 2024: WR Receptions per Game vs Yards per Game')
-    plt.xlabel('Receptions per Game')
-    plt.ylabel('Yards per Game')
+    plt.title('NFL 2024: WR Receptions per Game vs Yards per Game', fontsize=16, fontweight='bold')
+    plt.xlabel('Receptions per Game', fontsize=12)
+    plt.ylabel('Yards per Game', fontsize=12)
     plt.tight_layout()
     plt.savefig('2024/plots/RPG_YPG.png', dpi=450)
     plt.show()
@@ -410,11 +312,39 @@ def TPG_RPG(db_name, weeks):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title('NFL 2024: WR Targets per Game vs Receptions per Target')
-    plt.xlabel('Targets per Game')
-    plt.ylabel('Receptions per Target')
+    plt.title('NFL 2024: WR Targets per Game vs Receptions per Target', fontsize=16, fontweight='bold')
+    plt.xlabel('Targets per Game', fontsize=12)
+    plt.ylabel('Receptions per Target', fontsize=12)
     plt.tight_layout()
     plt.savefig('2024/plots/TPG_RPG.png', dpi=450)
+    plt.show()
+
+def TE_TPG_RPG(db_name, weeks):
+    df = PullFromDatabase.receiving(db_name)
+    df.drop_duplicates(inplace=True)
+    
+    threshold = 1
+    
+    wr_receiving_df_parsed = df[(df['Tgts'] > threshold) & (df['Rec'] > 0) & (df['POS'] == 'TE')]
+    fig, ax = plt.subplots(figsize=(12,9))
+
+    ax.scatter(wr_receiving_df_parsed['Tgts'] / weeks, wr_receiving_df_parsed['Rec'] / wr_receiving_df_parsed['Tgts'], alpha=0.5)
+
+    for index, row in wr_receiving_df_parsed.iterrows():
+        plt.text(row['Tgts'] / weeks, row['Rec'] / row['Tgts'], row['Player'], fontsize=9, ha='right')
+
+    x_mean = (wr_receiving_df_parsed['Tgts'] / weeks).mean()
+    y_mean = (wr_receiving_df_parsed['Rec'] / wr_receiving_df_parsed['Tgts']).mean()
+    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+
+    ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
+
+    plt.title('NFL 2024: TE Targets per Game vs Receptions per Target', fontsize=16, fontweight='bold')
+    plt.xlabel('Targets per Game', fontsize=12)
+    plt.ylabel('Receptions per Target', fontsize=12)
+    plt.tight_layout()
+    plt.savefig('2024/plots/TE_TPG_RPG.png', dpi=450)
     plt.show()
     
     
@@ -439,9 +369,9 @@ def RPG_vs_TDPR(db_name, weeks):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title('NFL 2024: WR Receptions per Game vs TDs per Reception')
-    plt.xlabel('Receptions per Game')
-    plt.ylabel('TDs per Reception')
+    plt.title('NFL 2024: WR Receptions per Game vs TDs per Reception', fontsize=16, fontweight='bold')
+    plt.xlabel('Receptions per Game', fontsize=12)
+    plt.ylabel('TDs per Reception', fontsize=12)
     plt.savefig('2024/plots/RPG_vs_TDPR.png', dpi=450)
     plt.show()
 
@@ -474,9 +404,9 @@ def RB_YPG_vs_TDPG(db_name, weeks):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title('NFL 2024: RB Yards and TDs per Game')
-    plt.xlabel('Yards per Game')
-    plt.ylabel('TDs per Game')
+    plt.title('NFL 2024: RB Yards and TDs per Game', fontsize=16, fontweight='bold')
+    plt.xlabel('Yards per Game', fontsize=12)
+    plt.ylabel('TDs per Game', fontsize=12)
     plt.savefig('2024/plots/RB_YPG_vs_TDPG.png', dpi=450)
     plt.show()
     
@@ -639,11 +569,96 @@ def Top12QB_1(db_name):
     plt.savefig('2024/plots/Top12QB_1.png', dpi=450, bbox_inches='tight')
     plt.show()
 
+def punting(db_name):
+    df = PullFromDatabase.punters(db_name)
+    
+    df = df[(df['Punts'] > 1)]
+    
+    fig, ax = plt.subplots(figsize=(12,9))
+
+    ax.scatter(df['Net Avg'], df['TB'], alpha=0.5)
+
+    for index, row in df.iterrows():
+        plt.text(row['Net Avg'], row['TB'], row['Player'], fontsize=9, ha='right')
+    
+    x_mean = (df['Net Avg']).mean()
+    y_mean = (df['TB']).mean()
+    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+
+    ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
+
+    plt.title('NFL 2024: Average Net Yards per Punt vs Touchback Count', fontsize=16, fontweight='bold')
+    plt.xlabel('Average Net Yards per Punt', fontsize=12)
+    plt.ylabel('Touchback Count', fontsize=12)
+    plt.savefig('2024/plots/NYPP_vs_TB.png', dpi=450)
+    plt.show()
+    
+def Passing_YPA_vs_CP(db_name):
+    df = PullFromDatabase.passing(db_name)
+    
+    df = df[(df['Att'] > 20)]
+    
+    fig, ax = plt.subplots(figsize=(12,9))
+
+    x_mean = (df['Yds/Att']).mean()
+    y_mean = (df['Cmp %']).mean()
+    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+    
+    ax.scatter(df['Yds/Att'], df['Cmp %'], alpha=0.5)
+
+    for index, row in df.iterrows():
+        plt.text(row['Yds/Att'], row['Cmp %'], row['Player'], fontsize=9, ha='right')
+
+    ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
+
+    plt.title('NFL 2024: Yards per Attempt vs Completion Percentage', fontsize=16, fontweight='bold')
+    plt.xlabel('Yards per Attempt', fontsize=12)
+    plt.ylabel('Completion Percentage', fontsize=12)
+    plt.tight_layout()
+    plt.savefig('2024/plots/Passing_YPA_vs_CP.png', dpi=450)
+    plt.show()
+    
+def Passing_YPG_vs_TD(db_name, weeks):
+    df = PullFromDatabase.passing(db_name)
+    
+    df = df[(df['Att'] > 20)]
+    
+    fig, ax = plt.subplots(figsize=(12,9))
+
+    x_mean = (df['Pass Yds'] / weeks).mean()
+    y_mean = (df['TD']/ weeks).mean()
+    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+    
+    ax.scatter(df['Pass Yds']/ weeks, df['TD']/ weeks, alpha=0.5)
+
+    for index, row in df.iterrows():
+        plt.text(row['Pass Yds']/ weeks, row['TD']/ weeks, row['Player'], fontsize=9, ha='right')
+
+    ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
+
+    plt.title('NFL 2024: Yards vs Touchdowns per Game', fontsize=16, fontweight='bold')
+    plt.xlabel('Yards per Game', fontsize=12)
+    plt.ylabel('Touchdowns per Game', fontsize=12)
+    plt.tight_layout()
+    plt.savefig('2024/plots/Passing_YPG_vs_TD.png', dpi=450)
+    plt.show()
+
+
+
+
+
 if __name__ == '__main__':
     year = 2024
     weeks = 1
     db_name = rf'database\{year}_database.db'
-    Top12QB_1(db_name)
+    TE_TPG_RPG(db_name, weeks)
+    #Passing_YPG_vs_TD(db_name, weeks)
+    #Passing_YPA_vs_CP(db_name)
+    #punting(db_name)
+    #Top12QB_1(db_name)
     #Top12QB(db_name, weeks)
     #RB_YPG(db_name, weeks)
     #RB_YPG_vs_TDPG(db_name, weeks)
