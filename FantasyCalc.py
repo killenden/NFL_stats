@@ -3,7 +3,7 @@ def Passing(yards,td,two_pt,int):
     return yards * 0.04 + td * 4 + two_pt * 2 - int * 1
 
 def Rushing(yards,td,two_pt):
-    return yards * 0.1 + td * 6 + two_pt * 2
+    return yards * 0.1 + td * 6 + two_pt * 2 
 
 def Receiving(recs,yards,td,two_pt):
     return recs * 1 + yards * 0.1 + td * 6 + two_pt * 2
