@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleeper Fantasy Football League Info</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/killenden/NFL_stats/main/website/images/jared_goff.png">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+        nav {
+            background-color: #333;
+            overflow: hidden;
+            text-align: center;
+        }
+        nav a {
+            float: none; 
+            display: inline-block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .hero-section {
+            background-image: url('https://raw.githubusercontent.com/killenden/NFL_stats/main/website/images/ford_field.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 400px; 
+            position: relative;
+            width: 100vw;
+        }
+        .hero-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            margin-top: 40px;
+            text-align: center;
+        }
+        .input-section {
+            margin-top: 20px;
+        }
+        .loading {
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <div class="hero-text">
+            <h1>Sleeper Fantasy Football</h1>
+        </div>
+    </div>
+    
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="player.html">Player</a> 
+        <a href="#team">Team</a>
+        <a href="#league">League</a>
+        <a href="#about">About</a>
+    </nav>
+
+    <div class="container">
+        <h2>Get Sleeper League Info</h2>
+        <div class="input-section">
+            <label for="input">Enter Sleeper Username or League ID:</label>
+            <input type="text" id="input" placeholder="e.g., username or 123456789012345678">
+            <button onclick="getUserOrLeague()">Get League Info</button>
+        </div>
+        <div id="league-info"></div>
+    </div>
+
+    <script>
+        async function getUserOrLeague() {
+            const input = document.getElementById('input').value;
+            const leagueInfoDiv = document.getElementById('league-info');
+
+            if (!input) {
+                leagueInfoDiv.innerHTML = '<p>Please enter a username or league ID.</p>';
+                return;
+            }
+
+            leagueInfoDiv.innerHTML = '<p class="loading">Loading info...</p>';
+
+            if (isNaN(input)) {
+                // Input is a username
+                try {
+                    // Fetch user's info by username
+                    const userResponse = await fetch(`https://api.sleeper.app/v1/user/${input}`);
+                    if (!userResponse.ok) {
+                        throw new Error('User not found');
+                    }
+                    const userData = await userResponse.json();
+                    const userId = userData.user_id;
+
+                    const currentYear = new Date().getFullYear();
+                    const leaguesResponse = await fetch(`https://api.sleeper.app/v1/user/${userId}/leagues/nfl/${currentYear}`);
+                    if (!leaguesResponse.ok) {
+                        throw new Error('No leagues found for this user');
+                    }
+                    const leaguesData = await leaguesResponse.json();
+
+                    if (leaguesData.length > 0) {
+                        let leagueList = '<h3>Select a League:</h3><ul>';
+                        leaguesData.forEach(league => {
+                            leagueList += `<li>${league.name} (League ID: ${league.league_id})</li>`;
+                        });
+                        leagueList += '</ul>';
+                        leagueInfoDiv.innerHTML = leagueList;
+                    } else {
+                        leagueInfoDiv.innerHTML = '<p>No leagues found for this user.</p>';
+                    }
+                } catch (error) {
+                    leagueInfoDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+                    console.error('Error:', error);
+                }
+            } else {
+                // Input is a league ID
+                getLeague(input);
+            }
+        }
+
+        async function getLeague(leagueId) {
+            const leagueInfoDiv = document.getElementById('league-info');
+            leagueInfoDiv.innerHTML = '<p class="loading">Loading league info...</p>';
+
+            try {
+                const leagueResponse = await fetch(`https://api.sleeper.app/v1/league/${leagueId}`);
+                if (!leagueResponse.ok) {
+                    throw new Error('League not found');
+                }
+                const leagueData = await leagueResponse.json();
+
+                if (leagueData.league_id) {
+                    leagueInfoDiv.innerHTML = `
+                        <h3>League Info:</h3>
+                        <p>League Name: ${leagueData.name}</p>
+                        <p>League ID: ${leagueData.league_id}</p>
+                        <p>Season: ${leagueData.season}</p>
+                    `;
+
+                    // Fetch rosters and standings
+                    const rostersResponse = await fetch(`https://api.sleeper.app/v1/league/${leagueId}/rosters`);
+                    if (!rostersResponse.ok) {
+                        throw new Error('No rosters found');
+                    }
+                    const rostersData = await rostersResponse.json();
+
+                    const usersResponse = await fetch(`https://api.sleeper.app/v1/league/${leagueId}/users`);
+                    if (!usersResponse.ok) {
+                        throw new Error('No users found');
+                    }
+                    const usersData = await usersResponse.json();
+
+                    // Map user IDs to user names
+                    const userMap = {};
+                    usersData.forEach(user => {
+                        userMap[user.user_id] = user.display_name;
+                    });
+
+                    if (rostersData.length > 0) {
+                        leagueInfoDiv.innerHTML += '<h3>Standings:</h3><ul>';
+                        rostersData.forEach(roster => {
+                            leagueInfoDiv.innerHTML += `<li>${userMap[roster.owner_id]}: ${roster.settings.wins} Wins, ${roster.settings.losses} Losses, ${roster.settings.fpts} Points</li>`;
+                        });
+                        leagueInfoDiv.innerHTML += '</ul>';
+                    } else {
+                        leagueInfoDiv.innerHTML += '<p>No rosters found for this league.</p>';
+                    }
+                } else {
+                    leagueInfoDiv.innerHTML = '<p>League not found.</p>';
+                }
+            } catch (error) {
+                leagueInfoDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+                console.error('Error:', error);
+            }
+        }
+    </script>
+    
+</body>
+</html>
