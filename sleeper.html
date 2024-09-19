@@ -103,7 +103,6 @@
             if (isNaN(input)) {
                 // Input is a username
                 try {
-                    // Fetch user's leagues by username
                     const userResponse = await fetch(`https://api.sleeper.app/v1/user/${input}`);
                     if (!userResponse.ok) {
                         throw new Error('User not found');
@@ -111,7 +110,7 @@
                     const userData = await userResponse.json();
                     const userId = userData.user_id;
 
-                    const leaguesResponse = await fetch(`https://api.sleeper.app/v1/user/${userId}/leagues/nfl/2023`);
+
                     if (!leaguesResponse.ok) {
                         throw new Error('No leagues found for this user');
                     }
@@ -120,7 +119,7 @@
                     if (leaguesData.length > 0) {
                         let leagueList = '<h3>Select a League:</h3><ul>';
                         leaguesData.forEach(league => {
-                            leagueList += `<li><button onclick="getLeague('${league.league_id}')">${league.name} (ID: ${league.league_id})</button></li>`;
+
                         });
                         leagueList += '</ul>';
                         leagueInfoDiv.innerHTML = leagueList;
@@ -142,7 +141,7 @@
             leagueInfoDiv.innerHTML = '<p class="loading">Loading league info...</p>';
 
             try {
-                // Fetch league info from Sleeper API
+
                 const leagueResponse = await fetch(`https://api.sleeper.app/v1/league/${leagueId}`);
                 if (!leagueResponse.ok) {
                     throw new Error('League not found');
