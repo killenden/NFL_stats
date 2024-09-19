@@ -404,7 +404,7 @@ def RB_YPG(db_name, weeks):
     rushing_df.drop_duplicates(inplace=True)
     
     threshold = 1
-    rush_yards_threshold = 20
+    rush_yards_threshold = 5
     yards_threshold = 5
     
     rb_receiving_df_parsed = receiving_df[(receiving_df['Tgts'] > threshold) & (receiving_df['POS'] == 'RB')]
@@ -415,6 +415,7 @@ def RB_YPG(db_name, weeks):
 
     rb_df = pd.merge(rb_rushing_df_parsed, rb_receiving_df_parsed, on='Player')
     rb_parsed = rb_df[((rb_df['Rush Yds'].astype(float) / weeks) > rush_yards_threshold) & ((rb_df['Yds'].astype(float)/weeks) > yards_threshold)]
+    rb_parsed.reset_index(inplace=True)
     
     
     fig, ax = plt.subplots(figsize=(12,9))
@@ -422,22 +423,28 @@ def RB_YPG(db_name, weeks):
     kmeans = KMeans(n_clusters = 8)
     kmeans.fit(rb_parsed[['Rush Yds', 'Yds']])
 
-    #labels = kmeans.predict(rb_parsed[['Rush Yds', 'Yds']])
+    ##labels = kmeans.predict(rb_parsed[['Rush Yds', 'Yds']])
 
-    plt.scatter(rb_parsed['Rush Yds'].astype(float) / weeks, rb_parsed['Yds'].astype(float) / weeks, c=kmeans.labels_, cmap='gist_rainbow')
+    plt.scatter(rb_parsed['Rush Yds'].astype(float) / weeks, rb_parsed['Yds'].astype(float) / weeks, c=kmeans.labels_, cmap='gist_rainbow', s=0.0001)
 
-    #ax.scatter(rb_parsed['Rush Yds'].astype(float) / 17, rb_parsed['Yds'].astype(float) / 17, alpha=0.5)
+    ##ax.scatter(rb_parsed['Rush Yds'].astype(float) / 17, rb_parsed['Yds'].astype(float) / 17, alpha=0.5)
 
     for index, row in rb_parsed.iterrows():
-        plt.text(row['Rush Yds'] / weeks, row['Yds'] / weeks, row['Player'], fontsize=9, ha='right')
+        plt.text(row['Rush Yds'] / weeks, (row['Yds'] / weeks)+1.5, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
 
+    zoom = 0.02
 
-
+    for i, team in enumerate(rb_parsed['shortname_x']):
+        logo_url = get_team_logo(team)
+        img = plt.imread(logo_url)
+        imagebox = OffsetImage(img, zoom=zoom)
+        ab = AnnotationBbox(imagebox, ((rb_parsed['Rush Yds']/weeks)[i], (rb_parsed['Yds']/weeks)[i]), frameon=False,zorder=1)
+        ax.add_artist(ab)
 
     x_mean = (rb_parsed['Rush Yds'].astype(float) / weeks).mean()
     y_mean = (rb_parsed['Yds'].astype(float) / weeks).mean()
-    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
-    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axvline(x=x_mean, color='black', linestyle=':', linewidth=1)
+    ax.axhline(y=y_mean, color='black', linestyle=':', linewidth=1)
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
@@ -638,15 +645,15 @@ def Passing_YPG_vs_TD(db_name, weeks):
 
 if __name__ == '__main__':
     year = 2024
-    weeks = 1
+    weeks = 2
     db_name = rf'database\{year}_database.db'
-    TE_TPG_RPG(db_name, weeks)
+    #TE_TPG_RPG(db_name, weeks)
     #Passing_YPG_vs_TD(db_name, weeks)
     #Passing_YPA_vs_CP(db_name)
     #punting(db_name)
     #Top12QB_1(db_name)
     #Top12QB(db_name, weeks)
-    #RB_YPG(db_name, weeks)
+    RB_YPG(db_name, weeks)
     #RB_YPG_vs_TDPG(db_name, weeks)
     #RPG_vs_TDPR(db_name, weeks)
     #TPG_RPG(db_name, weeks)
