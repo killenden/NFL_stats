@@ -18,7 +18,7 @@ def pull_db(query,db_name):
 def receiving(db_name):
     
     query = '''
-    SELECT players.Player, positions.POS, receiving.Rec, receiving.Tgts, receiving.TD, receiving.Yds, receiving."20+", receiving."40+", receiving."Rec FUM", receiving."Rec YAC/R", teams.team_name
+    SELECT players.Player, positions.POS, receiving.Rec, receiving.Tgts, receiving.TD, receiving.Yds, receiving."20+", receiving."40+", receiving."Rec FUM", receiving."Rec YAC/R", teams.team_name, teams.shortname
     FROM players
     INNER JOIN teams ON players.Team = teams.team_id
     INNER JOIN positions ON players.Pos = positions.pos_id
@@ -30,7 +30,7 @@ def receiving(db_name):
 
 def rushing(db_name):
     query = '''
-    SELECT DISTINCT players.Player, positions.POS, rushing."Rush Yds", rushing."Att", rushing."TD", rushing."Lng", rushing."20+", rushing."40+", rushing."Rush FUM", rushing."Rush 1st", rushing."Rush 1st%", teams.team_name
+    SELECT DISTINCT players.Player, positions.POS, rushing."Rush Yds", rushing."Att", rushing."TD", rushing."Lng", rushing."20+", rushing."40+", rushing."Rush FUM", rushing."Rush 1st", rushing."Rush 1st%", teams.team_name, teams.shortname
     FROM players
     INNER JOIN teams ON players.Team = teams.team_id
     INNER JOIN positions ON players.Pos = positions.pos_id
@@ -42,7 +42,7 @@ def rushing(db_name):
 
 def passing(db_name):
     query = '''
-    SELECT DISTINCT players.Player, positions.POS, passing."Pass Yds", passing."Yds/Att", passing."Att", passing."Cmp", passing."Cmp %", passing."TD", passing."INT", passing."Rate", passing."Lng", passing."20+", passing."40+", passing."Sck", passing."SckY", passing."1st%", teams.team_name
+    SELECT DISTINCT players.Player, positions.POS, passing."Pass Yds", passing."Yds/Att", passing."Att", passing."Cmp", passing."Cmp %", passing."TD", passing."INT", passing."Rate", passing."Lng", passing."20+", passing."40+", passing."Sck", passing."SckY", passing."1st%", teams.team_name, teams.shortname
     FROM players
     INNER JOIN teams ON players.Team = teams.team_id
     INNER JOIN positions ON players.Pos = positions.pos_id
