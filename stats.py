@@ -670,7 +670,7 @@ def Passing_YPG_vs_TD(db_name, weeks):
 
 if __name__ == '__main__':
     year = 2024
-    weeks = 2
+    weeks = 3
     db_name = rf'database\{year}_database.db'
     #TE_TPG_RPG(db_name, weeks)
     #Passing_YPG_vs_TD(db_name, weeks)

@@ -22,9 +22,9 @@ jobs:
       id: set_values
       run: |
         echo "db_number=2024" >> $GITHUB_ENV
-        echo "week_number=2" >> $GITHUB_ENV
+        echo "week_number=3" >> $GITHUB_ENV
         echo "::set-output name=db_number::2024"
-        echo "::set-output name=week_number::2"
+        echo "::set-output name=week_number::3"
         
     - name: Delete old plots if they exist
       run: |
