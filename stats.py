@@ -32,8 +32,8 @@ def Team_Attempts(db_name):
 
     x_mean = (df['Rush_Att']).mean()
     y_mean = (df['Pass_Att']).mean()
-    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
-    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
+    ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
     # Set labels and title
     ax.set_xlabel('Rush Att', fontsize=12)
@@ -72,8 +72,8 @@ def Team_Attempts_Pct(db_name):
 
     x_mean = (df['Rush_Att']/df['Tot_Att']).mean()
     y_mean = (df['Pass_Att']/df['Tot_Att']).mean()
-    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
-    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
+    ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
     # Set labels and title
     ax.set_xlabel('Rush Att', fontsize=12)
@@ -117,8 +117,8 @@ def Team_Attempts_Both(db_name):
 
     x_mean = (df['Tot_Def_Att']).mean()
     y_mean = (df['Tot_Off_Att']).mean()
-    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
-    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
+    ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
     # Set labels and title
     ax.set_xlabel('Tot_Def_Att', fontsize=12)
@@ -163,8 +163,8 @@ def Team_Attempts_Both_Pct(db_name):
 
     x_mean = (df['Tot_Def_Att']/df['Tot_Att']).mean()
     y_mean = (df['Tot_Off_Att']/df['Tot_Att']).mean()
-    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
-    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
+    ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
     # Set labels and title
     ax.set_xlabel('Def %', fontsize=12)
@@ -182,9 +182,10 @@ def Target_Share(db_name):
     df = PullFromDatabase.team_off_target_share_plays(db_name)
     
         
-    df['Tgt_Share'] = df['Tgts'] / df['Pass_Off_Att']
+    df['Tgt_Share'] = (df['Tgts'] / df['Pass_Off_Att'])*100
     
     df = df[df['Tgt_Share'] > df['Tgt_Share'].mean()]
+    df.reset_index(inplace=True)
     
         
     # Create scatter plot with team logos as markers
@@ -193,24 +194,31 @@ def Target_Share(db_name):
     zoom = 0.05
 
     for index, row in df.iterrows():
-        plt.text(row['Pass_Off_Att'], row['Tgt_Share'], row['Player'], fontsize=9, ha='right', weight = 'bold', family = 'cursive')
+        plt.text(row['Pass_Off_Att'], (row['Tgt_Share'])+.5, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
         
-    ax.scatter(df['Pass_Off_Att'], df['Tgt_Share'])
+    ax.scatter(df['Pass_Off_Att'], df['Tgt_Share'], alpha=0.5, s=0)
+    
+    for i, team in enumerate(df['shortname']):
+        logo_url = get_team_logo(team)
+        img = plt.imread(logo_url)
+        imagebox = OffsetImage(img, zoom=0.02)
+        ab = AnnotationBbox(imagebox, ((df['Pass_Off_Att'])[i], (df['Tgt_Share'])[i]), frameon=False,zorder=1)
+        ax.add_artist(ab)
 
     x_mean = (df['Pass_Off_Att']).mean()
     y_mean = (df['Tgt_Share']).mean()
-    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
-    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
+    ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
     # Set labels and title
     ax.set_xlabel('Total Team Passing Attempts', fontsize=12)
-    ax.set_ylabel('Target Share', fontsize=12)
+    ax.set_ylabel('Target Share (%)', fontsize=12)
     ax.set_title('Scatter Plot of Rush Att vs Pass Att with Team Logos', fontsize=16, fontweight='bold')
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
     plt.xlim((df['Pass_Off_Att']).min() - 10, (df['Pass_Off_Att']).max() + 10)
-    plt.ylim((df['Tgt_Share']).min() - 0.0125, (df['Tgt_Share']).max() + 0.0125)
+    plt.ylim((df['Tgt_Share']).min() - 1.25, (df['Tgt_Share']).max() + 1.25)
     plt.savefig('2024/plots/Target_Share.png', dpi=450)
     plt.show()
 
@@ -219,20 +227,29 @@ def TPG_vs_YPR(db_name, weeks):
     df = PullFromDatabase.receiving(db_name)
     df.drop_duplicates(inplace=True)
     
-    threshold = 1
+    tgts_threshold = 3*weeks
+    rec_threshold = 2*weeks
     
-    wr_receiving_df_parsed = df[(df['Tgts'] > threshold) & (df['Rec'] > 0) & (df['POS'] == 'WR')]
+    wr_receiving_df_parsed = df[(df['Tgts'] > tgts_threshold) & (df['Rec'] > rec_threshold) & (df['POS'] == 'WR')]
+    wr_receiving_df_parsed.reset_index(inplace=True)
         
     fig, ax = plt.subplots(figsize=(12,9))
-    ax.scatter(wr_receiving_df_parsed['Tgts'] / weeks, wr_receiving_df_parsed['Yds'] / wr_receiving_df_parsed['Rec'], alpha=0.5)
+    ax.scatter(wr_receiving_df_parsed['Tgts'] / weeks, wr_receiving_df_parsed['Yds'] / wr_receiving_df_parsed['Rec'], alpha=0.5, s=0)
 
     for index, row in wr_receiving_df_parsed.iterrows():
-        plt.text(row['Tgts'] / weeks, row['Yds'] / row['Rec'], row['Player'], fontsize=9, ha='right')
+        plt.text(row['Tgts'] / weeks, (row['Yds'] / row['Rec'])+0.5, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+
+    for i, team in enumerate(wr_receiving_df_parsed['shortname']):
+        logo_url = get_team_logo(team)
+        img = plt.imread(logo_url)
+        imagebox = OffsetImage(img, zoom=0.02)
+        ab = AnnotationBbox(imagebox, ((wr_receiving_df_parsed['Tgts'] / weeks)[i], (wr_receiving_df_parsed['Yds'] / wr_receiving_df_parsed['Rec'])[i]), frameon=False,zorder=1)
+        ax.add_artist(ab)
 
     x_mean = (wr_receiving_df_parsed['Tgts'] / weeks).mean()
     y_mean = (wr_receiving_df_parsed['Yds'] / wr_receiving_df_parsed['Rec']).mean()
-    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
-    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
+    ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
 
 
@@ -249,21 +266,31 @@ def RPG_YPG(db_name, weeks):
     df = PullFromDatabase.receiving(db_name)
     df.drop_duplicates(inplace=True)
     
-    threshold = 1
+    tgts_threshold = 3*weeks
+    rec_threshold = 2*weeks
     
-    wr_receiving_df_parsed = df[(df['Tgts'] > threshold) & (df['Rec'] > 0) & (df['POS'] == 'WR')]
+    wr_receiving_df_parsed = df[(df['Tgts'] > tgts_threshold) & (df['Rec'] > rec_threshold) & (df['POS'] == 'WR')]
+    wr_receiving_df_parsed.reset_index(inplace=True)
     
     fig, ax = plt.subplots(figsize=(12,9))
 
-    ax.scatter(wr_receiving_df_parsed['Rec'] / weeks, wr_receiving_df_parsed['Yds'] / weeks, alpha=0.5)
+    ax.scatter(wr_receiving_df_parsed['Rec'] / weeks, wr_receiving_df_parsed['Yds'] / weeks, alpha=0.5, s=0)
 
     for index, row in wr_receiving_df_parsed.iterrows():
-        plt.text(row['Rec'] / weeks, row['Yds'] / weeks, row['Player'], fontsize=9, ha='right')
+        plt.text(row['Rec'] / weeks, (row['Yds'] / weeks)+2.5, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+        
+    for i, team in enumerate(wr_receiving_df_parsed['shortname']):
+        logo_url = get_team_logo(team)
+        img = plt.imread(logo_url)
+        imagebox = OffsetImage(img, zoom=0.02)
+        ab = AnnotationBbox(imagebox, ((wr_receiving_df_parsed['Rec'] / weeks)[i], (wr_receiving_df_parsed['Yds'] / weeks)[i]), frameon=False,zorder=1)
+        ax.add_artist(ab)
+
 
     x_mean = (wr_receiving_df_parsed['Rec'] / weeks).mean()
     y_mean = (wr_receiving_df_parsed['Yds'] / weeks).mean()
-    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
-    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
+    ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
@@ -281,20 +308,30 @@ def TPG_RPG(db_name, weeks):
     df = PullFromDatabase.receiving(db_name)
     df.drop_duplicates(inplace=True)
     
-    threshold = 1
+    tgts_threshold = 3*weeks
+    rec_threshold = 2*weeks
     
-    wr_receiving_df_parsed = df[(df['Tgts'] > threshold) & (df['Rec'] > 0) & (df['POS'] == 'WR')]
+    wr_receiving_df_parsed = df[(df['Tgts'] > tgts_threshold) & (df['Rec'] > rec_threshold) & (df['POS'] == 'WR')]
+    wr_receiving_df_parsed.reset_index(inplace=True)
+    
     fig, ax = plt.subplots(figsize=(12,9))
 
-    ax.scatter(wr_receiving_df_parsed['Tgts'] / weeks, wr_receiving_df_parsed['Rec'] / wr_receiving_df_parsed['Tgts'], alpha=0.5)
+    ax.scatter(wr_receiving_df_parsed['Tgts'] / weeks, wr_receiving_df_parsed['Rec'] / wr_receiving_df_parsed['Tgts'], alpha=0.5, s=0)
 
     for index, row in wr_receiving_df_parsed.iterrows():
-        plt.text(row['Tgts'] / weeks, row['Rec'] / row['Tgts'], row['Player'], fontsize=9, ha='right')
+        plt.text(row['Tgts'] / weeks, (row['Rec'] / row['Tgts'])+0.01, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+
+    for i, team in enumerate(wr_receiving_df_parsed['shortname']):
+        logo_url = get_team_logo(team)
+        img = plt.imread(logo_url)
+        imagebox = OffsetImage(img, zoom=0.02)
+        ab = AnnotationBbox(imagebox, ((wr_receiving_df_parsed['Tgts'] / weeks)[i], (wr_receiving_df_parsed['Rec'] / wr_receiving_df_parsed['Tgts'])[i]), frameon=False,zorder=1)
+        ax.add_artist(ab)
 
     x_mean = (wr_receiving_df_parsed['Tgts'] / weeks).mean()
     y_mean = (wr_receiving_df_parsed['Rec'] / wr_receiving_df_parsed['Tgts']).mean()
-    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
-    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
+    ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
@@ -309,18 +346,28 @@ def TE_TPG_RPG(db_name, weeks):
     df = PullFromDatabase.receiving(db_name)
     df.drop_duplicates(inplace=True)
     
-    threshold = 1
+    tgts_threshold = 3*weeks
+    rec_threshold = 2*weeks
     
-    wr_receiving_df_parsed = df[(df['Tgts'] > threshold) & (df['Rec'] > 0) & (df['POS'] == 'TE')]
+    te_receiving_df_parsed = df[(df['Tgts'] > tgts_threshold) & (df['Rec'] > rec_threshold) & (df['POS'] == 'TE')]
+    te_receiving_df_parsed.reset_index(inplace=True)
+    
     fig, ax = plt.subplots(figsize=(12,9))
 
-    ax.scatter(wr_receiving_df_parsed['Tgts'] / weeks, wr_receiving_df_parsed['Rec'] / wr_receiving_df_parsed['Tgts'], alpha=0.5)
+    ax.scatter(te_receiving_df_parsed['Tgts'] / weeks, te_receiving_df_parsed['Rec'] / te_receiving_df_parsed['Tgts'], alpha=0.5, s=0)
 
-    for index, row in wr_receiving_df_parsed.iterrows():
-        plt.text(row['Tgts'] / weeks, row['Rec'] / row['Tgts'], row['Player'], fontsize=9, ha='right')
+    for index, row in te_receiving_df_parsed.iterrows():
+        plt.text(row['Tgts'] / weeks, (row['Rec'] / row['Tgts'])+0.005, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+    
+    for i, team in enumerate(te_receiving_df_parsed['shortname']):
+        logo_url = get_team_logo(team)
+        img = plt.imread(logo_url)
+        imagebox = OffsetImage(img, zoom=0.02)
+        ab = AnnotationBbox(imagebox, ((te_receiving_df_parsed['Tgts'] / weeks)[i], (te_receiving_df_parsed['Rec'] / te_receiving_df_parsed['Tgts'])[i]), frameon=False,zorder=1)
+        ax.add_artist(ab)
 
-    x_mean = (wr_receiving_df_parsed['Tgts'] / weeks).mean()
-    y_mean = (wr_receiving_df_parsed['Rec'] / wr_receiving_df_parsed['Tgts']).mean()
+    x_mean = (te_receiving_df_parsed['Tgts'] / weeks).mean()
+    y_mean = (te_receiving_df_parsed['Rec'] / te_receiving_df_parsed['Tgts']).mean()
     ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
     ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
 
@@ -338,20 +385,32 @@ def RPG_vs_TDPR(db_name, weeks):
     df = PullFromDatabase.receiving(db_name)
     df.drop_duplicates(inplace=True)
     
-    threshold = 1
+    tgts_threshold = 4*weeks
+    rec_threshold = 3*weeks
     
-    wr_receiving_df_parsed = df[(df['Tgts'] > threshold) & (df['Rec'] > 0) & (df['POS'] == 'WR')]
+    wr_receiving_df_parsed = df[(df['Tgts'] > tgts_threshold) & (df['Rec'] > rec_threshold) & (df['POS'] == 'WR')]
+    wr_receiving_df_parsed.reset_index(inplace=True)
+    
     fig, ax = plt.subplots(figsize=(12,9))
 
-    ax.scatter(wr_receiving_df_parsed['Rec'] / weeks, wr_receiving_df_parsed['TD'] / wr_receiving_df_parsed['Rec'], alpha=0.5)
+    ax.scatter(wr_receiving_df_parsed['Rec'] / weeks, wr_receiving_df_parsed['TD'] / wr_receiving_df_parsed['Rec'], alpha=0.5, s=0)
 
     for index, row in wr_receiving_df_parsed.iterrows():
-        plt.text(row['Rec'] / weeks, row['TD'] / row['Rec'], row['Player'], fontsize=9, ha='right')
+        plt.text(row['Rec'] / weeks, (row['TD'] / row['Rec'])+0.005, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+
+
+    for i, team in enumerate(wr_receiving_df_parsed['shortname']):
+        logo_url = get_team_logo(team)
+        img = plt.imread(logo_url)
+        imagebox = OffsetImage(img, zoom=0.02)
+        ab = AnnotationBbox(imagebox, ((wr_receiving_df_parsed['Rec'] / weeks)[i], (wr_receiving_df_parsed['TD'] / wr_receiving_df_parsed['Rec'])[i]), frameon=False,zorder=1)
+        ax.add_artist(ab)
+
 
     x_mean = (wr_receiving_df_parsed['Rec'] / weeks).mean()
     y_mean = (wr_receiving_df_parsed['TD'] / wr_receiving_df_parsed['Rec']).mean()
-    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
-    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
+    ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
@@ -591,18 +650,27 @@ def punting(db_name):
     df = PullFromDatabase.punters(db_name)
     
     df = df[(df['Punts'] > 1)]
+    df.reset_index(inplace=True)
     
     fig, ax = plt.subplots(figsize=(12,9))
 
-    ax.scatter(df['Net Avg'], df['TB'], alpha=0.5)
+    ax.scatter(df['Net Avg'], df['TB'], alpha=0.5, s=0)
 
     for index, row in df.iterrows():
-        plt.text(row['Net Avg'], row['TB'], row['Player'], fontsize=9, ha='right')
+        plt.text(row['Net Avg'], row['TB']+0.075, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+        
+    for i, team in enumerate(df['shortname']):
+        logo_url = get_team_logo(team)
+        img = plt.imread(logo_url)
+        imagebox = OffsetImage(img, zoom=0.02)
+        ab = AnnotationBbox(imagebox, ((df['Net Avg'])[i], (df['TB'])[i]), frameon=False,zorder=1)
+        ax.add_artist(ab)
+
     
     x_mean = (df['Net Avg']).mean()
     y_mean = (df['TB']).mean()
-    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
-    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
+    ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
@@ -615,19 +683,30 @@ def punting(db_name):
 def Passing_YPA_vs_CP(db_name):
     df = PullFromDatabase.passing(db_name)
     
-    df = df[(df['Att'] > 20)]
+    att_threshold = 20
+    
+    df = df[(df['Att'] > att_threshold)]
+    df.reset_index(inplace=True)
     
     fig, ax = plt.subplots(figsize=(12,9))
 
     x_mean = (df['Yds/Att']).mean()
     y_mean = (df['Cmp %']).mean()
-    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
-    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
+    ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     
-    ax.scatter(df['Yds/Att'], df['Cmp %'], alpha=0.5)
+    ax.scatter(df['Yds/Att'], df['Cmp %'], alpha=0.5, s=0)
 
     for index, row in df.iterrows():
-        plt.text(row['Yds/Att'], row['Cmp %'], row['Player'], fontsize=9, ha='right')
+        plt.text(row['Yds/Att'], row['Cmp %']+0.75, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+        
+    for i, team in enumerate(df['shortname']):
+        logo_url = get_team_logo(team)
+        img = plt.imread(logo_url)
+        imagebox = OffsetImage(img, zoom=0.02)
+        ab = AnnotationBbox(imagebox, ((df['Yds/Att'])[i], (df['Cmp %'])[i]), frameon=False,zorder=1)
+        ax.add_artist(ab)
+
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
@@ -641,19 +720,29 @@ def Passing_YPA_vs_CP(db_name):
 def Passing_YPG_vs_TD(db_name, weeks):
     df = PullFromDatabase.passing(db_name)
     
-    df = df[(df['Att'] > 20)]
+    att_threshold = 20
+    
+    df = df[(df['Att'] > att_threshold)]
+    df.reset_index(inplace=True)
     
     fig, ax = plt.subplots(figsize=(12,9))
 
     x_mean = (df['Pass Yds'] / weeks).mean()
     y_mean = (df['TD']/ weeks).mean()
-    ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
-    ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
+    ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
+    ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     
-    ax.scatter(df['Pass Yds']/ weeks, df['TD']/ weeks, alpha=0.5)
+    ax.scatter(df['Pass Yds']/ weeks, df['TD']/ weeks, alpha=0.5, s=0)
 
     for index, row in df.iterrows():
-        plt.text(row['Pass Yds']/ weeks, row['TD']/ weeks, row['Player'], fontsize=9, ha='right')
+        plt.text(row['Pass Yds']/ weeks, (row['TD']/ weeks)+0.05, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+        
+    for i, team in enumerate(df['shortname']):
+        logo_url = get_team_logo(team)
+        img = plt.imread(logo_url)
+        imagebox = OffsetImage(img, zoom=0.02)
+        ab = AnnotationBbox(imagebox, ((df['Pass Yds']/ weeks)[i], (df['TD']/ weeks)[i]), frameon=False,zorder=1)
+        ax.add_artist(ab)
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
@@ -675,11 +764,11 @@ if __name__ == '__main__':
     #TE_TPG_RPG(db_name, weeks)
     #Passing_YPG_vs_TD(db_name, weeks)
     #Passing_YPA_vs_CP(db_name)
-    #punting(db_name)
+    punting(db_name)
     #Top12QB_1(db_name)
     #Top12QB(db_name, weeks)
     #RB_YPG(db_name, weeks)
-    RB_YPG_vs_TDPG(db_name, weeks)
+    #RB_YPG_vs_TDPG(db_name, weeks)
     #RPG_vs_TDPR(db_name, weeks)
     #TPG_RPG(db_name, weeks)
     #RPG_YPG(db_name, weeks)
