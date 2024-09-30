@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import matplotlib.colors as mcolors
 from sklearn.cluster import KMeans
+import FantasyCalc
 
 def get_team_logo(team_abbr):
     current_dir = os.getcwd()
@@ -754,6 +755,46 @@ def Passing_YPG_vs_TD(db_name, weeks):
     plt.show()
 
 
+def Team_Defensive_Fantasy_Scoring_vs_Allowed(db_name, weeks):
+    df = PullFromDatabase.team_total_def(db_name)
+    #(td, points_allowed, sacks, ints, fum_rec, safety, forced_fum, blocked_kick)
+    print(df.columns)
+    # Sums the passing and rushing defenses, mulitplies by 7 (includes PATs), and divides by weeks 
+    df['Points_Allowed'] = ((df['Rush TD'].astype(float) + df['Pass TD'].astype(float)) * 7) / weeks
+    df['Points_Scored'] = (df['INT TD'].astype(float) + df['FR TD'].astype(float)) / weeks
+
+    fantasy_points = []
+    for i in range(len(df)):
+        fantasy_points.append(FantasyCalc.Team_D(df['Points_Scored'][i], df['Points_Allowed'][i], df['Sck'][i], df['INT'][i], df['FR'][i], df['SFTY'][i], df['FF'][i]))
+    df['Fantasy_Points'] = fantasy_points
+    print(df['Fantasy_Points'])
+
+    df.reset_index(inplace=True)
+    
+    fig, ax = plt.subplots(figsize=(12,9))
+
+    x_mean = (df['Fantasy_Points']/ weeks).mean()
+    y_mean = (df['Points_Allowed']/ weeks).mean()
+    ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5), zorder=0)
+    ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5), zorder=0)
+    
+    ax.scatter(df['Fantasy_Points']/ weeks, df['Points_Allowed']/ weeks, alpha=0.5, s=0)
+
+    for i, team in enumerate(df['shortname']):
+        logo_url = get_team_logo(team)
+        img = plt.imread(logo_url)
+        imagebox = OffsetImage(img, zoom=0.05)
+        ab = AnnotationBbox(imagebox, ((df['Fantasy_Points']/ weeks)[i], (df['Points_Allowed']/ weeks)[i]), frameon=False, zorder=2)
+        ax.add_artist(ab)
+
+    ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--', zorder=0)
+
+    plt.title('NFL 2024: Team Defense Fantasy Points vs TDs Allowed per Game', fontsize=16, fontweight='bold')
+    plt.xlabel('Fantasy Points per Game', fontsize=12)
+    plt.ylabel('TDs Allowed per Game', fontsize=12)
+    plt.tight_layout()
+    plt.savefig('2024/plots/team_defensive_fantasy_scoring_vs_allowed.png', dpi=450)
+    plt.show()
 
 
 
@@ -764,7 +805,7 @@ if __name__ == '__main__':
     #TE_TPG_RPG(db_name, weeks)
     #Passing_YPG_vs_TD(db_name, weeks)
     #Passing_YPA_vs_CP(db_name)
-    punting(db_name)
+    #punting(db_name)
     #Top12QB_1(db_name)
     #Top12QB(db_name, weeks)
     #RB_YPG(db_name, weeks)
@@ -776,5 +817,6 @@ if __name__ == '__main__':
     #Target_Share(db_name)
     #Team_Attempts_Pct(db_name)
     #Team_Attempts_Both(db_name)
+    Team_Defensive_Fantasy_Scoring_vs_Allowed(db_name, weeks)
     
     

@@ -11,8 +11,8 @@ def Receiving(recs,yards,td,two_pt):
 def Kicking(FG_19,FG_29,FG_39,FG_49,FG_50,PAT,PAT_missed,FG_missed):
     return FG_19 * 3 + FG_29 * 3 + FG_39 * 3 + FG_49 * 4 + FG_50 * 5 + PAT - PAT_missed * 1 - FG_missed * 1
 
-def Team_D(td, points_allowed, sacks, ints, fum_rec, safety, forced_fum, blocked_kick):
-    points_allowed_pts = 0
+def Team_D(td, points_allowed, sacks, ints, fum_rec, safety, forced_fum):
+    #points_allowed_pts = 0
     if points_allowed == 0:
         points_allowed_pts = 10
     elif points_allowed <= 6:
@@ -25,7 +25,7 @@ def Team_D(td, points_allowed, sacks, ints, fum_rec, safety, forced_fum, blocked
         points_allowed_pts = -1
     else:
         points_allowed_pts = -4
-    return td * 6 + points_allowed_pts + sacks * 1 + ints * 2 + fum_rec * 2 + safety * 2 + forced_fum * 1 + blocked_kick * 2
+    return td * 6 + points_allowed_pts + sacks * 1 + ints * 2 + fum_rec * 2 + safety * 2 + forced_fum * 1
 
 def Special_D(td,forced_fum,fum_rec):
     return td * 6 + forced_fum * 1 + fum_rec * 1
