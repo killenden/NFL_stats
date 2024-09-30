@@ -170,7 +170,19 @@ def punters(db_name):
     df = pull_db(query,db_name)
     return df
 
+def team_total_def(db_name):
 
+    query = '''
+    SELECT DISTINCT teams.team_name, teams.shortname, team_fumbles_def.FF, team_fumbles_def.FR, team_fumbles_def."FR TD", team_fumbles_def."Rec FUM", team_fumbles_def."Rush FUM", team_ints_def.INT, team_ints_def."INT TD", team_scoring_def."SFTY", team_passing_def.Sck, team_passing_def.TD AS "Pass TD", team_rushing_def.TD AS "Rush TD"
+    FROM teams
+    INNER JOIN team_fumbles_def ON team_fumbles_def.Team = teams.team_id
+    INNER JOIN team_ints_def ON team_ints_def.Team = teams.team_id
+    INNER JOIN team_passing_def ON team_passing_def.Team = teams.team_id
+    INNER JOIN team_rushing_def ON team_rushing_def.Team = teams.team_id
+    INNER JOIN team_scoring_def ON team_scoring_def.Team = teams.team_id;
+    '''
+    team_total_def_df = pull_db(query,db_name)
+    return team_total_def_df
 
 
 
