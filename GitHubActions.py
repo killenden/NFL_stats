@@ -41,6 +41,7 @@ def main():
         stats.Passing_YPG_vs_TD(db_name, weeks)
         stats.Passing_YPA_vs_CP(db_name)
         stats.punting(db_name)
+        stats.Team_Defensive_Fantasy_Scoring_vs_Allowed(db_name, weeks)
         
     else:
         print("No DB number provided.")
