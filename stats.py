@@ -47,6 +47,7 @@ def Team_Attempts(db_name):
     plt.ylim(df['Pass_Att'].min() - 1, df['Pass_Att'].max() + 1)
     plt.savefig('2024/plots/Team_Attempts.png', dpi=450)
     plt.show()
+    print('Team_Attempts Completed')
     
 def Team_Attempts_Pct(db_name):
     df = PullFromDatabase.team_off_plays(db_name)
@@ -87,6 +88,7 @@ def Team_Attempts_Pct(db_name):
     plt.ylim((df['Pass_Att']/df['Tot_Att']).min() - 0.025, (df['Pass_Att']/df['Tot_Att']).max() + 0.025)
     plt.savefig('2024/plots/Team_Attempts_Pct.png', dpi=450)
     plt.show()
+    print('Team_Attempts_Pct Completed')
 
 def Team_Attempts_Both(db_name):
     df = PullFromDatabase.team_both_plays(db_name)
@@ -132,6 +134,7 @@ def Team_Attempts_Both(db_name):
     plt.ylim((df['Tot_Off_Att']).min() - 0.025, (df['Tot_Off_Att']).max() + 0.025)
     plt.savefig('2024/plots/Team_Attempts_Both.png', dpi=450)
     plt.show()
+    print('Team_Attempts_Both Completed')
 
 
 def Team_Attempts_Both_Pct(db_name):
@@ -178,6 +181,7 @@ def Team_Attempts_Both_Pct(db_name):
     plt.ylim((df['Tot_Off_Att']/df['Tot_Att']).min() - 0.025, (df['Tot_Off_Att']/df['Tot_Att']).max() + 0.025)
     plt.savefig('2024/plots/Team_Attempts_Both_Pct.png', dpi=450)
     plt.show()
+    print('Team_Attempts_Both_Pct Completed')
     
 def Target_Share(db_name):
     df = PullFromDatabase.team_off_target_share_plays(db_name)
@@ -222,6 +226,7 @@ def Target_Share(db_name):
     plt.ylim((df['Tgt_Share']).min() - 1.25, (df['Tgt_Share']).max() + 1.25)
     plt.savefig('2024/plots/Target_Share.png', dpi=450)
     plt.show()
+    print('Target_Share Completed')
 
 
 def TPG_vs_YPR(db_name, weeks):
@@ -261,6 +266,7 @@ def TPG_vs_YPR(db_name, weeks):
     plt.ylabel('Yards per Reception', fontsize=12)
     plt.savefig('2024/plots/TPG_vs_YPR.png', dpi=450)
     plt.show()
+    print('TPG_vs_YPR Completed')
 
 
 def RPG_YPG(db_name, weeks):
@@ -302,7 +308,7 @@ def RPG_YPG(db_name, weeks):
     plt.tight_layout()
     plt.savefig('2024/plots/RPG_YPG.png', dpi=450)
     plt.show()
-    
+    print('RPG_YPG Completed')
     
 
 def TPG_RPG(db_name, weeks):
@@ -342,6 +348,7 @@ def TPG_RPG(db_name, weeks):
     plt.tight_layout()
     plt.savefig('2024/plots/TPG_RPG.png', dpi=450)
     plt.show()
+    print('TPG_RPG Completed')
 
 def TE_TPG_RPG(db_name, weeks):
     df = PullFromDatabase.receiving(db_name)
@@ -380,7 +387,7 @@ def TE_TPG_RPG(db_name, weeks):
     plt.tight_layout()
     plt.savefig('2024/plots/TE_TPG_RPG.png', dpi=450)
     plt.show()
-    
+    print('TE_TPG_RPG Completed')
     
 def RPG_vs_TDPR(db_name, weeks):
     df = PullFromDatabase.receiving(db_name)
@@ -420,6 +427,7 @@ def RPG_vs_TDPR(db_name, weeks):
     plt.ylabel('TDs per Reception', fontsize=12)
     plt.savefig('2024/plots/RPG_vs_TDPR.png', dpi=450)
     plt.show()
+    print('RPG_vs_TDPR Completed')
 
 
 def RB_YPG_vs_TDPG(db_name, weeks):
@@ -471,6 +479,7 @@ def RB_YPG_vs_TDPG(db_name, weeks):
     plt.tight_layout()
     plt.savefig('2024/plots/RB_YPG_vs_TDPG.png', dpi=450)
     plt.show()
+    print('RB_YPG_vs_TDPG Completed')
     
     
 def RB_YPG(db_name, weeks):
@@ -539,6 +548,7 @@ def RB_YPG(db_name, weeks):
     plt.tight_layout()
     plt.savefig('2024/plots/RB_YPG.png', dpi=450, bbox_inches='tight')
     plt.show()
+    print('RB_YPG Completed')
 
 def Top12QB(db_name, weeks):
     qb_df = PullFromDatabase.qb(db_name)
@@ -590,6 +600,7 @@ def Top12QB(db_name, weeks):
     plt.tight_layout()
     plt.savefig('2024/plots/Top12QB', dpi=450, bbox_inches='tight')
     plt.show()
+    print('Top12QB Completed')
 
 def Top12QB_1(db_name):
     qb_df = PullFromDatabase.qb(db_name)
@@ -646,6 +657,7 @@ def Top12QB_1(db_name):
     plt.tight_layout(rect=[0, 0, 1, 0.96])
     plt.savefig('2024/plots/Top12QB_1.png', dpi=450, bbox_inches='tight')
     plt.show()
+    print('Top12QB_1 Completed')
 
 def punting(db_name):
     df = PullFromDatabase.punters(db_name)
@@ -680,6 +692,7 @@ def punting(db_name):
     plt.ylabel('Touchback Count', fontsize=12)
     plt.savefig('2024/plots/NYPP_vs_TB.png', dpi=450)
     plt.show()
+    print('punting Completed')
     
 def Passing_YPA_vs_CP(db_name):
     df = PullFromDatabase.passing(db_name)
@@ -717,6 +730,7 @@ def Passing_YPA_vs_CP(db_name):
     plt.tight_layout()
     plt.savefig('2024/plots/Passing_YPA_vs_CP.png', dpi=450)
     plt.show()
+    print('Passing_YPA_vs_CP Completed')
     
 def Passing_YPG_vs_TD(db_name, weeks):
     df = PullFromDatabase.passing(db_name)
@@ -753,7 +767,7 @@ def Passing_YPG_vs_TD(db_name, weeks):
     plt.tight_layout()
     plt.savefig('2024/plots/Passing_YPG_vs_TD.png', dpi=450)
     plt.show()
-
+    print('Passing_YPG_vs_TD Completed')
 
 def Team_Defensive_Fantasy_Scoring_vs_Allowed(db_name, weeks):
     df = PullFromDatabase.team_total_def(db_name)
@@ -795,7 +809,7 @@ def Team_Defensive_Fantasy_Scoring_vs_Allowed(db_name, weeks):
     plt.tight_layout()
     plt.savefig('2024/plots/team_defensive_fantasy_scoring_vs_allowed.png', dpi=450)
     plt.show()
-
+    print('Team_Defensive_Fantasy_Scoring_vs_Allowed Completed')
 
 
 if __name__ == '__main__':
