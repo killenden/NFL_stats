@@ -829,7 +829,7 @@ if __name__ == '__main__':
     RPG_vs_TDPR(db_name, weeks)
     RB_YPG_vs_TDPG(db_name, weeks)
     RB_YPG(db_name, weeks)
-    Top12QB_1(db_name, weeks)
+    Top12QB_1(db_name)
     TE_TPG_RPG(db_name, weeks)
     Passing_YPG_vs_TD(db_name, weeks)
     Passing_YPA_vs_CP(db_name,weeks)
