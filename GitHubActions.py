@@ -35,7 +35,7 @@ def main():
         stats.RPG_vs_TDPR(db_dir, weeks)
         stats.RB_YPG_vs_TDPG(db_dir, weeks)
         stats.RB_YPG(db_dir, weeks)
-        stats.Top12QB_1(db_name)
+        stats.Top12QB_1(db_dir)
         stats.TE_TPG_RPG(db_dir, weeks)
         stats.Passing_YPG_vs_TD(db_dir, weeks)
         stats.Passing_YPA_vs_CP(db_dir,weeks)
