@@ -8,6 +8,8 @@ on:
 jobs:
   run_stats_py_file:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
     
     steps:
     - name: Checkout code
