@@ -7,7 +7,7 @@ on:
 
 jobs:
   run_stats_py_file:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
