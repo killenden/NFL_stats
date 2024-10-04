@@ -20,9 +20,9 @@ def main():
                 print(f"Error: '{week_number}' is not a valid number")
         print(f"DB number received: {db_number}")
         print(f"week number received: {week_number}")
-        db_name = rf'database/{db_number}_database.db'
+        db_dir = rf'database/{db_number}_database.db'
         current_directory = os.getcwd()
-        db_dir = os.path.join(current_directory, db_name)
+        db_dir = os.path.join(current_directory, db_dir)
         weeks = week_number
         stats.Team_Attempts(db_dir)
         stats.Team_Attempts_Pct(db_dir)
@@ -35,12 +35,11 @@ def main():
         stats.RPG_vs_TDPR(db_dir, weeks)
         stats.RB_YPG_vs_TDPG(db_dir, weeks)
         stats.RB_YPG(db_dir, weeks)
-        stats.Top12QB(db_dir, weeks)
-        stats.Top12QB_1(db_dir)
+        stats.Top12QB_1(db_dir, weeks)
         stats.TE_TPG_RPG(db_dir, weeks)
         stats.Passing_YPG_vs_TD(db_dir, weeks)
-        stats.Passing_YPA_vs_CP(db_dir)
-        stats.punting(db_dir)
+        stats.Passing_YPA_vs_CP(db_dir,weeks)
+        stats.punting(db_dir,weeks)
         stats.Team_Defensive_Fantasy_Scoring_vs_Allowed(db_dir, weeks)
         
     else:
