@@ -37,11 +37,11 @@ def main():
         stats.RB_YPG(db_dir, weeks)
         stats.Top12QB(db_dir, weeks)
         stats.Top12QB_1(db_dir)
-        stats.TE_TPG_RPG(db_name, weeks)
-        stats.Passing_YPG_vs_TD(db_name, weeks)
-        stats.Passing_YPA_vs_CP(db_name)
-        stats.punting(db_name)
-        stats.Team_Defensive_Fantasy_Scoring_vs_Allowed(db_name, weeks)
+        stats.TE_TPG_RPG(db_dir, weeks)
+        stats.Passing_YPG_vs_TD(db_dir, weeks)
+        stats.Passing_YPA_vs_CP(db_dir)
+        stats.punting(db_dir)
+        stats.Team_Defensive_Fantasy_Scoring_vs_Allowed(db_dir, weeks)
         
     else:
         print("No DB number provided.")
