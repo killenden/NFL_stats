@@ -192,6 +192,10 @@ def Target_Share(db_name):
     df = df[df['Tgt_Share'] > df['Tgt_Share'].mean()]
     df.reset_index(inplace=True)
     
+    tgts_threshold = 15
+    
+    df = df[(df['Tgt_Share'] > tgts_threshold)]
+    df.reset_index(inplace=True)
         
     # Create scatter plot with team logos as markers
     fig, ax = plt.subplots(figsize=(12, 9))
@@ -233,8 +237,8 @@ def TPG_vs_YPR(db_name, weeks):
     df = PullFromDatabase.receiving(db_name)
     df.drop_duplicates(inplace=True)
     
-    tgts_threshold = 3*weeks
-    rec_threshold = 2*weeks
+    tgts_threshold = 5*weeks
+    rec_threshold = 4*weeks
     
     wr_receiving_df_parsed = df[(df['Tgts'] > tgts_threshold) & (df['Rec'] > rec_threshold) & (df['POS'] == 'WR')]
     wr_receiving_df_parsed.reset_index(inplace=True)
@@ -273,8 +277,8 @@ def RPG_YPG(db_name, weeks):
     df = PullFromDatabase.receiving(db_name)
     df.drop_duplicates(inplace=True)
     
-    tgts_threshold = 3*weeks
-    rec_threshold = 2*weeks
+    tgts_threshold = 4*weeks
+    rec_threshold = 3*weeks
     
     wr_receiving_df_parsed = df[(df['Tgts'] > tgts_threshold) & (df['Rec'] > rec_threshold) & (df['POS'] == 'WR')]
     wr_receiving_df_parsed.reset_index(inplace=True)
@@ -315,8 +319,8 @@ def TPG_RPG(db_name, weeks):
     df = PullFromDatabase.receiving(db_name)
     df.drop_duplicates(inplace=True)
     
-    tgts_threshold = 3*weeks
-    rec_threshold = 2*weeks
+    tgts_threshold = 4*weeks
+    rec_threshold = 3*weeks
     
     wr_receiving_df_parsed = df[(df['Tgts'] > tgts_threshold) & (df['Rec'] > rec_threshold) & (df['POS'] == 'WR')]
     wr_receiving_df_parsed.reset_index(inplace=True)
@@ -354,8 +358,8 @@ def TE_TPG_RPG(db_name, weeks):
     df = PullFromDatabase.receiving(db_name)
     df.drop_duplicates(inplace=True)
     
-    tgts_threshold = 3*weeks
-    rec_threshold = 2*weeks
+    tgts_threshold = 4*weeks
+    rec_threshold = 3*weeks
     
     te_receiving_df_parsed = df[(df['Tgts'] > tgts_threshold) & (df['Rec'] > rec_threshold) & (df['POS'] == 'TE')]
     te_receiving_df_parsed.reset_index(inplace=True)
@@ -437,7 +441,7 @@ def RB_YPG_vs_TDPG(db_name, weeks):
     rushing_df.drop_duplicates(inplace=True)
     
 
-    Att_threshold = 7.5*weeks
+    Att_threshold = 10*weeks
     
     rb_rushing_df_parsed = rushing_df[(rushing_df['Att'] > Att_threshold) & (rushing_df['POS'] == "RB")]
 
@@ -489,8 +493,8 @@ def RB_YPG(db_name, weeks):
     rushing_df.drop_duplicates(inplace=True)
     
     threshold = 1
-    rush_yards_threshold = 5
-    yards_threshold = 5
+    rush_yards_threshold = 8
+    yards_threshold = 30
     
     rb_receiving_df_parsed = receiving_df[(receiving_df['Tgts'] > threshold) & (receiving_df['POS'] == 'RB')]
     rb_rushing_df_parsed = rushing_df[(rushing_df['Att'] > threshold) & (rushing_df['POS'] == "RB")]
@@ -659,10 +663,10 @@ def Top12QB_1(db_name):
     plt.show()
     print('Top12QB_1 Completed')
 
-def punting(db_name):
+def punting(db_name,weeks):
     df = PullFromDatabase.punters(db_name)
     
-    df = df[(df['Punts'] > 1)]
+    df = df[(df['Punts'] > 5*weeks)]
     df.reset_index(inplace=True)
     
     fig, ax = plt.subplots(figsize=(12,9))
@@ -694,10 +698,10 @@ def punting(db_name):
     plt.show()
     print('punting Completed')
     
-def Passing_YPA_vs_CP(db_name):
+def Passing_YPA_vs_CP(db_name,weeks):
     df = PullFromDatabase.passing(db_name)
     
-    att_threshold = 20
+    att_threshold = 15*weeks
     
     df = df[(df['Att'] > att_threshold)]
     df.reset_index(inplace=True)
@@ -735,7 +739,7 @@ def Passing_YPA_vs_CP(db_name):
 def Passing_YPG_vs_TD(db_name, weeks):
     df = PullFromDatabase.passing(db_name)
     
-    att_threshold = 20
+    att_threshold = 15*weeks
     
     df = df[(df['Att'] > att_threshold)]
     df.reset_index(inplace=True)
@@ -772,7 +776,6 @@ def Passing_YPG_vs_TD(db_name, weeks):
 def Team_Defensive_Fantasy_Scoring_vs_Allowed(db_name, weeks):
     df = PullFromDatabase.team_total_def(db_name)
     #(td, points_allowed, sacks, ints, fum_rec, safety, forced_fum, blocked_kick)
-    print(df.columns)
     # Sums the passing and rushing defenses, mulitplies by 7 (includes PATs), and divides by weeks 
     df['Points_Allowed'] = ((df['Rush TD'].astype(float) + df['Pass TD'].astype(float)) * 7) / weeks
     df['Points_Scored'] = (df['INT TD'].astype(float) + df['FR TD'].astype(float)) / weeks
@@ -781,7 +784,6 @@ def Team_Defensive_Fantasy_Scoring_vs_Allowed(db_name, weeks):
     for i in range(len(df)):
         fantasy_points.append(FantasyCalc.Team_D(df['Points_Scored'][i], df['Points_Allowed'][i], df['Sck'][i], df['INT'][i], df['FR'][i], df['SFTY'][i], df['FF'][i]))
     df['Fantasy_Points'] = fantasy_points
-    print(df['Fantasy_Points'])
 
     df.reset_index(inplace=True)
     
@@ -816,21 +818,22 @@ if __name__ == '__main__':
     year = 2024
     weeks = 4
     db_name = rf'database\{year}_database.db'
-    #TE_TPG_RPG(db_name, weeks)
-    #Passing_YPG_vs_TD(db_name, weeks)
-    #Passing_YPA_vs_CP(db_name)
-    #punting(db_name)
-    #Top12QB_1(db_name)
-    #Top12QB(db_name, weeks)
-    #RB_YPG(db_name, weeks)
-    #RB_YPG_vs_TDPG(db_name, weeks)
-    #RPG_vs_TDPR(db_name, weeks)
-    #TPG_RPG(db_name, weeks)
-    #RPG_YPG(db_name, weeks)
-    #TPG_vs_YPR(db_name, weeks)
-    #Target_Share(db_name)
-    #Team_Attempts_Pct(db_name)
-    #Team_Attempts_Both(db_name)
+    Team_Attempts(db_name)
+    Team_Attempts_Pct(db_name)
+    Team_Attempts_Both(db_name)
+    Team_Attempts_Both_Pct(db_name)
+    Target_Share(db_name)
+    TPG_vs_YPR(db_name, weeks)
+    RPG_YPG(db_name, weeks)
+    TPG_RPG(db_name, weeks)
+    RPG_vs_TDPR(db_name, weeks)
+    RB_YPG_vs_TDPG(db_name, weeks)
+    RB_YPG(db_name, weeks)
+    Top12QB_1(db_name, weeks)
+    TE_TPG_RPG(db_name, weeks)
+    Passing_YPG_vs_TD(db_name, weeks)
+    Passing_YPA_vs_CP(db_name,weeks)
+    punting(db_name,weeks)
     Team_Defensive_Fantasy_Scoring_vs_Allowed(db_name, weeks)
     
     
