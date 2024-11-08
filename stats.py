@@ -816,7 +816,7 @@ def Team_Defensive_Fantasy_Scoring_vs_Allowed(db_name, weeks):
 
 if __name__ == '__main__':
     year = 2024
-    weeks = 7
+    weeks = 9
     db_name = rf'database\{year}_database.db'
     Team_Attempts(db_name)
     Team_Attempts_Pct(db_name)
