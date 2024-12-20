@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '00 9 * * 2'
   pull_request:
 
 jobs:
