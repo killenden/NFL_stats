@@ -44,8 +44,8 @@ def main():
         stats.Player_QB_Top12_1(db_dir, weeks, year)
         stats.Player_TE_TPG_vs_RPG(db_dir, weeks, year)
         stats.Player_QB_YPG_vs_TD(db_dir, weeks, year)
-        stats.Player_QB_YPA_vs_CmpPct(db_dir,weeks)
-        stats.Player_K_NetYards_vs_Touchback(db_dir,weeks)
+        stats.Player_QB_YPA_vs_CmpPct(db_dir,weeks, year)
+        stats.Player_K_NetYards_vs_Touchback(db_dir,weeks, year)
         stats.Team_FFScoring_vs_Allowed_Def(db_dir, weeks, year)
         
     else:
