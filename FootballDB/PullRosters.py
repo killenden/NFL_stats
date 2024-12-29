@@ -46,16 +46,25 @@ def PullTeam_FootballDB(url, team):
         
     df_final = pd.DataFrame(columns=headers_list)
         
-    
+    player_dict = {}
     for row in soup.find_all(class_ = 'tr'):
         data_list = []
         data_list.append(team)
         for data in row.contents:
-            if '\n' in data.text:
-                end = find_nth(data.text, '\n', 0)
-                data_list.append(data.text[:end])
-            else:
+            # if '\n' in data.text:
+            #     end = find_nth(data.text, '\n', 0)
+            #     data_list.append(data.text[:end])
+            # else:
+            #     data_list.append(data.text)
+            try:
+                if data.contents[0].attrs['class'][0] == 'rostplayer':
+                    end = find_nth(data.text, '\n', 0)
+                    data_list.append(data.text[:end])
+                    player_dict[data.contents[0].contents[0].contents[0].text] = data.contents[0].contents[0].contents[0].attrs['href']
+            except:
                 data_list.append(data.text)
+                continue
+                    
         
         df_final = pd.concat([pd.DataFrame([data_list], columns=headers_list), df_final], ignore_index=True).reset_index(drop=True)
     # for i in range(1,len(soup.find_all('h4'))):
@@ -72,7 +81,7 @@ def PullTeam_FootballDB(url, team):
     #     df = SearchTable(soup,table,team)
     #     database_df_final = pd.concat([database_df_final,df]).reset_index(drop=True)
     
-    return df_final
+    return df_final, player_dict
 
 if __name__ == '__main__':
     
@@ -108,11 +117,13 @@ if __name__ == '__main__':
             except:
                 continue
     for team_name, link in footballdb_dict.items():
-        df = PullTeam_FootballDB(rf'https://www.footballdb.com{link}',team_name)
+        df, player_dict = PullTeam_FootballDB(rf'https://www.footballdb.com{link}',team_name)
         try:
             df_final = pd.concat([df, df_final], ignore_index=True).reset_index(drop=True)
+            player_dict_final.update(player_dict)
         except:
             df_final = df
+            player_dict_final = player_dict
         print(rf'{team_name} complete')
         
     #TODO: Output to a new db
