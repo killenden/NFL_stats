@@ -4,6 +4,11 @@ import pandas as pd
 import re
 import matplotlib.pyplot as plt
 import os
+from PullPlayerStats import *
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from Database import *
 
 
 
@@ -47,6 +52,7 @@ def PullTeam_FootballDB(url, team):
     df_final = pd.DataFrame(columns=headers_list)
         
     player_dict = {}
+    position_index = headers_list.index('Pos')
     for row in soup.find_all(class_ = 'tr'):
         data_list = []
         data_list.append(team)
@@ -62,11 +68,17 @@ def PullTeam_FootballDB(url, team):
                     data_list.append(data.text[:end])
                     player_dict[data.contents[0].contents[0].contents[0].text] = data.contents[0].contents[0].contents[0].attrs['href']
             except:
-                data_list.append(data.text)
+                if len(data_list) == position_index:
+                    if data.text in ['QB', 'RB', 'WR', 'TE']: # Add more positions as needed
+                        data_list.append(data.text)
+                    else:
+                        data_list = []
+                        break
+                else:
+                    data_list.append(data.text)
                 continue
-                    
-        
-        df_final = pd.concat([pd.DataFrame([data_list], columns=headers_list), df_final], ignore_index=True).reset_index(drop=True)
+        if len(data_list) > 1:
+            df_final = pd.concat([pd.DataFrame([data_list], columns=headers_list), df_final], ignore_index=True).reset_index(drop=True)
     # for i in range(1,len(soup.find_all('h4'))):
         
     #     if i != 1:
@@ -83,14 +95,7 @@ def PullTeam_FootballDB(url, team):
     
     return df_final, player_dict
 
-if __name__ == '__main__':
-    
-    #used for webscraping
-    headers = {
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'}
-
-    r = requests.get('https://www.footballdb.com/teams/index.html', headers=headers)
-    soup = BeautifulSoup(r.text, 'html.parser')
+def ScrapingFootballDB(soup):
     footballdb_dict = {}
     roster_links = []
     for team in soup.find_all(class_ = 'teams-item teams-league-NFL'):
@@ -125,6 +130,27 @@ if __name__ == '__main__':
             df_final = df
             player_dict_final = player_dict
         print(rf'{team_name} complete')
+        
+    return df_final, player_dict_final
+
+if __name__ == '__main__':
+    
+    #used for webscraping
+    
+    
+    for player, player_url in player_dict_final.items():
+        year = '2024'
+        start = find_nth(player_url, '-', 2)
+        player_id = player_url[start+len('-'):]
+        #for link in player_url:
+        #start = time.time()
+        df_receiving, df_defense, df_fumble, df_scoring, df_passing, df_rushing = PullPlayerStats_FootballDB(player_url, year)
+        #end = time.time()
+        #print(rf'{player} done. Took: {end - start} seconds')
+        print('next')
+        
+    #TODO: Create a way to update to DB after each loop
+    #TODO: Missing BYE weeks on the player stats from FootballDB
         
     #TODO: Output to a new db
     #TODO: Loop through every player in the db and add their stats for every week

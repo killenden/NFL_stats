@@ -47,6 +47,7 @@ def PullTeam_FootballDB(url, team):
     df_final = pd.DataFrame(columns=headers_list)
         
     player_dict = {}
+    position_index = headers_list.index('Pos')
     for row in soup.find_all(class_ = 'tr'):
         data_list = []
         data_list.append(team)
@@ -62,11 +63,17 @@ def PullTeam_FootballDB(url, team):
                     data_list.append(data.text[:end])
                     player_dict[data.contents[0].contents[0].contents[0].text] = data.contents[0].contents[0].contents[0].attrs['href']
             except:
-                data_list.append(data.text)
+                if len(data_list) == position_index:
+                    if data.text in ['QB', 'RB', 'WR', 'TE']: # Add more positions as needed
+                        data_list.append(data.text)
+                    else:
+                        data_list = []
+                        break
+                else:
+                    data_list.append(data.text)
                 continue
-                    
-        
-        df_final = pd.concat([pd.DataFrame([data_list], columns=headers_list), df_final], ignore_index=True).reset_index(drop=True)
+        if len(data_list) > 1:
+            df_final = pd.concat([pd.DataFrame([data_list], columns=headers_list), df_final], ignore_index=True).reset_index(drop=True)
     # for i in range(1,len(soup.find_all('h4'))):
         
     #     if i != 1:
@@ -171,17 +178,22 @@ def PullPlayerStats_FootballDB(player_url, year):
     footballdb_dict = {}
     roster_links = []
     
-    game_logs = [rf'{year} Receiving Game Logs', rf'{year} Defense Game Logs', rf'{year} Fumble Game Logs', rf'{year} Scoring Game Logs', rf'{year} Passing Game Logs', rf'{year} Rushing Game Logs']
+    game_logs = [rf'{year} Receiving Game Logs', rf'{year} Fumble Game Logs', rf'{year} Passing Game Logs', rf'{year} Rushing Game Logs']
+    #game_logs = [rf'{year} Receiving Game Logs', rf'{year} Defense Game Logs', rf'{year} Fumble Game Logs', rf'{year} Scoring Game Logs', rf'{year} Passing Game Logs', rf'{year} Rushing Game Logs']
+    
     
     for game_log in game_logs:
         df_final = None
         for player_stats in soup.find_all('div', {'data-title': game_log}):
             headers_list = FindHeaders(player_stats)
             #print('Headers found')
-            player_stats_list = FindPlayersStats(player_stats)
+            start = find_nth(player_url, '-', 2)
+            player_id = player_url[start+len('-'):]
+            player_stats_list = FindPlayersStats(player_stats, )
             #print('Player Stats found')
             df_final = pd.DataFrame(player_stats_list).T
             df_final.columns=headers_list
+            
             break
         if 'Receiving' in game_log:
             df_receiving = df_final
@@ -195,7 +207,8 @@ def PullPlayerStats_FootballDB(player_url, year):
             df_passing = df_final
         elif 'Rushing' in game_log:
             df_rushing = df_final
-    return df_receiving, df_defense, df_fumble, df_scoring, df_passing, df_rushing
+    return df_receiving, df_fumble, df_passing, df_rushing
+    #return df_receiving, df_defense, df_fumble, df_scoring, df_passing, df_rushing
 
 if __name__ == '__main__':
     
@@ -250,6 +263,7 @@ if __name__ == '__main__':
         #end = time.time()
         #print(rf'{player} done. Took: {end - start} seconds')
         print('next')
+        
     #TODO: Create a way to update to DB after each loop
     #TODO: Missing BYE weeks on the player stats from FootballDB
         
