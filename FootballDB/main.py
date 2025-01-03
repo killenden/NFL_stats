@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import os
 import PullPlayerStats
 import PullRosters
+import PullTeamStats
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import Database
@@ -37,7 +38,11 @@ if __name__ == '__main__':
         r = requests.get('https://www.footballdb.com/teams/index.html', headers=headers)
         soup = BeautifulSoup(r.text, 'html.parser')
         
-        
+        ##################################################################################
+        #
+        #                                   ROSTERS
+        #
+        #################################################################################
         database_df_final, player_dict_final = PullRosters.ScrapingFootballDB(soup)
         
         db_teamid_dict = {}
@@ -62,6 +67,30 @@ if __name__ == '__main__':
         dtypes = Database.datatypes(database_df_final)
         Database.add_database_information('players',db_name,database_df_final,dtypes)
     
+        ##################################################################################
+        #
+        #                                   TEAM STATS
+        #
+        #################################################################################
+        (df_offense_overall,        df_offense_passing, df_offense_rushing, df_offense_kickoff_returns, 
+        df_offense_punt_returns,    df_offense_punting, df_offense_scoring, df_offense_downs,
+        df_defense_overall,         df_defense_passing, df_defense_rushing, df_defense_kickoff_returns, 
+        df_defense_punt_returns,    df_defense_punting, df_defense_scoring, df_defense_downs) = PullTeamStats.PullTeamStats_FootballDB(year)
+    
+        #TODO: Update the line below to work for the team stats
+        #Be sure to make the team id the index
+        dataframes = {
+        'passing_df': [df_passing, 'passing'], 'rushing_df': [df_rushing, 'rushing'], 'receiving_df': [df_receiving, 'receiving'],
+        'fumble_df': [df_fumble, 'fumble']}
+        
+        for key,value in dataframes.items():
+            insert_player_stats(value[0], value[1], db_playerid_dict, db_name)
+    
+        ##################################################################################
+        #
+        #                                   PLAYER STATS
+        #
+        #################################################################################
         #TODO: Try this
         for player, player_url in player_dict_final.items():
             #for link in player_url:
@@ -85,7 +114,4 @@ if __name__ == '__main__':
         for key,value in dataframes.items():
             insert_player_stats(value[0], value[1], db_playerid_dict, db_name)
             
-        #TODO: Grab the team stats
-        # https://www.footballdb.com/stats/teamstat.html?lg=NFL&yr=2024&type=reg&cat=S&group=O&conf=&sort=tottd
-        #Relatively easy way to grab the team stats. Look at the cat and group
     print('done')
