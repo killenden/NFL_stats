@@ -27,7 +27,10 @@ def create_db(year):
     
     print(os.path.dirname(os.path.realpath(__file__)))
     
-    reset_db = input('Do you want to reset the db? This will delete all work. (y/n)   ')
+    #reset_db = input('Do you want to reset the db? This will delete all work. (y/n)   ')
+    #TODO: Change this to 'n' for production. 'y' for development
+    reset_db = 'n'
+    
     if reset_db == 'y':
         reset_db1 = input('Are you sure? (y/n)   ')
         if reset_db1 == 'y':
