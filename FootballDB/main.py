@@ -14,7 +14,9 @@ import utils
 import CreateDatabase
 
 def insert_player_stats(df, table_name, dict, db_name):
-    df['Player'] = df['Player'].map(dict)
+    df['Player'] = df.index.map(dict)
+    df = df.reset_index(drop=True)
+    df.dropna(subset=['Player'], inplace=True)
     dtypes = Database.datatypes(df)
     Database.add_database_information(table_name,db_name,df,dtypes)
 
