@@ -92,6 +92,7 @@ def PullTeam_FootballDB(url, team):
 
 def FindHeaders(player_stats):
     headers_list = []
+    colspan_list = []
     headers_list.append('Type')
     if len(player_stats.contents) > 0:
         for table in player_stats.contents:
@@ -101,9 +102,27 @@ def FindHeaders(player_stats):
                         if 'thead' == player_info.name:
                             for headers in player_info.contents:
                                 try:
-                                    if headers.attrs['class'] == ['header', 'right']:
+                                    if headers.attrs['class'] == ['header', 'center']:
                                         for header in headers.contents:
-                                            headers_list.append(header.text)
+                                            if header.text == '\n':
+                                                continue
+                                            if FindColSpan(header) > 0:
+                                                for i in range(0,FindColSpan(header)):
+                                                    colspan_list.append(header.text)
+                                            else:
+                                                colspan_list.append('')
+                                    if headers.attrs['class'] == ['header', 'right']:
+                                        i = 0
+                                        for header in headers.contents:
+                                            if not '\n' == header.text:
+                                                try:
+                                                    if colspan_list[i] != '':
+                                                        headers_list.append(f'{colspan_list[i]} {header.text}')
+                                                    else:
+                                                        headers_list.append(header.text)
+                                                    i += 1
+                                                except:
+                                                    headers_list.append(header.text)
                                         return headers_list
                                 except:
                                     continue
