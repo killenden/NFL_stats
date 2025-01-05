@@ -1,0 +1,42 @@
+name: Run footballdb File
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '00 9 * * 2'
+  pull_request:
+
+jobs:
+  run_stats_py_file:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas numpy matplotlib scikit-learn pysqlite3 beautifulsoup4 requests
+      
+    - name: Run FootballDB/main.py script
+      run: python FootballDB/main.py
+      
+    - name: Commit and push changes
+      run: |
+          git config --local user.email "tonyillenden@gmail.com"
+          git config --local user.name "anthony-illenden"
+          git stash push -u
+          git pull --rebase origin main
+          # Pop the stash
+          git stash pop
+          git add FootballDB/*
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "[BOT] Update by script"
+            git push origin main
+          fi
