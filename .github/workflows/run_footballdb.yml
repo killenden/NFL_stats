@@ -8,7 +8,7 @@ on:
   pull_request:
 
 jobs:
-  run_stats_py_file:
+  run_footballdb_main_py_file:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
