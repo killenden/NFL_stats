@@ -37,6 +37,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "[BOT] Update by script"
+            git commit -a -m "[BOT] Updated db by script"
             git push origin FootballDB
           fi
