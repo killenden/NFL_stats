@@ -171,7 +171,11 @@ def FindPlayersStats(player_stats):
         return player_statistics_dict
 
 
-def PullPlayerStats_FootballDB(player_url, year):
+def PullPlayerStats_FootballDB(player, player_url, year):
+    
+    headers = {
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'}
+
     
     r = requests.get(rf'https://www.footballdb.com{player_url}/gamelogs/{year}', headers=headers)
     soup = BeautifulSoup(r.text, 'html.parser')
@@ -189,12 +193,15 @@ def PullPlayerStats_FootballDB(player_url, year):
             #print('Headers found')
             start = find_nth(player_url, '-', 2)
             player_id = player_url[start+len('-'):]
-            player_stats_list = FindPlayersStats(player_stats, )
+            player_stats_list = FindPlayersStats(player_stats)
             #print('Player Stats found')
-            df_final = pd.DataFrame(player_stats_list).T
-            df_final.columns=headers_list
-            
+            if player_stats_list == None:
+                return None, None, None, None
+            else:
+                df_final = pd.DataFrame(player_stats_list).T
+                df_final.columns=headers_list
             break
+        
         if 'Receiving' in game_log:
             df_receiving = df_final
         elif 'Defense' in game_log:

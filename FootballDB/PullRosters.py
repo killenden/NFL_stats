@@ -66,12 +66,15 @@ def PullTeam_FootballDB(url, team):
                 if data.contents[0].attrs['class'][0] == 'rostplayer':
                     end = find_nth(data.text, '\n', 0)
                     data_list.append(data.text[:end])
-                    player_dict[data.contents[0].contents[0].contents[0].text] = data.contents[0].contents[0].contents[0].attrs['href']
+                    name = data.contents[0].contents[0].contents[0].text
+                    player_dict[name] = data.contents[0].contents[0].contents[0].attrs['href']
+                    
             except:
                 if len(data_list) == position_index:
                     if data.text in ['QB', 'RB', 'WR', 'TE']: # Add more positions as needed
                         data_list.append(data.text)
                     else:
+                        del player_dict[name]
                         data_list = []
                         break
                 else:

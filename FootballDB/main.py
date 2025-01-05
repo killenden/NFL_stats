@@ -20,7 +20,8 @@ def insert_player_stats(df, table_name, dict, db_name):
 
 def insert_team_stats(df, table_name, dict, db_name):
     df['Team'] = df.index.map(dict)
-    df = df.reset_index(drop=True) 
+    df = df.reset_index(drop=True)
+    df.dropna(subset=['Team'], inplace=True)
     dtypes = Database.datatypes(df)
     Database.add_database_information(table_name,db_name,df,dtypes)
 
@@ -80,11 +81,25 @@ if __name__ == '__main__':
         #TODO: Update the line below to work for the team stats
         #Be sure to make the team id the index
         dataframes = {
-        'passing_df': [df_passing, 'passing'], 'rushing_df': [df_rushing, 'rushing'], 'receiving_df': [df_receiving, 'receiving'],
-        'fumble_df': [df_fumble, 'fumble']}
+        'df_offense_overall': [df_offense_overall, 'offense_overall'],
+        'df_offense_passing': [df_offense_passing, 'offense_passing'],
+        'df_offense_rushing': [df_offense_rushing, 'offense_rushing'],
+        'df_offense_kickoff_returns': [df_offense_kickoff_returns, 'offense_kickoff_returns'],
+        'df_offense_punt_returns': [df_offense_punt_returns, 'offense_punt_returns'],
+        'df_offense_punting': [df_offense_punting, 'offense_punting'],
+        'df_offense_scoring': [df_offense_scoring, 'offense_scoring'],
+        'df_offense_downs': [df_offense_downs, 'offense_downs'],
+        'df_defense_overall': [df_defense_overall, 'defense_overall'],
+        'df_defense_passing': [df_defense_passing, 'defense_passing'],
+        'df_defense_rushing': [df_defense_rushing, 'defense_rushing'],
+        'df_defense_kickoff_returns': [df_defense_kickoff_returns, 'defense_kickoff_returns'],
+        'df_defense_punt_returns': [df_defense_punt_returns, 'defense_punt_returns'],
+        'df_defense_punting': [df_defense_punting, 'defense_punting'],
+        'df_defense_scoring': [df_defense_scoring, 'defense_scoring'],
+        'df_defense_downs': [df_defense_downs, 'defense_downs']}
         
         for key,value in dataframes.items():
-            insert_player_stats(value[0], value[1], db_playerid_dict, db_name)
+            insert_team_stats(value[0], value[1], db_teamid_dict, db_name)
     
         ##################################################################################
         #
@@ -95,21 +110,96 @@ if __name__ == '__main__':
         for player, player_url in player_dict_final.items():
             #for link in player_url:
             #start = time.time()
-            df_receiving, df_fumble, df_passing, df_rushing = PullRosters.PullPlayerStats_FootballDB(player_url, year)
+            df_receiving, df_fumble, df_passing, df_rushing = PullPlayerStats.PullPlayerStats_FootballDB(player, player_url, year)
             #end = time.time()
             #print(rf'{player} done. Took: {end - start} seconds')
+            
+            try:
+                if df_receiving == None:
+                    df_receiving = pd.DataFrame()
+            except:
+                df_receiving.reset_index(inplace=True)
+                df_receiving.rename(columns={'index': 'Week'}, inplace=True)  # Rename the old index column
+                df_receiving['Player'] = player
+                df_receiving.set_index('Player', inplace=True)
+            
+            try:
+                if df_fumble == None:
+                    df_fumble = pd.DataFrame()
+            except:
+                df_fumble.reset_index(inplace=True)
+                df_fumble.rename(columns={'index': 'Week'}, inplace=True)  # Rename the old index column
+                df_fumble['Player'] = player
+                df_fumble.set_index('Player', inplace=True)
+            
+            try:
+                if df_passing == None:
+                    df_passing = pd.DataFrame()
+            except:
+                df_passing.reset_index(inplace=True)
+                df_passing.rename(columns={'index': 'Week'}, inplace=True)  # Rename the old index column
+                df_passing['Player'] = player
+                df_passing.set_index('Player', inplace=True)
+            
+            try:
+                if df_rushing == None:
+                    df_rushing = pd.DataFrame()
+            except:
+                df_rushing.reset_index(inplace=True)
+                df_rushing.rename(columns={'index': 'Week'}, inplace=True)  # Rename the old index column
+                df_rushing['Player'] = player
+                df_rushing.set_index('Player', inplace=True)
+
+                
+            if df_receiving.empty:
+                    pass
+            else:
+                try:
+                    df_receiving_final = pd.concat([df_receiving, df_receiving_final])
+                except:
+                    df_receiving_final = df_receiving
+        
+            if df_fumble.empty:
+                    pass
+            else:
+                try:
+                    df_fumble_final = pd.concat([df_fumble, df_fumble_final])
+                except:
+                    df_fumble_final = df_fumble
+        
+        
+            if df_passing.empty:
+                    pass
+            else:
+                try:
+                    df_passing_final = pd.concat([df_passing, df_passing_final])
+                except:
+                    df_passing_final = df_passing
+        
+        
+            if df_rushing.empty:
+                    pass
+            else:
+                try:
+                    df_rushing_final = pd.concat([df_rushing, df_rushing_final])
+                except:
+                    df_rushing_final = df_rushing
+                
             print(rf'{player} done')
 
-        all_df = pd.concat([df_receiving, df_fumble, df_passing, df_rushing]).reset_index(drop=True)
+        all_list = df_receiving_final.index.to_list() + df_fumble_final.index.to_list() + df_passing_final.index.to_list() +df_rushing_final.index.to_list()
+        all_list = list(set(all_list))
+        
+        #all_df = pd.concat([df_receiving_final, df_fumble_final, df_passing_final, df_rushing_final])
         
 
         db_playerid_dict = {}
-        for value in all_df['Player'].unique():
+        for value in all_list:
             db_playerid_dict[value] = Database.get_player_id(db_name,value)
             
         dataframes = {
-        'passing_df': [df_passing, 'passing'], 'rushing_df': [df_rushing, 'rushing'], 'receiving_df': [df_receiving, 'receiving'],
-        'fumble_df': [df_fumble, 'fumble']}
+        'passing_df': [df_passing_final, 'passing'], 'rushing_df': [df_rushing_final, 'rushing'], 'receiving_df': [df_receiving_final, 'receiving'],
+        'fumble_df': [df_fumble_final, 'fumble']}
         
         for key,value in dataframes.items():
             insert_player_stats(value[0], value[1], db_playerid_dict, db_name)

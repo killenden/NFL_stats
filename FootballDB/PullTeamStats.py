@@ -92,6 +92,7 @@ def PullTeam_FootballDB(url, team):
 
 def FindHeaders(stats):
     headers_list = []
+    colspan_list = []
     #headers_list.append('Type')
     if len(stats.contents) > 0:
         for table in stats.contents:
@@ -100,10 +101,27 @@ def FindHeaders(stats):
                     try:
                         for headers in table.contents:
                             try:
+                                if headers.attrs['class'] == ['header', 'center']:
+                                    for header in headers.contents:
+                                        if header.text == '\n':
+                                            continue
+                                        if FindColSpan(header) > 0:
+                                            for i in range(0,FindColSpan(header)):
+                                                colspan_list.append(header.text)
+                                        else:
+                                            colspan_list.append('')
                                 if headers.attrs['class'] == ['header', 'right']:
+                                    i = 0
                                     for header in headers.contents:
                                         if not '\n' == header.text:
-                                            headers_list.append(header.text)
+                                            try:
+                                                if colspan_list[i] != '':
+                                                    headers_list.append(f'{colspan_list[i]} {header.text}')
+                                                else:
+                                                    headers_list.append(header.text)
+                                                i += 1
+                                            except:
+                                                headers_list.append(header.text)
                                     return headers_list
                             except:
                                 continue
@@ -259,7 +277,9 @@ def PullTeamStats_FootballDB(year):
                 headers_list = FindHeaders(team_stats)
                 #print('Headers found')
                 df_final = FindTeamStats(team_stats, headers_list)
+                df_final.set_index('Team', inplace=True)
                 break
+            
             
             if rf'{group} {category}' == 'Offense Overall':
                 df_offense_overall = df_final
