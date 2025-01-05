@@ -2,7 +2,7 @@ name: Run footballdb File
 on:
   push:
     branches:
-      - main
+      - FootballDB
   schedule:
     - cron: '00 9 * * 2'
   pull_request:
@@ -30,7 +30,7 @@ jobs:
           git config --local user.email "tonyillenden@gmail.com"
           git config --local user.name "anthony-illenden"
           git stash push -u
-          git pull --rebase origin main
+          git pull --rebase origin FootballDB
           # Pop the stash
           git stash pop
           git add FootballDB/*
@@ -38,5 +38,5 @@ jobs:
             echo "No changes to commit."
           else
             git commit -m "[BOT] Update by script"
-            git push origin main
+            git push origin FootballDB
           fi
