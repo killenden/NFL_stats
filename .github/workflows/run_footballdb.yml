@@ -22,18 +22,23 @@ jobs:
         python -m pip install --upgrade pip
         pip install pandas numpy matplotlib scikit-learn pysqlite3 beautifulsoup4 requests
 
-    - name: Verify file changes before running script
+    - name: Save initial .db file
       run: |
-        echo "File contents before script:"
-        cat database/2024.db || echo "File not found"
+        mkdir -p artifacts
+        cp database/2024.db artifacts/2024_before.db || echo "File not found before script"
 
     - name: Run FootballDB/main.py script
       run: python FootballDB/main.py
 
-    - name: Verify file changes after running script
+    - name: Save updated .db file
       run: |
-        echo "File contents after script:"
-        cat database/2024.db || echo "File not found"
+        cp database/2024.db artifacts/2024_after.db || echo "File not found after script"
+
+    - name: Upload .db files as artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: db-files
+        path: artifacts/
 
     - name: Commit and push changes
       run: |
