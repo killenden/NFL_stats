@@ -1,4 +1,4 @@
-name: Run FootballDB Main Python File
+name: Run footballdb File
 on:
   push:
     branches:
@@ -16,6 +16,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
+        ref: ${{ github.event.pull_request.head.ref }}
 
     - name: Install Dependencies
       run: |
@@ -40,23 +43,29 @@ jobs:
         name: db-files
         path: artifacts/
 
+    # Create branch and commit changes
     - name: Create branch and commit
       uses: EndBug/add-and-commit@v9
       with:
-        add: 'database/2024.db'
+        add: './database/2024.db'
         default_author: github_actions
         message: '[BOT] Update database'
         new_branch: footballdb/updated-db-${{ github.run_id }}
         push: origin footballdb/updated-db-${{ github.run_id }} --set-upstream --force
-  
+
+    # Debugging: List all remote branches
+    - name: Debug Branches
+      run: git branch -r
+
+    # Create pull request using the newly created branch
     - name: Create Pull Request
       shell: bash
       run: |
         curl \
         -X POST \
-        -H 'authorization: Bearer ${{ secrets.PAT_TOKEN }}' \
+        -H "Authorization: Bearer ${{ secrets.PAT_TOKEN }}" \
         -H "Accept: application/vnd.github.v3+json" \
-        https://api.github.com/repos/${{ github.repository }}/pulls \
+        https://api.github.com/repos/killenden/NFL_stats/pulls \
         -d '{
           "title": "[BOT] Update database",
           "body": "Database updated!",
