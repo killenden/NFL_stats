@@ -43,7 +43,7 @@ jobs:
     - name: Create branch and commit
       uses: EndBug/add-and-commit@v9
       with:
-        add: './2024.db'
+        add: 'database/2024.db'
         default_author: github_actions
         message: '[BOT] Update database'
         new_branch: footballdb/updated-db-${{ github.run_id }}
@@ -54,7 +54,12 @@ jobs:
       run: |
         curl \
         -X POST \
-        -H 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        -H 'authorization: Bearer ${{ secrets.PAT_TOKEN }}' \
         -H "Accept: application/vnd.github.v3+json" \
         https://api.github.com/repos/${{ github.repository }}/pulls \
-        -d '{"title":"[BOT] Update database","body":"Database updated!","head":"footballdb/updated-db-${{ github.run_id }}","base":"main"}'
+        -d '{
+          "title": "[BOT] Update database",
+          "body": "Database updated!",
+          "head": "footballdb/updated-db-${{ github.run_id }}",
+          "base": "main"
+        }'
