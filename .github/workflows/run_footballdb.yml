@@ -8,7 +8,7 @@ on:
   pull_request:
 
 jobs:
-  run_footballdb_main_py_file:
+  run_stats_py_file:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -37,6 +37,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
-            git commit -a -m "[BOT] Updated db by script"
+            git commit -m "[BOT] Update by script"
             git push origin FootballDB
           fi
