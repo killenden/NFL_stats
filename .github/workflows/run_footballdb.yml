@@ -35,3 +35,4 @@ jobs:
         else
           git commit -m "[BOT] Updated db by script"
           git push origin FootballDB
+        fi
