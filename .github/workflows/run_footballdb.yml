@@ -22,8 +22,18 @@ jobs:
         python -m pip install --upgrade pip
         pip install pandas numpy matplotlib scikit-learn pysqlite3 beautifulsoup4 requests
 
+    - name: Verify file changes before running script
+      run: |
+        echo "File contents before script:"
+        cat database/2024.db || echo "File not found"
+
     - name: Run FootballDB/main.py script
       run: python FootballDB/main.py
+
+    - name: Verify file changes after running script
+      run: |
+        echo "File contents after script:"
+        cat database/2024.db || echo "File not found"
 
     - name: Commit and push changes
       run: |
