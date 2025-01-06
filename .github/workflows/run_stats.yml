@@ -54,8 +54,6 @@ jobs:
         
     - name: Commit and push changes
       run: |
-          git config --local user.email "tonyillenden@gmail.com"
-          git config --local user.name "anthony-illenden"
           git stash push -u
           git pull --rebase origin main
           # Pop the stash
