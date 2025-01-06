@@ -16,6 +16,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
+        ref: ${{ github.event.pull_request.head.ref }}
 
     - name: Install Dependencies
       run: |
@@ -40,14 +43,21 @@ jobs:
         name: db-files
         path: artifacts/
 
-    - name: Commit and push changes
+    - name: Create branch and commit
+      uses: EndBug/add-and-commit@v9
+      with:
+        add: './2024.db'
+        default_author: github_actions
+        message: '[BOT] Update database'
+        new_branch: footballdb/updated-db
+        push: origin footballdb/updated-db --set-upstream --force
+  
+    - name: Create Pull Request
+      shell: bash
       run: |
-        git config --local user.email "tonyillenden@gmail.com"
-        git config --local user.name "anthony-illenden"
-        git add database/2024.db
-        if git diff --staged --quiet; then
-          echo "No changes to commit."
-        else
-          git commit -m "[BOT] Updated db by script"
-          git push origin FootballDB
-        fi
+        curl \
+        -X POST \
+        -H 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        -H "Accept: application/vnd.github.v3+json" \
+        https://api.github.com/repos/(USER)/(REPO)/pulls \
+        -d '{"title":"[BOT] Update database","body":"Database updated!","head":"footballdb/updated-db","base":"main"}
