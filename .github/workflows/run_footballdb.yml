@@ -1,4 +1,4 @@
-name: Run FootballDB File
+name: Run FootballDB Main Python File
 on:
   push:
     branches:
