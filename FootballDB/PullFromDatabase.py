@@ -1,6 +1,7 @@
 import pandas as pd
 import sqlite3
 import os
+import numpy as np
 
 
 def pull_db(query,db_name):
@@ -18,7 +19,7 @@ def pull_db(query,db_name):
 def receiving(db_name):
     
     query = '''
-    SELECT players.Player, positions.Pos, receiving.Week, receiving."Receiving Rec" AS "Rx Rec", receiving."Receiving Yds" AS Yds, receiving."Receiving Avg" AS Avg, receiving."Receiving Lg" AS Lg, receiving."Receiving TD" AS TD, receiving."Receiving FD" AS FD, receiving."Receiving 20+" AS twenty_plus, receiving."Receiving Tar" AS Tgts, receiving."Receiving YAC" AS YAC, teams.team_name, teams.shortname
+    SELECT players.Player, positions.Pos, receiving.Type, receiving.Week, receiving."Receiving Rec" AS "Rx Rec", receiving."Receiving Yds" AS "Rx Yds", receiving."Receiving Avg" AS Avg, receiving."Receiving Lg" AS "Rx Lg", receiving."Receiving TD" AS "Rx TD", receiving."Receiving FD" AS "Rx FD", receiving."Receiving 20+" AS "Rx twenty_plus", receiving."Receiving Tar" AS "Rx Tgts", receiving."Receiving YAC" AS "Rx YAC", teams.team_name, teams.shortname
     FROM players
     INNER JOIN teams ON players.Team = teams.team_id
     INNER JOIN positions ON players.Pos = positions.pos_id
@@ -30,7 +31,7 @@ def receiving(db_name):
 
 def rushing(db_name):
     query = '''
-    SELECT DISTINCT players.Player, positions.POS, rushing."Rush Yds", rushing."Att", rushing."TD", rushing."Lng", rushing."20+", rushing."40+", rushing."Rush FUM", rushing."Rush 1st", rushing."Rush 1st%", teams.team_name, teams.shortname
+    SELECT DISTINCT players.Player, positions.POS, rushing.Type, receiving.Week, rushing."Rushing Att" AS "Rush Att", rushing."Rushing Yds" AS "Rush Yds", rushing."Rushing Avg" AS "Rush Avg", rushing."Rushing TD" AS "Rush TD", rushing."Rushing FD" AS "Rush FD", rushing."Rushing Att" AS "Rush ten_plus", teams.team_name, teams.shortname
     FROM players
     INNER JOIN teams ON players.Team = teams.team_id
     INNER JOIN positions ON players.Pos = positions.pos_id
@@ -193,7 +194,34 @@ if __name__ == '__main__':
     db_name = rf'database\{year}.db'
     
     
-    output = receiving(db_name)
+    df = receiving(db_name)
+    
+    
+    string_replace = ['Injured Reserve','Did Not Play','Inactive', '--']
+    for i in df.columns:
+        for j in string_replace:
+            df[i] = df[i].replace(j,np.nan)
+        if 'Lg' in i:
+            for j in range(len(df[i])):
+                if isinstance(df.loc[j, i], str):
+                    df.loc[j, i] = int(df.loc[j, i].replace('t', df.loc[j, i][:-1]))
+
+    
+    stat_dict = {}
+    for player in df['Player'].unique():
+        player_stats = []
+        player_df = df[(df['Player'] == player) & (df['Type'] == 'Regular')]
+        if len(player_df) == 0:
+            continue
+        for col in player_df.columns:
+            if isinstance(player_df[col].values[0], str):
+                continue
+            else:
+                player_stats.append((col, player_df[col].sum()))
+        stat_dict[player] = player_stats
+        
+    
+        
     
     
     
