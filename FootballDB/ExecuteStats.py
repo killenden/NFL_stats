@@ -1,5 +1,4 @@
 
-import utils
 import pandas as pd
 import os
 import PullFromDatabase
@@ -8,8 +7,12 @@ import matplotlib.pyplot as plt
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import matplotlib.colors as mcolors
 from sklearn.cluster import KMeans
-import FantasyCalc
-from Sleeper import SleeperInfo
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import Database
+import utils
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../Sleeper')))
+import SleeperInfo
 
 def get_team_logo(team_abbr):
     current_dir = os.getcwd()
@@ -18,8 +21,12 @@ def get_team_logo(team_abbr):
     return file_path
 
 def Team_RushAtt_PassAtt_Off(db_name, weeks, year):
-    df = PullFromDatabase.team_off_plays(db_name)
-
+    pass_df = PullFromDatabase.team_off_passing(db_name)
+    rush_df = PullFromDatabase.team_off_rushing(db_name)
+    df = pd.merge(pass_df, rush_df, on='team_name')
+    df.drop('shortname_y', axis=1, inplace=True)
+    df.rename(columns={'shortname_x': 'shortname'}, inplace=True)
+    
     # Create scatter plot with team logos as markers
     fig, ax = plt.subplots(figsize=(12, 9))
 
@@ -29,11 +36,11 @@ def Team_RushAtt_PassAtt_Off(db_name, weeks, year):
         logo_url = get_team_logo(team)
         img = plt.imread(logo_url)
         imagebox = OffsetImage(img, zoom=zoom)
-        ab = AnnotationBbox(imagebox, (df['Rush_Att'][i], df['Pass_Att'][i]), frameon=False)
+        ab = AnnotationBbox(imagebox, (df['Rush Att'][i], df['Pass Att'][i]), frameon=False)
         ax.add_artist(ab)
 
-    x_mean = (df['Rush_Att']).mean()
-    y_mean = (df['Pass_Att']).mean()
+    x_mean = (df['Rush Att']).mean()
+    y_mean = (df['Pass Att']).mean()
     ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
@@ -44,20 +51,24 @@ def Team_RushAtt_PassAtt_Off(db_name, weeks, year):
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
-    plt.xlim(df['Rush_Att'].min() - (df['Rush_Att'].min()/weeks)/2, df['Rush_Att'].max() + (df['Rush_Att'].max()/weeks)/2)
-    plt.ylim(df['Pass_Att'].min() - (df['Pass_Att'].min()/weeks)/2, df['Pass_Att'].max() + (df['Pass_Att'].max()/weeks)/2)
+    plt.xlim(df['Rush Att'].min() - (df['Rush Att'].min()/weeks)/2, df['Rush Att'].max() + (df['Rush Att'].max()/weeks)/2)
+    plt.ylim(df['Pass Att'].min() - (df['Pass Att'].min()/weeks)/2, df['Pass Att'].max() + (df['Pass Att'].max()/weeks)/2)
     plt.savefig(f'{year}/plots/Team_RushAtt_PassAtt_Off.png', dpi=450)
     plt.show()
     print('Team_RushAtt_PassAtt_Off Completed')
     
 def Team_RushAtt_PassAtt_Off_Linearized(db_name, weeks, year):
-    df = PullFromDatabase.team_off_plays(db_name)
+    pass_df = PullFromDatabase.team_off_passing(db_name)
+    rush_df = PullFromDatabase.team_off_rushing(db_name)
+    df = pd.merge(pass_df, rush_df, on='team_name')
+    df.drop('shortname_y', axis=1, inplace=True)
+    df.rename(columns={'shortname_x': 'shortname'}, inplace=True)
     
     total_att = []
     for i in range(len(df)):
-        total_att.append(df['Rush_Att'].iloc[i] + df['Pass_Att'].iloc[i])
+        total_att.append(df['Rush Att'].iloc[i] + df['Pass Att'].iloc[i])
         
-    df['Tot_Att'] = total_att
+    df['Tot Att'] = total_att
     
     
         
@@ -70,11 +81,11 @@ def Team_RushAtt_PassAtt_Off_Linearized(db_name, weeks, year):
         logo_url = get_team_logo(team)
         img = plt.imread(logo_url)
         imagebox = OffsetImage(img, zoom=zoom)
-        ab = AnnotationBbox(imagebox, (df['Rush_Att'][i]/df['Tot_Att'][i], df['Pass_Att'][i]/df['Tot_Att'][i]), frameon=False)
+        ab = AnnotationBbox(imagebox, (df['Rush Att'][i]/df['Tot Att'][i], df['Pass Att'][i]/df['Tot Att'][i]), frameon=False)
         ax.add_artist(ab)
 
-    x_mean = (df['Rush_Att']/df['Tot_Att']).mean()
-    y_mean = (df['Pass_Att']/df['Tot_Att']).mean()
+    x_mean = (df['Rush Att']/df['Tot Att']).mean()
+    y_mean = (df['Pass Att']/df['Tot Att']).mean()
     ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
@@ -85,26 +96,45 @@ def Team_RushAtt_PassAtt_Off_Linearized(db_name, weeks, year):
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
-    plt.xlim((df['Rush_Att']/df['Tot_Att']).min() - 0.025, (df['Rush_Att']/df['Tot_Att']).max() + 0.025)
-    plt.ylim((df['Pass_Att']/df['Tot_Att']).min() - 0.025, (df['Pass_Att']/df['Tot_Att']).max() + 0.025)
+    plt.xlim((df['Rush Att']/df['Tot Att']).min() - 0.025, (df['Rush Att']/df['Tot Att']).max() + 0.025)
+    plt.ylim((df['Pass Att']/df['Tot Att']).min() - 0.025, (df['Pass Att']/df['Tot Att']).max() + 0.025)
     plt.savefig(f'{year}/plots/Team_RushAtt_PassAtt_Off_Linearized.png', dpi=450)
     plt.show()
     print('Team_RushAtt_PassAtt_Off_Linearized Completed')
 
 def Team_RushAtt_PassAtt_Both(db_name, weeks, year):
-    df = PullFromDatabase.team_both_plays(db_name)
+    pass_df = PullFromDatabase.team_off_passing(db_name)
+    rush_df = PullFromDatabase.team_off_rushing(db_name)
+    df1 = pd.merge(pass_df, rush_df, on='team_name')
+    df1.drop('shortname_y', axis=1, inplace=True)
+    df1.rename(columns={'shortname_x': 'shortname'}, inplace=True)
+    for col in df1.columns:
+        if col != 'team_name' and col != 'shortname':
+            df1.rename(columns={col: 'Off '+col}, inplace=True)
+    
+    pass_df = PullFromDatabase.team_def_passing(db_name)
+    rush_df = PullFromDatabase.team_def_rushing(db_name)
+    df2 = pd.merge(pass_df, rush_df, on='team_name')
+    df2.drop('shortname_y', axis=1, inplace=True)
+    df2.rename(columns={'shortname_x': 'shortname'}, inplace=True)
+    for col in df2.columns:
+        if col != 'team_name' and col != 'shortname':
+            df2.rename(columns={col: 'Def '+col}, inplace=True)
+        
+    df = pd.merge(df1, df2, on='team_name')
+    df.rename(columns={'shortname_x': 'shortname'}, inplace=True)
     
     total_off_att = []
     total_def_att = []
     for i in range(len(df)):
-        total_off_att.append(df['Rush_Off_Att'].iloc[i] + df['Pass_Off_Att'].iloc[i])
+        total_off_att.append(df['Off Rush Att'].iloc[i] + df['Off Pass Att'].iloc[i])
         
     for i in range(len(df)):
-        total_def_att.append(df['Rush_Def_Att'].iloc[i] + df['Pass_Def_Att'].iloc[i])
+        total_def_att.append(df['Def Rush Att'].iloc[i] + df['Def Pass Att'].iloc[i])
         
-    df['Tot_Off_Att'] = total_off_att
-    df['Tot_Def_Att'] = total_def_att
-    df['Tot_Att'] = df['Tot_Off_Att'] + df['Tot_Def_Att']
+    df['Off Tot Att'] = total_off_att
+    df['Def Tot Att'] = total_def_att
+    df['Tot Att'] = df['Off Tot Att'] + df['Def Tot Att']
     
         
     # Create scatter plot with team logos as markers
@@ -116,42 +146,61 @@ def Team_RushAtt_PassAtt_Both(db_name, weeks, year):
         logo_url = get_team_logo(team)
         img = plt.imread(logo_url)
         imagebox = OffsetImage(img, zoom=zoom)
-        ab = AnnotationBbox(imagebox, (df['Tot_Def_Att'][i], df['Tot_Off_Att'][i]), frameon=False)
+        ab = AnnotationBbox(imagebox, (df['Def Tot Att'][i], df['Off Tot Att'][i]), frameon=False)
         ax.add_artist(ab)
 
-    x_mean = (df['Tot_Def_Att']).mean()
-    y_mean = (df['Tot_Off_Att']).mean()
+    x_mean = (df['Def Tot Att']).mean()
+    y_mean = (df['Off Tot Att']).mean()
     ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
     # Set labels and title
-    ax.set_xlabel('Tot_Def_Att', fontsize=12)
-    ax.set_ylabel('Tot_Off_Att', fontsize=12)
+    ax.set_xlabel('Def Tot Att', fontsize=12)
+    ax.set_ylabel('Off Tot Att', fontsize=12)
     ax.set_title(f'{year} Week {weeks}: Defense Att vs Offense Att', fontsize=16, fontweight='bold')
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
-    plt.xlim((df['Tot_Def_Att']).min() - (df['Tot_Def_Att']).min()/weeks/2, (df['Tot_Def_Att']).max() + (df['Tot_Def_Att']).max()/weeks/2)
-    plt.ylim((df['Tot_Off_Att']).min() - (df['Tot_Off_Att']).min()/weeks/2, (df['Tot_Off_Att']).max() + (df['Tot_Off_Att']).max()/weeks/2)
+    plt.xlim((df['Def Tot Att']).min() - (df['Def Tot Att']).min()/weeks/2, (df['Def Tot Att']).max() + (df['Def Tot Att']).max()/weeks/2)
+    plt.ylim((df['Off Tot Att']).min() - (df['Off Tot Att']).min()/weeks/2, (df['Off Tot Att']).max() + (df['Off Tot Att']).max()/weeks/2)
     plt.savefig(f'{year}/plots/Team_RushAtt_PassAtt_Both.png', dpi=450)
     plt.show()
     print('Team_RushAtt_PassAtt_Both Completed')
 
 
 def Team_RushAtt_PassAtt_Both_Linearized(db_name, weeks, year):
-    df = PullFromDatabase.team_both_plays(db_name)
+    pass_df = PullFromDatabase.team_off_passing(db_name)
+    rush_df = PullFromDatabase.team_off_rushing(db_name)
+    df1 = pd.merge(pass_df, rush_df, on='team_name')
+    df1.drop('shortname_y', axis=1, inplace=True)
+    df1.rename(columns={'shortname_x': 'shortname'}, inplace=True)
+    for col in df1.columns:
+        if col != 'team_name' and col != 'shortname':
+            df1.rename(columns={col: 'Off '+col}, inplace=True)
+    
+    pass_df = PullFromDatabase.team_def_passing(db_name)
+    rush_df = PullFromDatabase.team_def_rushing(db_name)
+    df2 = pd.merge(pass_df, rush_df, on='team_name')
+    df2.drop('shortname_y', axis=1, inplace=True)
+    df2.rename(columns={'shortname_x': 'shortname'}, inplace=True)
+    for col in df2.columns:
+        if col != 'team_name' and col != 'shortname':
+            df2.rename(columns={col: 'Def '+col}, inplace=True)
+        
+    df = pd.merge(df1, df2, on='team_name')
+    df.rename(columns={'shortname_x': 'shortname'}, inplace=True)
     
     total_off_att = []
     total_def_att = []
     for i in range(len(df)):
-        total_off_att.append(df['Rush_Off_Att'].iloc[i] + df['Pass_Off_Att'].iloc[i])
+        total_off_att.append(df['Off Rush Att'].iloc[i] + df['Off Pass Att'].iloc[i])
         
     for i in range(len(df)):
-        total_def_att.append(df['Rush_Def_Att'].iloc[i] + df['Pass_Def_Att'].iloc[i])
+        total_def_att.append(df['Def Rush Att'].iloc[i] + df['Def Pass Att'].iloc[i])
         
-    df['Tot_Off_Att'] = total_off_att
-    df['Tot_Def_Att'] = total_def_att
-    df['Tot_Att'] = df['Tot_Off_Att'] + df['Tot_Def_Att']
+    df['Off Tot Att'] = total_off_att
+    df['Def Tot Att'] = total_def_att
+    df['Tot Att'] = df['Off Tot Att'] + df['Def Tot Att']
     
         
     # Create scatter plot with team logos as markers
@@ -163,11 +212,11 @@ def Team_RushAtt_PassAtt_Both_Linearized(db_name, weeks, year):
         logo_url = get_team_logo(team)
         img = plt.imread(logo_url)
         imagebox = OffsetImage(img, zoom=zoom)
-        ab = AnnotationBbox(imagebox, (df['Tot_Def_Att'][i]/df['Tot_Att'][i], df['Tot_Off_Att'][i]/df['Tot_Att'][i]), frameon=False)
+        ab = AnnotationBbox(imagebox, (df['Def Tot Att'][i]/df['Tot Att'][i], df['Off Tot Att'][i]/df['Tot Att'][i]), frameon=False)
         ax.add_artist(ab)
 
-    x_mean = (df['Tot_Def_Att']/df['Tot_Att']).mean()
-    y_mean = (df['Tot_Off_Att']/df['Tot_Att']).mean()
+    x_mean = (df['Def Tot Att']/df['Tot Att']).mean()
+    y_mean = (df['Off Tot Att']/df['Tot Att']).mean()
     ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
@@ -178,24 +227,29 @@ def Team_RushAtt_PassAtt_Both_Linearized(db_name, weeks, year):
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
-    plt.xlim((df['Tot_Def_Att']/df['Tot_Att']).min() - 0.025, (df['Tot_Off_Att']/df['Tot_Att']).max() + 0.025)
-    plt.ylim((df['Tot_Off_Att']/df['Tot_Att']).min() - 0.025, (df['Tot_Off_Att']/df['Tot_Att']).max() + 0.025)
+    plt.xlim((df['Def Tot Att']/df['Tot Att']).min() - 0.025, (df['Off Tot Att']/df['Tot Att']).max() + 0.025)
+    plt.ylim((df['Off Tot Att']/df['Tot Att']).min() - 0.025, (df['Off Tot Att']/df['Tot Att']).max() + 0.025)
     plt.savefig(f'{year}/plots/Team_RushAtt_PassAtt_Both_Linearized.png', dpi=450)
     plt.show()
     print('Team_RushAtt_PassAtt_Both_Linearized Completed')
     
 def Player_All_Passing_Target_Share(db_name, weeks, year):
     df = PullFromDatabase.team_off_target_share_plays(db_name)
+    df = df.groupby('Player', as_index=False).agg({
+    'shortname': 'first',  # Keep the first occurrence of shortname
+    'Off Pass Att': 'first',
+    'Tgts': 'sum',
+    # Add other columns here with their respective aggregation functions
+})
     
-        
-    df['Tgt_Share'] = (df['Tgts'] / df['Pass_Off_Att'])*100
+    df['Tgt Share'] = (df['Tgts'] / df['Off Pass Att'])*100
     
-    df = df[df['Tgt_Share'] > df['Tgt_Share'].mean()]
+    df = df[df['Tgt Share'] > df['Tgt Share'].mean()]
     df.reset_index(inplace=True)
     
     tgts_threshold = 10
     
-    df = df[(df['Tgt_Share'] > tgts_threshold)]
+    df = df[(df['Tgt Share'] > tgts_threshold)]
     df.reset_index(inplace=True)
         
     # Create scatter plot with team logos as markers
@@ -204,19 +258,19 @@ def Player_All_Passing_Target_Share(db_name, weeks, year):
     zoom = 0.05
 
     for index, row in df.iterrows():
-        plt.text(row['Pass_Off_Att'], (row['Tgt_Share'])+.5, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+        plt.text(row['Off Pass Att'], (row['Tgt Share'])+.5, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
         
-    ax.scatter(df['Pass_Off_Att'], df['Tgt_Share'], alpha=0.5, s=0)
+    ax.scatter(df['Off Pass Att'], df['Tgt Share'], alpha=0.5, s=0)
     
     for i, team in enumerate(df['shortname']):
         logo_url = get_team_logo(team)
         img = plt.imread(logo_url)
         imagebox = OffsetImage(img, zoom=0.02)
-        ab = AnnotationBbox(imagebox, ((df['Pass_Off_Att'])[i], (df['Tgt_Share'])[i]), frameon=False,zorder=1)
+        ab = AnnotationBbox(imagebox, ((df['Off Pass Att'])[i], (df['Tgt Share'])[i]), frameon=False,zorder=1)
         ax.add_artist(ab)
 
-    x_mean = (df['Pass_Off_Att']).mean()
-    y_mean = (df['Tgt_Share']).mean()
+    x_mean = (df['Off Pass Att']).mean()
+    y_mean = (df['Tgt Share']).mean()
     ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
@@ -227,8 +281,8 @@ def Player_All_Passing_Target_Share(db_name, weeks, year):
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
-    plt.xlim((df['Pass_Off_Att']).min() - 10, (df['Pass_Off_Att']).max() + 10)
-    plt.ylim((df['Tgt_Share']).min() - 1.25, (df['Tgt_Share']).max() + 1.25)
+    plt.xlim((df['Off Pass Att']).min() - 10, (df['Off Pass Att']).max() + 10)
+    plt.ylim((df['Tgt Share']).min() - 1.25, (df['Tgt Share']).max() + 1.25)
     plt.savefig(f'{year}/plots/Player_All_Passing_Target_Share.png', dpi=450)
     plt.show()
     print('Player_All_Passing_Target_Share Completed')
@@ -818,15 +872,19 @@ def Team_FFScoring_vs_Allowed_Def(db_name, weeks, year):
 
 if __name__ == '__main__':
     nfl_state = SleeperInfo.get_nfl_state()
-    year = nfl_state['season']
-    weeks = nfl_state['week']
+    if nfl_state['season_type'] != 'post':
+        year = nfl_state['season']
+        weeks = nfl_state['week']
+    else:
+        year = 2024
+        weeks = 18
 
-    db_name = rf'database\{year}_database.db'
-    Team_RushAtt_PassAtt_Off(db_name, weeks, year)
-    Team_RushAtt_PassAtt_Off_Linearized(db_name, weeks, year)
-    Team_RushAtt_PassAtt_Both(db_name, weeks, year)
-    Team_RushAtt_PassAtt_Both_Linearized(db_name, weeks, year)
-    Player_All_Passing_Target_Share(db_name, weeks, year)
+    db_name = rf'database\{year}.db'
+    #Team_RushAtt_PassAtt_Off(db_name, weeks, year)
+    #Team_RushAtt_PassAtt_Off_Linearized(db_name, weeks, year)
+    #Team_RushAtt_PassAtt_Both(db_name, weeks, year)
+    #Team_RushAtt_PassAtt_Both_Linearized(db_name, weeks, year)
+    #Player_All_Passing_Target_Share(db_name, weeks, year)
     Player_WR_TPG_vs_YPR(db_name, weeks, year)
     Player_WR_RPG_vs_YPR(db_name, weeks, year)
     Player_WR_TPG_vs_RPG(db_name, weeks, year)

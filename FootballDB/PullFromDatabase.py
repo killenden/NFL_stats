@@ -27,11 +27,11 @@ def receiving(db_name):
     '''
     receiving_df = pull_db(query,db_name)
     #print(receiving_df.sort_values(by='TD', ascending=False))
-    return receiving_df
+    return process_stats(receiving_df)
 
 def rushing(db_name):
     query = '''
-    SELECT DISTINCT players.Player, positions.POS, rushing.Type, receiving.Week, rushing."Rushing Att" AS "Rush Att", rushing."Rushing Yds" AS "Rush Yds", rushing."Rushing Avg" AS "Rush Avg", rushing."Rushing TD" AS "Rush TD", rushing."Rushing FD" AS "Rush FD", rushing."Rushing Att" AS "Rush ten_plus", teams.team_name, teams.shortname
+    SELECT DISTINCT players.Player, positions.POS, rushing.Type, rushing.Week, rushing."Rushing Att" AS "Rush Att", rushing."Rushing Yds" AS "Rush Yds", rushing."Rushing Avg" AS "Rush Avg", rushing."Rushing TD" AS "Rush TD", rushing."Rushing FD" AS "Rush FD", rushing."Rushing Att" AS "Rush ten_plus", teams.team_name, teams.shortname
     FROM players
     INNER JOIN teams ON players.Team = teams.team_id
     INNER JOIN positions ON players.Pos = positions.pos_id
@@ -39,11 +39,11 @@ def rushing(db_name):
     '''
     rushing_df = pull_db(query, db_name)
     #print(rushing_df.sort_values(by='TD', ascending=False))
-    return rushing_df
+    return process_stats(rushing_df)
 
 def passing(db_name):
     query = '''
-    SELECT DISTINCT players.Player, positions.POS, passing."Pass Yds", passing."Yds/Att", passing."Att", passing."Cmp", passing."Cmp %", passing."TD", passing."INT", passing."Rate", passing."Lng", passing."20+", passing."40+", passing."Sck", passing."SckY", passing."1st%", teams.team_name, teams.shortname
+    SELECT DISTINCT players.Player, positions.POS, passing.Type, passing.Week, passing."Passing Att", passing."Passing Cmp", passing."Passing Pct", passing."Passing Yds", passing."Passing TD", passing."PassingTD%T%", passing."Passing Int", passing."Passing Int%I%", passing."Passing Lg", passing."Passing FD", passing."Passing 20+" AS "Passing twenty_plus", passing."Passing Sack", passing."Passing Loss", passing."Passing Rate", teams.team_name, teams.shortname
     FROM players
     INNER JOIN teams ON players.Team = teams.team_id
     INNER JOIN positions ON players.Pos = positions.pos_id
@@ -51,7 +51,7 @@ def passing(db_name):
     '''
     passing_df = pull_db(query, db_name)
     #print(passing_df.sort_values(by='TD', ascending=False))
-    return passing_df
+    return process_stats(passing_df)
 
 def qb(db_name):
     query = '''
@@ -66,137 +66,154 @@ def qb(db_name):
     #print(qb_df)
     return qb_df
 
-def turnover(db_name):
+def fumble(db_name):
     query = '''
-    SELECT DISTINCT teams."shortname", team_fumbles_def."FR", team_ints_def."INT", teams.team_name
+    SELECT DISTINCT players.Player, positions.POS, fumble.Type, fumble.Week, fumble."Fumbles Fum", fumble."Fumbles Lost", fumble."Fumbles Forced", fumble."Recoveries Own", fumble."Recoveries Opp", fumble."Recoveries Tot", fumble."Returns Yds", fumble."Returns TD", teams.team_name, teams.shortname
     FROM players
     INNER JOIN teams ON players.Team = teams.team_id
-    LEFT JOIN team_fumbles_def ON teams.team_id = team_fumbles_def.Team
-    LEFT JOIN team_ints_def ON teams.team_id = team_ints_def.Team
+    INNER JOIN positions ON players.Pos = positions.pos_id
+    INNER JOIN fumble ON players.player_id = fumble.Player
     '''
-    to_df = pull_db(query, db_name)
+    fum_df = pull_db(query, db_name)
     #print(to_df)
-    return to_df
+    return process_stats(fum_df)
 
-def tackles(db_name):
-    query = '''
-    SELECT DISTINCT teams."shortname", team_tackles_def."Comb", team_tackles_def."Asst", team_tackles_def."Solo", teams.team_name
-    FROM players
-    INNER JOIN teams ON players.Team = teams.team_id
-    LEFT JOIN team_tackles_def ON teams.team_id = team_tackles_def.Team
-    '''
-    tackles_df = pull_db(query, db_name)
-    #print(tackles_df)
-    return tackles_df
-
-def team_off_plays(db_name):
+def team_def_downs(db_name):
     
     query = '''
-    SELECT DISTINCT teams.team_name, teams.shortname, team_passing_off.Att AS Pass_Att, team_rushing_off.Att AS Rush_Att
+    SELECT DISTINCT teams.team_name, teams.shortname, defense_downs."First Downs Rush" AS "FD Rush", defense_downs."First Downs Pass" AS "FD Pass", defense_downs."First Downs Tot" AS "FD Tot", defense_downs."Third Down Efficiency Att" AS "Third Down Att", defense_downs."Third Down Efficiency Made" AS "Third Down Made", defense_downs."Third Down Efficiency Pct" AS "Third Down Pct", defense_downs."Fourth Down Efficiency Att" AS "Fourth Down Att", defense_downs."Fourth Down Efficiency Made" AS "Fourth Down Made", defense_downs."Fourth Down Efficiency Pct" AS "Fourth Down Pct"
     FROM teams
-    INNER JOIN team_passing_off ON team_passing_off.Team = teams.team_id
-    INNER JOIN team_rushing_off ON team_rushing_off.Team = teams.team_id;
+    INNER JOIN defense_downs ON defense_downs.Team = teams.team_id;
     '''
-    team_off_plays_df = pull_db(query,db_name)
-    return team_off_plays_df
+    team_def_downs_df = pull_db(query,db_name)
+    return team_def_downs_df
 
-def team_def_plays(db_name):
+def team_off_downs(db_name):
     
     query = '''
-    SELECT DISTINCT teams.team_name, teams.shortname, team_passing_def.Att AS Pass_Att, team_rushing_def.Att AS Rush_Att
+    SELECT DISTINCT teams.team_name, teams.shortname, offense_downs."First Downs Rush" AS "FD Rush", offense_downs."First Downs Pass" AS "FD Pass", offense_downs."First Downs Tot" AS "FD Tot", offense_downs."Third Down Efficiency Att" AS "Third Down Att", offense_downs."Third Down Efficiency Made" AS "Third Down Made", offense_downs."Third Down Efficiency Pct" AS "Third Down Pct", offense_downs."Fourth Down Efficiency Att" AS "Fourth Down Att", offense_downs."Fourth Down Efficiency Made" AS "Fourth Down Made", offense_downs."Fourth Down Efficiency Pct" AS "Fourth Down Pct"
     FROM teams
-    INNER JOIN team_passing_def ON team_passing_def.Team = teams.team_id
-    INNER JOIN team_rushing_def ON team_rushing_def.Team = teams.team_id;
+    INNER JOIN offense_downs ON offense_downs.Team = teams.team_id;
     '''
-    team_def_plays_df = pull_db(query,db_name)
-    return team_def_plays_df
-    
+    team_off_downs_df = pull_db(query,db_name)
+    return team_off_downs_df
 
-def team_both_plays(db_name):
+def team_def_kickoff_returns(db_name):
     
     query = '''
-    SELECT DISTINCT teams.team_name, teams.shortname, team_passing_off.Att AS Pass_Off_Att, team_rushing_off.Att AS Rush_Off_Att, team_passing_def.Att AS Pass_Def_Att, team_rushing_def.Att AS Rush_Def_Att
+    SELECT DISTINCT teams.team_name, teams.shortname, defense_kickoff_returns.Num, defense_kickoff_returns.Yds, defense_kickoff_returns.Avg, defense_kickoff_returns.Lg, defense_kickoff_returns.TD, defense_kickoff_returns.Yds/G
     FROM teams
-    INNER JOIN team_passing_off ON team_passing_off.Team = teams.team_id
-    INNER JOIN team_rushing_off ON team_rushing_off.Team = teams.team_id
-    INNER JOIN team_passing_def ON team_passing_def.Team = teams.team_id
-    INNER JOIN team_rushing_def ON team_rushing_def.Team = teams.team_id;
+    INNER JOIN defense_kickoff_returns ON defense_kickoff_returns.Team = teams.team_id;
     '''
-    team_both_plays_df = pull_db(query,db_name)
-    return team_both_plays_df
+    team_def_kickoff_returns_df = pull_db(query,db_name)
+    return team_def_kickoff_returns_df
+
+def team_off_kickoff_returns(db_name):
+    
+    query = '''
+    SELECT DISTINCT teams.team_name, teams.shortname, offense_kickoff_returns.Num, offense_kickoff_returns.Yds, offense_kickoff_returns.Avg, offense_kickoff_returns.Lg, offense_kickoff_returns.TD, offense_kickoff_returns.Yds/G
+    FROM teams
+    INNER JOIN offense_kickoff_returns ON offense_kickoff_returns.Team = teams.team_id;
+    '''
+    team_off_kickoff_returns_df = pull_db(query,db_name)
+    return team_off_kickoff_returns_df
+
+def team_def_overall(db_name):
+    
+    query = '''
+    SELECT DISTINCT teams.team_name, teams.shortname, defense_overall."Tot Pts" AS "Total Points", defense_overall."Pts/G" AS "Points Per Game", defense_overall."RushYds" AS "Rush Yards", defense_overall."RYds/G" AS "Rush Yards Per Game", defense_overall."PassYds" AS "Pass Yards", defense_overall."PYds/G" AS "Pass Yards Per Game", defense_overall."TotYds" AS "Total Yards", defense_overall."Yds/G" AS "Total Yards Per Game"
+    FROM teams
+    INNER JOIN defense_overall ON defense_overall.Team = teams.team_id;
+    '''
+    team_def_overall_df = pull_db(query,db_name)
+    return team_def_overall_df
+
+def team_off_overall(db_name):
+    
+    query = '''
+    SELECT DISTINCT teams.team_name, teams.shortname, offense_overall."Tot Pts" AS "Total Points", offense_overall."Pts/G" AS "Points Per Game", offense_overall."RushYds" AS "Rush Yards", offense_overall."RYds/G" AS "Rush Yards Per Game", offense_overall."PassYds" AS "Pass Yards", offense_overall."PYds/G" AS "Pass Yards Per Game", offense_overall."TotYds" AS "Total Yards", offense_overall."Yds/G" AS "Total Yards Per Game"
+    FROM teams
+    INNER JOIN offense_overall ON offense_overall.Team = teams.team_id;
+    '''
+    team_off_overall_df = pull_db(query,db_name)
+    return team_off_overall_df
+
+def team_def_passing(db_name):
+    
+    query = '''
+    SELECT DISTINCT teams.team_name, teams.shortname, defense_passing.Att AS "Pass Att", defense_passing.Cmp AS "Pass Cmp", defense_passing.Pct AS "Pass Pct", defense_passing.Yds AS "Pass Yds", defense_passing.YPA AS "Pass YPA", defense_passing.TD AS "Pass TD", defense_passing.Int AS "Pass Int", defense_passing.Sack AS "Pass Sack", defense_passing.Loss AS "Pass Loss", defense_passing.Rate AS "Pass Rate", defense_passing."NetYds" AS "Pass Net Yards", defense_passing."Yds/G" AS "Pass Yards Per Game"
+    FROM teams
+    INNER JOIN defense_passing ON defense_passing.Team = teams.team_id;
+    '''
+    team_def_passing_df = pull_db(query,db_name)
+    return team_def_passing_df
+
+def team_off_passing(db_name):
+    
+    query = '''
+    SELECT DISTINCT teams.team_name, teams.shortname, offense_passing.Att AS "Pass Att", offense_passing.Cmp AS "Pass Cmp", offense_passing.Pct AS "Pass Pct", offense_passing.Yds AS "Pass Yds", offense_passing.YPA AS "Pass YPA", offense_passing.TD AS "Pass TD", offense_passing.Int AS "Pass Int", offense_passing.Sack AS "Pass Sack", offense_passing.Loss AS "Pass Loss", offense_passing.Rate AS "Pass Rate", offense_passing."NetYds" AS "Pass Net Yards", offense_passing."Yds/G" AS "Pass Yards Per Game"
+    FROM teams
+    INNER JOIN offense_passing ON offense_passing.Team = teams.team_id;
+    '''
+    team_off_passing_df = pull_db(query,db_name)
+    return team_off_passing_df
+
+def team_def_rushing(db_name):
+    
+    query = '''
+    SELECT DISTINCT teams.team_name, teams.shortname, defense_rushing.Att AS "Rush Att", defense_rushing.Yds AS "Rush Yds", defense_rushing.Avg AS "Rush Avg", defense_rushing.TD AS "Rush TD", defense_rushing.FD AS "Rush FD", defense_rushing."Yds/G" AS "Rush Yards Per Game"
+    FROM teams
+    INNER JOIN defense_rushing ON defense_rushing.Team = teams.team_id;
+    '''
+    team_def_rushing_df = pull_db(query,db_name)
+    return team_def_rushing_df
+
+def team_off_rushing(db_name):
+    
+    query = '''
+    SELECT DISTINCT teams.team_name, teams.shortname, offense_rushing.Att AS "Rush Att", offense_rushing.Yds AS "Rush Yds", offense_rushing.Avg AS "Rush Avg", offense_rushing.TD AS "Rush TD", offense_rushing.FD AS "Rush FD", offense_rushing."Yds/G" AS "Rush Yards Per Game"
+    FROM teams
+    INNER JOIN offense_rushing ON offense_rushing.Team = teams.team_id;
+    '''
+    team_off_rushing_df = pull_db(query,db_name)
+    return team_off_rushing_df
+
+def team_def_scoring(db_name):
+    
+    query = '''
+    SELECT DISTINCT teams.team_name, teams.shortname, defense_scoring."Touchdowns Tot" AS "Total TD", defense_scoring."Touchdowns R" AS "Rush TD", defense_scoring."Touchdowns P" AS "Pass TD", defense_scoring."Touchdowns KR" AS "KR TD", defense_scoring."Touchdowns IR" AS "IR TD", defense_scoring."Touchdowns FR" AS "FR TD", defense_scoring."Touchdowns BK" AS "BP TD", defense_scoring."Touchdowns BK" AS "BP TD", defense_scoring."Touchdowns FGR" AS "FGR TD", defense_scoring."Kicking PAT", defense_scoring."Kicking FG", defense_scoring."Misc Conv" AS "Conversions", defense_scoring."Misc Saf" AS "Safety", defense_scoring."Misc Pts" AS "Points"
+    FROM teams
+    INNER JOIN defense_scoring ON defense_scoring.Team = teams.team_id;
+    '''
+    team_def_scoring_df = pull_db(query,db_name)
+    return team_def_scoring_df
+
+def team_off_scoring(db_name):
+    
+    query = '''
+    SELECT DISTINCT teams.team_name, teams.shortname, offense_scoring."Touchdowns Tot" AS "Total TD", offense_scoring."Touchdowns R" AS "Rush TD", offense_scoring."Touchdowns P" AS "Pass TD", offense_scoring."Touchdowns KR" AS "KR TD", offense_scoring."Touchdowns IR" AS "IR TD", offense_scoring."Touchdowns FR" AS "FR TD", offense_scoring."Touchdowns BK" AS "BP TD", offense_scoring."Touchdowns BK" AS "BP TD", offense_scoring."Touchdowns FGR" AS "FGR TD", offense_scoring."Kicking PAT", offense_scoring."Kicking FG", offense_scoring."Misc Conv" AS "Conversions", offense_scoring."Misc Saf" AS "Safety", offense_scoring."Misc Pts" AS "Points"
+    FROM teams
+    INNER JOIN offense_scoring ON offense_scoring.Team = teams.team_id;
+    '''
+    team_off_scoring_df = pull_db(query,db_name)
+    return team_off_scoring_df
 
 def team_off_target_share_plays(db_name):
     
     query = '''
-    SELECT DISTINCT players.Player, teams.shortname, team_passing_off.Att AS Pass_Off_Att, receiving.Tgts
+    SELECT DISTINCT players.Player, teams.shortname, offense_passing.Att AS "Off Pass Att", SUM(receiving."Receiving Tar") AS "Tgts"
     FROM players
     INNER JOIN teams ON teams.team_id = players.Team
-    INNER JOIN team_passing_off ON team_passing_off.Team = players.Team
-    INNER JOIN receiving ON receiving.Player = players.player_id;
+    INNER JOIN offense_passing ON offense_passing.Team = players.Team
+    INNER JOIN receiving ON receiving.Player = players.player_id
+    WHERE receiving.Type = 'Regular'
+    GROUP BY players.Player, teams.shortname;
     '''
     df = pull_db(query,db_name)
-    return df
-
-def kickers(db_name):
-    
-    query = '''
-    SELECT DISTINCT players.Player, teams.shortname, kickoff.KO, kickoff.Yds, kickoff."Ret Yds", kickoff.TB, kickoff."TB %", kickoff.Ret, kickoff.Ret_Avg
-    FROM players
-    INNER JOIN teams ON teams.team_id = players.Team
-    INNER JOIN kickoff ON kickoff.Player = players.player_id;
-    '''
-    df = pull_db(query,db_name)
-    return df
-
-def fg_kickers(db_name):
-    
-    query = '''
-    SELECT DISTINCT players.Player, teams.shortname, field_goal.FGM, field_goal.Att, field_goal."FG %", field_goal."1-19 > A-M", field_goal."20-29 > A-M", field_goal."30-39 > A-M", field_goal."40-49 > A-M", field_goal."50-59 > A-M", field_goal."50+ > A-M", field_goal."Lng", field_goal."Fg Blk"
-    FROM players
-    INNER JOIN teams ON teams.team_id = players.Team
-    INNER JOIN field_goal ON field_goal.Player = players.player_id;
-    '''
-    df = pull_db(query,db_name)
-    return df
+    return format_df(df)
 
 
-def punters(db_name):
-    
-    query = '''
-    SELECT DISTINCT players.Player, teams.shortname, punt.Avg, punt."Net Avg", punt."Net Yds", punt."Punts", punt."Lng", punt."Yds", punt."IN 20", punt."OOB", punt."Dn", punt."TB", punt."FC", punt."Ret", punt."Ret", punt."RetY", punt."TD", punt."P Blk"
-    FROM players
-    INNER JOIN teams ON teams.team_id = players.Team
-    INNER JOIN punt ON punt.Player = players.player_id;
-    '''
-    df = pull_db(query,db_name)
-    return df
-
-def team_total_def(db_name):
-
-    query = '''
-    SELECT DISTINCT teams.team_name, teams.shortname, team_fumbles_def.FF, team_fumbles_def.FR, team_fumbles_def."FR TD", team_fumbles_def."Rec FUM", team_fumbles_def."Rush FUM", team_ints_def.INT, team_ints_def."INT TD", team_scoring_def."SFTY", team_passing_def.Sck, team_passing_def.TD AS "Pass TD", team_rushing_def.TD AS "Rush TD"
-    FROM teams
-    INNER JOIN team_fumbles_def ON team_fumbles_def.Team = teams.team_id
-    INNER JOIN team_ints_def ON team_ints_def.Team = teams.team_id
-    INNER JOIN team_passing_def ON team_passing_def.Team = teams.team_id
-    INNER JOIN team_rushing_def ON team_rushing_def.Team = teams.team_id
-    INNER JOIN team_scoring_def ON team_scoring_def.Team = teams.team_id;
-    '''
-    team_total_def_df = pull_db(query,db_name)
-    return team_total_def_df
-
-
-
-if __name__ == '__main__':
-    
-    #db_name = r'NFL_stats\database\2023_database.db'
-    year = 2024
-    db_name = rf'database\{year}.db'
-    
-    
-    df = receiving(db_name)
-    
-    
+def format_df(df):
     string_replace = ['Injured Reserve','Did Not Play','Inactive', '--']
     for i in df.columns:
         for j in string_replace:
@@ -205,8 +222,9 @@ if __name__ == '__main__':
             for j in range(len(df[i])):
                 if isinstance(df.loc[j, i], str):
                     df.loc[j, i] = int(df.loc[j, i].replace('t', df.loc[j, i][:-1]))
+    return df
 
-    
+def total_stats(df):
     stat_dict = {}
     for player in df['Player'].unique():
         player_stats = []
@@ -219,9 +237,23 @@ if __name__ == '__main__':
             else:
                 player_stats.append((col, player_df[col].sum()))
         stat_dict[player] = player_stats
-        
+    return stat_dict
+
+def process_stats(df):
+    output_df = format_df(df)
+    stat_dict = total_stats(output_df)
+    return output_df, stat_dict
+
+if __name__ == '__main__':
     
-        
+    #db_name = r'NFL_stats\database\2023_database.db'
+    year = 2024
+    db_name = rf'database\{year}.db'
+    
+    
+    #df, stats = receiving(db_name)
+
+    df = team_off_downs(db_name)
     
     
     

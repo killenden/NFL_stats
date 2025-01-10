@@ -8,10 +8,10 @@ import PullPlayerStats
 import PullRosters
 import PullTeamStats
 import sys
+import CreateDatabase
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import Database
 import utils
-import CreateDatabase
 
 def insert_player_stats(df, table_name, dict, db_name):
     df['Player'] = df.index.map(dict)
