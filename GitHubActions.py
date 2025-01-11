@@ -1,5 +1,5 @@
 import sys
-import stats
+import ExecuteStats
 import os
 from Sleeper import SleeperInfo
 
@@ -30,23 +30,21 @@ def main():
         db_dir = rf'database/{year}_database.db'
         current_directory = os.getcwd()
         db_dir = os.path.join(current_directory, db_dir)
-        stats.Team_RushAtt_PassAtt_Off(db_dir, weeks, year)
-        stats.Team_RushAtt_PassAtt_Off_Linearized(db_dir, weeks, year)
-        stats.Team_RushAtt_PassAtt_Both(db_dir, weeks, year)
-        stats.Team_RushAtt_PassAtt_Both_Linearized(db_dir, weeks, year)
-        stats.Player_All_Passing_Target_Share(db_dir, weeks, year)
-        stats.Player_WR_TPG_vs_YPR(db_dir, weeks, year)
-        stats.Player_WR_RPG_vs_YPR(db_dir, weeks, year)
-        stats.Player_WR_TPG_vs_RPG(db_dir, weeks, year)
-        stats.Player_WR_RPG_vs_TDPR(db_dir, weeks, year)
-        stats.Player_RB_YPG_vs_TDPG(db_dir, weeks, year)
-        stats.Player_RB_YPG(db_dir, weeks, year)
-        stats.Player_QB_Top12_1(db_dir, weeks, year)
-        stats.Player_TE_TPG_vs_RPG(db_dir, weeks, year)
-        stats.Player_QB_YPG_vs_TD(db_dir, weeks, year)
-        stats.Player_QB_YPA_vs_CmpPct(db_dir,weeks, year)
-        stats.Player_K_NetYards_vs_Touchback(db_dir,weeks, year)
-        stats.Team_FFScoring_vs_Allowed_Def(db_dir, weeks, year)
+        ExecuteStats.Team_RushAtt_PassAtt_Off(db_dir, weeks, year)
+        ExecuteStats.Team_RushAtt_PassAtt_Off_Linearized(db_dir, weeks, year)
+        ExecuteStats.Team_RushAtt_PassAtt_Both(db_dir, weeks, year)
+        ExecuteStats.Team_RushAtt_PassAtt_Both_Linearized(db_dir, weeks, year)
+        ExecuteStats.Player_All_Passing_Target_Share(db_dir, weeks, year)
+        ExecuteStats.Player_WR_TPG_vs_YPR(db_dir, weeks, year)
+        ExecuteStats.Player_WR_RPG_vs_YPR(db_dir, weeks, year)
+        ExecuteStats.Player_WR_TPG_vs_RPG(db_dir, weeks, year)
+        ExecuteStats.Player_WR_RPG_vs_TDPR(db_dir, weeks, year)
+        ExecuteStats.Player_RB_YPG_vs_TDPG(db_dir, weeks, year)
+        ExecuteStats.Player_RB_YPG(db_dir, weeks, year)
+        ExecuteStats.Player_QB_Top12_1(db_dir, weeks, year)
+        ExecuteStats.Player_TE_TPG_vs_RPG(db_dir, weeks, year)
+        ExecuteStats.Player_QB_YPG_vs_TD(db_dir, weeks, year)
+        ExecuteStats.Player_QB_YPA_vs_CmpPct(db_dir,weeks, year)
         
     else:
         print("No DB number provided.")

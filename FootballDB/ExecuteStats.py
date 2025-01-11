@@ -238,11 +238,11 @@ def Player_All_Passing_Target_Share(db_name, weeks, year):
     df = df.groupby('Player', as_index=False).agg({
     'shortname': 'first',  # Keep the first occurrence of shortname
     'Off Pass Att': 'first',
-    'Tgts': 'sum',
+    'Rx Tgts': 'sum',
     # Add other columns here with their respective aggregation functions
 })
     
-    df['Tgt Share'] = (df['Tgts'] / df['Off Pass Att'])*100
+    df['Tgt Share'] = (df['Rx Tgts'] / df['Off Pass Att'])*100
     
     df = df[df['Tgt Share'] > df['Tgt Share'].mean()]
     df.reset_index(inplace=True)
@@ -295,24 +295,24 @@ def Player_WR_TPG_vs_YPR(db_name, weeks, year):
     tgts_threshold = 3*weeks
     rec_threshold = 2*weeks
     
-    wr_receiving_df_parsed = df[(df['Tgts'] > tgts_threshold) & (df['Rec'] > rec_threshold) & (df['POS'] == 'WR')]
+    wr_receiving_df_parsed = df[(df['Rx Tgts'] > tgts_threshold) & (df['Rx Rec'] > rec_threshold) & (df['POS'] == 'WR')]
     wr_receiving_df_parsed.reset_index(inplace=True)
         
     fig, ax = plt.subplots(figsize=(12,9))
-    ax.scatter(wr_receiving_df_parsed['Tgts'] / weeks, wr_receiving_df_parsed['Yds'] / wr_receiving_df_parsed['Rec'], alpha=0.5, s=0)
+    ax.scatter(wr_receiving_df_parsed['Rx Tgts'] / weeks, wr_receiving_df_parsed['Rx Yds'] / wr_receiving_df_parsed['Rx Rec'], alpha=0.5, s=0)
 
     for index, row in wr_receiving_df_parsed.iterrows():
-        plt.text(row['Tgts'] / weeks, (row['Yds'] / row['Rec'])+0.25, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+        plt.text(row['Rx Tgts'] / weeks, (row['Rx Yds'] / row['Rx Rec'])+0.25, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
 
     for i, team in enumerate(wr_receiving_df_parsed['shortname']):
         logo_url = get_team_logo(team)
         img = plt.imread(logo_url)
         imagebox = OffsetImage(img, zoom=0.02)
-        ab = AnnotationBbox(imagebox, ((wr_receiving_df_parsed['Tgts'] / weeks)[i], (wr_receiving_df_parsed['Yds'] / wr_receiving_df_parsed['Rec'])[i]), frameon=False,zorder=1)
+        ab = AnnotationBbox(imagebox, ((wr_receiving_df_parsed['Rx Tgts'] / weeks)[i], (wr_receiving_df_parsed['Rx Yds'] / wr_receiving_df_parsed['Rx Rec'])[i]), frameon=False,zorder=1)
         ax.add_artist(ab)
 
-    x_mean = (wr_receiving_df_parsed['Tgts'] / weeks).mean()
-    y_mean = (wr_receiving_df_parsed['Yds'] / wr_receiving_df_parsed['Rec']).mean()
+    x_mean = (wr_receiving_df_parsed['Rx Tgts'] / weeks).mean()
+    y_mean = (wr_receiving_df_parsed['Rx Yds'] / wr_receiving_df_parsed['Rx Rec']).mean()
     ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
@@ -335,26 +335,26 @@ def Player_WR_RPG_vs_YPR(db_name, weeks, year):
     tgts_threshold = 3*weeks
     rec_threshold = 2*weeks
     
-    wr_receiving_df_parsed = df[(df['Tgts'] > tgts_threshold) & (df['Rec'] > rec_threshold) & (df['POS'] == 'WR')]
+    wr_receiving_df_parsed = df[(df['Rx Tgts'] > tgts_threshold) & (df['Rx Rec'] > rec_threshold) & (df['POS'] == 'WR')]
     wr_receiving_df_parsed.reset_index(inplace=True)
     
     fig, ax = plt.subplots(figsize=(12,9))
 
-    ax.scatter(wr_receiving_df_parsed['Rec'] / weeks, wr_receiving_df_parsed['Yds'] / weeks, alpha=0.5, s=0)
+    ax.scatter(wr_receiving_df_parsed['Rx Rec'] / weeks, wr_receiving_df_parsed['Rx Yds'] / weeks, alpha=0.5, s=0)
 
     for index, row in wr_receiving_df_parsed.iterrows():
-        plt.text(row['Rec'] / weeks, (row['Yds'] / weeks)+2, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+        plt.text(row['Rx Rec'] / weeks, (row['Rx Yds'] / weeks)+2, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
         
     for i, team in enumerate(wr_receiving_df_parsed['shortname']):
         logo_url = get_team_logo(team)
         img = plt.imread(logo_url)
         imagebox = OffsetImage(img, zoom=0.02)
-        ab = AnnotationBbox(imagebox, ((wr_receiving_df_parsed['Rec'] / weeks)[i], (wr_receiving_df_parsed['Yds'] / weeks)[i]), frameon=False,zorder=1)
+        ab = AnnotationBbox(imagebox, ((wr_receiving_df_parsed['Rx Rec'] / weeks)[i], (wr_receiving_df_parsed['Rx Yds'] / weeks)[i]), frameon=False,zorder=1)
         ax.add_artist(ab)
 
 
-    x_mean = (wr_receiving_df_parsed['Rec'] / weeks).mean()
-    y_mean = (wr_receiving_df_parsed['Yds'] / weeks).mean()
+    x_mean = (wr_receiving_df_parsed['Rx Rec'] / weeks).mean()
+    y_mean = (wr_receiving_df_parsed['Rx Yds'] / weeks).mean()
     ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
@@ -377,25 +377,25 @@ def Player_WR_TPG_vs_RPG(db_name, weeks, year):
     tgts_threshold = 3*weeks
     rec_threshold = 2*weeks
     
-    wr_receiving_df_parsed = df[(df['Tgts'] > tgts_threshold) & (df['Rec'] > rec_threshold) & (df['POS'] == 'WR')]
+    wr_receiving_df_parsed = df[(df['Rx Tgts'] > tgts_threshold) & (df['Rx Rec'] > rec_threshold) & (df['POS'] == 'WR')]
     wr_receiving_df_parsed.reset_index(inplace=True)
     
     fig, ax = plt.subplots(figsize=(12,9))
 
-    ax.scatter(wr_receiving_df_parsed['Tgts'] / weeks, wr_receiving_df_parsed['Rec'] / wr_receiving_df_parsed['Tgts'], alpha=0.5, s=0)
+    ax.scatter(wr_receiving_df_parsed['Rx Tgts'] / weeks, wr_receiving_df_parsed['Rx Rec'] / wr_receiving_df_parsed['Rx Tgts'], alpha=0.5, s=0)
 
     for index, row in wr_receiving_df_parsed.iterrows():
-        plt.text(row['Tgts'] / weeks, (row['Rec'] / row['Tgts'])+0.01, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+        plt.text(row['Rx Tgts'] / weeks, (row['Rx Rec'] / row['Rx Tgts'])+0.01, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
 
     for i, team in enumerate(wr_receiving_df_parsed['shortname']):
         logo_url = get_team_logo(team)
         img = plt.imread(logo_url)
         imagebox = OffsetImage(img, zoom=0.02)
-        ab = AnnotationBbox(imagebox, ((wr_receiving_df_parsed['Tgts'] / weeks)[i], (wr_receiving_df_parsed['Rec'] / wr_receiving_df_parsed['Tgts'])[i]), frameon=False,zorder=1)
+        ab = AnnotationBbox(imagebox, ((wr_receiving_df_parsed['Rx Tgts'] / weeks)[i], (wr_receiving_df_parsed['Rx Rec'] / wr_receiving_df_parsed['Rx Tgts'])[i]), frameon=False,zorder=1)
         ax.add_artist(ab)
 
-    x_mean = (wr_receiving_df_parsed['Tgts'] / weeks).mean()
-    y_mean = (wr_receiving_df_parsed['Rec'] / wr_receiving_df_parsed['Tgts']).mean()
+    x_mean = (wr_receiving_df_parsed['Rx Tgts'] / weeks).mean()
+    y_mean = (wr_receiving_df_parsed['Rx Rec'] / wr_receiving_df_parsed['Rx Tgts']).mean()
     ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
@@ -416,25 +416,25 @@ def Player_TE_TPG_vs_RPG(db_name, weeks, year):
     tgts_threshold = 3*weeks
     rec_threshold = 2*weeks
     
-    te_receiving_df_parsed = df[(df['Tgts'] > tgts_threshold) & (df['Rec'] > rec_threshold) & (df['POS'] == 'TE')]
+    te_receiving_df_parsed = df[(df['Rx Tgts'] > tgts_threshold) & (df['Rx Rec'] > rec_threshold) & (df['POS'] == 'TE')]
     te_receiving_df_parsed.reset_index(inplace=True)
     
     fig, ax = plt.subplots(figsize=(12,9))
 
-    ax.scatter(te_receiving_df_parsed['Tgts'] / weeks, te_receiving_df_parsed['Rec'] / te_receiving_df_parsed['Tgts'], alpha=0.5, s=0)
+    ax.scatter(te_receiving_df_parsed['Rx Tgts'] / weeks, te_receiving_df_parsed['Rx Rec'] / te_receiving_df_parsed['Rx Tgts'], alpha=0.5, s=0)
 
     for index, row in te_receiving_df_parsed.iterrows():
-        plt.text(row['Tgts'] / weeks, (row['Rec'] / row['Tgts'])+0.005, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+        plt.text(row['Rx Tgts'] / weeks, (row['Rx Rec'] / row['Rx Tgts'])+0.005, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
     
     for i, team in enumerate(te_receiving_df_parsed['shortname']):
         logo_url = get_team_logo(team)
         img = plt.imread(logo_url)
         imagebox = OffsetImage(img, zoom=0.02)
-        ab = AnnotationBbox(imagebox, ((te_receiving_df_parsed['Tgts'] / weeks)[i], (te_receiving_df_parsed['Rec'] / te_receiving_df_parsed['Tgts'])[i]), frameon=False,zorder=1)
+        ab = AnnotationBbox(imagebox, ((te_receiving_df_parsed['Rx Tgts'] / weeks)[i], (te_receiving_df_parsed['Rx Rec'] / te_receiving_df_parsed['Rx Tgts'])[i]), frameon=False,zorder=1)
         ax.add_artist(ab)
 
-    x_mean = (te_receiving_df_parsed['Tgts'] / weeks).mean()
-    y_mean = (te_receiving_df_parsed['Rec'] / te_receiving_df_parsed['Tgts']).mean()
+    x_mean = (te_receiving_df_parsed['Rx Tgts'] / weeks).mean()
+    y_mean = (te_receiving_df_parsed['Rx Rec'] / te_receiving_df_parsed['Rx Tgts']).mean()
     ax.axvline(x=x_mean, color='black', linestyle='solid', linewidth=1)
     ax.axhline(y=y_mean, color='black', linestyle='solid', linewidth=1)
 
@@ -455,27 +455,27 @@ def Player_WR_RPG_vs_TDPR(db_name, weeks, year):
     tgts_threshold = 3*weeks
     rec_threshold = 2*weeks
     
-    wr_receiving_df_parsed = df[(df['Tgts'] > tgts_threshold) & (df['Rec'] > rec_threshold) & (df['POS'] == 'WR')]
+    wr_receiving_df_parsed = df[(df['Rx Tgts'] > tgts_threshold) & (df['Rx Rec'] > rec_threshold) & (df['POS'] == 'WR')]
     wr_receiving_df_parsed.reset_index(inplace=True)
     
     fig, ax = plt.subplots(figsize=(12,9))
 
-    ax.scatter(wr_receiving_df_parsed['Rec'] / weeks, wr_receiving_df_parsed['TD'] / wr_receiving_df_parsed['Rec'], alpha=0.5, s=0)
+    ax.scatter(wr_receiving_df_parsed['Rx Rec'] / weeks, wr_receiving_df_parsed['Rx TD'] / wr_receiving_df_parsed['Rx Rec'], alpha=0.5, s=0)
 
     for index, row in wr_receiving_df_parsed.iterrows():
-        plt.text(row['Rec'] / weeks, (row['TD'] / row['Rec'])+0.005, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+        plt.text(row['Rx Rec'] / weeks, (row['Rx TD'] / row['Rx Rec'])+0.005, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
 
 
     for i, team in enumerate(wr_receiving_df_parsed['shortname']):
         logo_url = get_team_logo(team)
         img = plt.imread(logo_url)
         imagebox = OffsetImage(img, zoom=0.02)
-        ab = AnnotationBbox(imagebox, ((wr_receiving_df_parsed['Rec'] / weeks)[i], (wr_receiving_df_parsed['TD'] / wr_receiving_df_parsed['Rec'])[i]), frameon=False,zorder=1)
+        ab = AnnotationBbox(imagebox, ((wr_receiving_df_parsed['Rx Rec'] / weeks)[i], (wr_receiving_df_parsed['Rx TD'] / wr_receiving_df_parsed['Rx Rec'])[i]), frameon=False,zorder=1)
         ax.add_artist(ab)
 
 
-    x_mean = (wr_receiving_df_parsed['Rec'] / weeks).mean()
-    y_mean = (wr_receiving_df_parsed['TD'] / wr_receiving_df_parsed['Rec']).mean()
+    x_mean = (wr_receiving_df_parsed['Rx Rec'] / weeks).mean()
+    y_mean = (wr_receiving_df_parsed['Rx TD'] / wr_receiving_df_parsed['Rx Rec']).mean()
     ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
@@ -498,28 +498,28 @@ def Player_RB_YPG_vs_TDPG(db_name, weeks, year):
 
     Att_threshold = 5*weeks
     
-    rb_rushing_df_parsed = rushing_df[(rushing_df['Att'] > Att_threshold) & (rushing_df['POS'] == "RB")]
+    rb_rushing_df_parsed = rushing_df[(rushing_df['Rush Att'] > Att_threshold) & (rushing_df['POS'] == "RB")]
 
     fig, ax = plt.subplots(figsize=(12,9))
 
     rb_rushing_df_parsed['Rush Yds'] = rb_rushing_df_parsed['Rush Yds'].astype(float)
-    rb_rushing_df_parsed['TD'] = rb_rushing_df_parsed['TD'].astype(float)
+    rb_rushing_df_parsed['Rush TD'] = rb_rushing_df_parsed['Rush TD'].astype(float)
     rb_rushing_df_parsed.reset_index(inplace=True)
 
-    ax.scatter(rb_rushing_df_parsed['Rush Yds'].astype(float) / weeks, rb_rushing_df_parsed['TD'].astype(float) / weeks, alpha=0.5, s=0)
+    ax.scatter(rb_rushing_df_parsed['Rush Yds'].astype(float) / weeks, rb_rushing_df_parsed['Rush TD'].astype(float) / weeks, alpha=0.5, s=0)
 
     for index, row in rb_rushing_df_parsed.iterrows():
-        plt.text(row['Rush Yds'] / weeks, (row['TD'] / weeks)+0.02, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+        plt.text(row['Rush Yds'] / weeks, (row['Rush TD'] / weeks)+0.02, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
 
     for i, team in enumerate(rb_rushing_df_parsed['shortname']):
         logo_url = get_team_logo(team)
         img = plt.imread(logo_url)
         imagebox = OffsetImage(img, zoom=0.02)
-        ab = AnnotationBbox(imagebox, ((rb_rushing_df_parsed['Rush Yds']/weeks)[i], (rb_rushing_df_parsed['TD'] / weeks)[i]), frameon=False,zorder=1)
+        ab = AnnotationBbox(imagebox, ((rb_rushing_df_parsed['Rush Yds']/weeks)[i], (rb_rushing_df_parsed['Rush TD'] / weeks)[i]), frameon=False,zorder=1)
         ax.add_artist(ab)
 
     x_mean = (rb_rushing_df_parsed['Rush Yds'].astype(float) / weeks).mean()
-    y_mean = (rb_rushing_df_parsed['TD'].astype(float) / weeks).mean()
+    y_mean = (rb_rushing_df_parsed['Rush TD'].astype(float) / weeks).mean()
     ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
@@ -552,43 +552,43 @@ def Player_RB_YPG(db_name, weeks, year):
     rush_yards_threshold = 10 #by week already
     yards_threshold = 5 #by week already
     
-    rb_receiving_df_parsed = receiving_df[(receiving_df['Tgts'] > Tgts_threshold) & (receiving_df['POS'] == 'RB')]
-    rb_rushing_df_parsed = rushing_df[(rushing_df['Att'] > Att_threshold) & (rushing_df['POS'] == "RB")]
+    rb_receiving_df_parsed = receiving_df[(receiving_df['Rx Tgts'] > Tgts_threshold) & (receiving_df['POS'] == 'RB')]
+    rb_rushing_df_parsed = rushing_df[(rushing_df['Rush Att'] > Att_threshold) & (rushing_df['POS'] == "RB")]
     
     rb_rushing_df_parsed['Rush Yds'] = rb_rushing_df_parsed['Rush Yds'].astype(float)
-    rb_receiving_df_parsed['Yds'] = rb_receiving_df_parsed['Yds'].astype(float)
+    rb_receiving_df_parsed['Rx Yds'] = rb_receiving_df_parsed['Rx Yds'].astype(float)
 
     rb_df = pd.merge(rb_rushing_df_parsed, rb_receiving_df_parsed, on='Player')
-    rb_parsed = rb_df[((rb_df['Rush Yds'].astype(float) / weeks) > rush_yards_threshold) & ((rb_df['Yds'].astype(float)/weeks) > yards_threshold)]
+    rb_parsed = rb_df[((rb_df['Rush Yds'].astype(float) / weeks) > rush_yards_threshold) & ((rb_df['Rx Yds'].astype(float)/weeks) > yards_threshold)]
     rb_parsed.reset_index(inplace=True)
     
     
     fig, ax = plt.subplots(figsize=(12,9))
 
     #kmeans = KMeans(n_clusters = 8)
-    #kmeans.fit(rb_parsed[['Rush Yds', 'Yds']])
+    #kmeans.fit(rb_parsed[['Rush Yds', 'Rx Yds']])
 
-    ##labels = kmeans.predict(rb_parsed[['Rush Yds', 'Yds']])
+    ##labels = kmeans.predict(rb_parsed[['Rush Yds', 'Rx Yds']])
 
-    #plt.scatter(rb_parsed['Rush Yds'].astype(float) / weeks, rb_parsed['Yds'].astype(float) / weeks, c=kmeans.labels_, cmap='gist_rainbow', s=0.0001)
-    plt.scatter(rb_parsed['Rush Yds'].astype(float) / weeks, rb_parsed['Yds'].astype(float) / weeks, s=0)
+    #plt.scatter(rb_parsed['Rush Yds'].astype(float) / weeks, rb_parsed['Rx Yds'].astype(float) / weeks, c=kmeans.labels_, cmap='gist_rainbow', s=0.0001)
+    plt.scatter(rb_parsed['Rush Yds'].astype(float) / weeks, rb_parsed['Rx Yds'].astype(float) / weeks, s=0)
 
 
-    ##ax.scatter(rb_parsed['Rush Yds'].astype(float) / 17, rb_parsed['Yds'].astype(float) / 17, alpha=0.5)
+    ##ax.scatter(rb_parsed['Rush Yds'].astype(float) / 17, rb_parsed['Rx Yds'].astype(float) / 17, alpha=0.5)
 
     for index, row in rb_parsed.iterrows():
-        plt.text(row['Rush Yds'] / weeks, (row['Yds'] / weeks)+0.5, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+        plt.text(row['Rush Yds'] / weeks, (row['Rx Yds'] / weeks)+0.5, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
 
 
     for i, team in enumerate(rb_parsed['shortname_x']):
         logo_url = get_team_logo(team)
         img = plt.imread(logo_url)
         imagebox = OffsetImage(img, zoom=0.02)
-        ab = AnnotationBbox(imagebox, ((rb_parsed['Rush Yds']/weeks)[i], (rb_parsed['Yds']/weeks)[i]), frameon=False,zorder=1)
+        ab = AnnotationBbox(imagebox, ((rb_parsed['Rush Yds']/weeks)[i], (rb_parsed['Rx Yds']/weeks)[i]), frameon=False,zorder=1)
         ax.add_artist(ab)
 
     x_mean = (rb_parsed['Rush Yds'].astype(float) / weeks).mean()
-    y_mean = (rb_parsed['Yds'].astype(float) / weeks).mean()
+    y_mean = (rb_parsed['Rx Yds'].astype(float) / weeks).mean()
     ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
 
@@ -613,20 +613,20 @@ def Player_RB_YPG(db_name, weeks, year):
 def Player_QB_Top12(db_name, weeks, year):
     qb_df = PullFromDatabase.qb(db_name)
     qb_df.replace(np.nan, 0, inplace=True)
-    qb_df['fantasy_points'] = (qb_df['Pass Yds'].astype(float)*0.04) + (qb_df['Pass_TD'].astype(float)*4) + (qb_df['Rush Yds'].astype(float)*0.1) + (qb_df['Rush_TD'].astype(float)*6) - (qb_df['INT'].astype(float)*1) - (qb_df['Rush FUM'].astype(float)*2)
+    qb_df['fantasy_points'] = (qb_df['Pass Yds'].astype(float)*0.04) + (qb_df['Pass TD'].astype(float)*4) + (qb_df['Rush Yds'].astype(float)*0.1) + (qb_df['Rush TD'].astype(float)*6) - (qb_df['Pass INT'].astype(float)*1) - (qb_df['Fum'].astype(float)*2)
     
     qb_df_parsed3 = qb_df.sort_values(by='fantasy_points', ascending=False)[:32]
     
     qb_df_parsed3['PassYds/G_per_100%'] = ((qb_df_parsed3['Pass Yds'] / weeks) / (qb_df_parsed3['Pass Yds'] / weeks).max()) * 100
-    qb_df_parsed3['Cmp%'] = (qb_df_parsed3['Cmp'] / qb_df_parsed3['Att']).astype(float)
+    qb_df_parsed3['Cmp%'] = (qb_df_parsed3['Pass Cmp'] / qb_df_parsed3['Pass Att']).astype(float)
     qb_df_parsed3['Cmp%_per_100%'] = ((qb_df_parsed3['Cmp%'] / qb_df_parsed3['Cmp%'].max()) * 100)
-    qb_df_parsed3['Yds/Att_per_100%'] = ((qb_df_parsed3['Yds/Att'] / qb_df_parsed3['Yds/Att'].max()) * 100)
-    qb_df_parsed3['PassTD/G_per_100%'] = ((qb_df_parsed3['Pass_TD'] / weeks) / (qb_df_parsed3['Pass_TD'] / weeks).max()) * 100
+    qb_df_parsed3['Yds/Att_per_100%'] = ((qb_df_parsed3['Pass YPA'] / qb_df_parsed3['Pass YPA'].max()) * 100)
+    qb_df_parsed3['PassTD/G_per_100%'] = ((qb_df_parsed3['Pass TD'] / weeks) / (qb_df_parsed3['Pass TD'] / weeks).max()) * 100
     qb_df_parsed3['RushYds/G_per_100%'] = ((qb_df_parsed3['Rush Yds'] / weeks) / (qb_df_parsed3['Rush Yds'] / weeks).max()) * 100
-    qb_df_parsed3['RushTD/G_per_100%'] = ((qb_df_parsed3['Rush_TD'] / weeks) / (qb_df_parsed3['Rush_TD'] / weeks).max()) * 100
-    qb_df_parsed3['anti_int'] = 1 - (qb_df_parsed3['INT'] / qb_df_parsed3['Att'])
+    qb_df_parsed3['RushTD/G_per_100%'] = ((qb_df_parsed3['Rush TD'] / weeks) / (qb_df_parsed3['Rush TD'] / weeks).max()) * 100
+    qb_df_parsed3['anti_int'] = 1 - (qb_df_parsed3['Pass INT'] / qb_df_parsed3['Pass Att'])
     qb_df_parsed3['anti_int_per_100%'] = (qb_df_parsed3['anti_int'] / qb_df_parsed3['anti_int'].max()) * 100
-    qb_df_parsed3['anti_fum'] = 1 - (qb_df_parsed3['Rush FUM'] / qb_df_parsed3['Rush_Att'])
+    qb_df_parsed3['anti_fum'] = 1 - (qb_df_parsed3['Fum'] / qb_df_parsed3['Rush Att'])
     qb_df_parsed3['anti_fum_per_100%'] = (qb_df_parsed3['anti_fum'] / qb_df_parsed3['anti_fum'].max()) * 100
     
     qb_df_parsed3_t12 = qb_df_parsed3.sort_values(by='fantasy_points', ascending=False)[:12]
@@ -665,19 +665,19 @@ def Player_QB_Top12(db_name, weeks, year):
 def Player_QB_Top12_1(db_name, weeks, year):
     qb_df = PullFromDatabase.qb(db_name)
     qb_df.replace(np.nan, 0, inplace=True)
-    qb_df['fantasy_points'] = (qb_df['Pass Yds'].astype(float)*0.04) + (qb_df['Pass_TD'].astype(float)*4) + (qb_df['Rush Yds'].astype(float)*0.1) + (qb_df['Rush_TD'].astype(float)*6) - (qb_df['INT'].astype(float)*1) - (qb_df['Rush FUM'].astype(float)*2)
+    qb_df['fantasy_points'] = (qb_df['Pass Yds'].astype(float)*0.04) + (qb_df['Pass TD'].astype(float)*4) + (qb_df['Rush Yds'].astype(float)*0.1) + (qb_df['Rush TD'].astype(float)*6) - (qb_df['Pass INT'].astype(float)*1) - (qb_df['Fum'].astype(float)*2)
     
     qb_df_parsed = qb_df.sort_values(by='fantasy_points', ascending=False)[:12]
     
-    qb_df_parsed['anti_int'] = 1 - (qb_df_parsed['INT'] / qb_df_parsed['Att'])
-    qb_df_parsed['anti_fum'] = 1 - (qb_df_parsed['Rush FUM'] / qb_df_parsed['Rush_Att'])
-    qb_df_parsed['Cmp%'] = (qb_df_parsed['Cmp'] / qb_df_parsed['Att']).astype(float)
-    qb_df_parsed['PYds/G'] = (qb_df_parsed['Pass Yds'] / qb_df_parsed['Att']).astype(float)
-    qb_df_parsed[['Yds/Att', 'Cmp%', 'anti_int', 'Pass_TD', 'Rush_TD', 'anti_fum']] = qb_df_parsed[['Yds/Att', 'Cmp%', 'anti_int', 'Pass_TD', 'Rush_TD', 'anti_fum']].astype(float)
+    qb_df_parsed['anti_int'] = 1 - (qb_df_parsed['Pass INT'] / qb_df_parsed['Pass Att'])
+    qb_df_parsed['anti_fum'] = 1 - (qb_df_parsed['Fum'] / qb_df_parsed['Rush Att'])
+    qb_df_parsed['Cmp%'] = (qb_df_parsed['Pass Cmp'] / qb_df_parsed['Pass Att']).astype(float)
+    qb_df_parsed['PYds/G'] = (qb_df_parsed['Pass Yds'] / qb_df_parsed['Pass Att']).astype(float)
+    qb_df_parsed[['Pass YPA', 'Cmp%', 'anti_int', 'Pass TD', 'Rush TD', 'anti_fum']] = qb_df_parsed[['Pass YPA', 'Cmp%', 'anti_int', 'Pass TD', 'Rush TD', 'anti_fum']].astype(float)
 
-    qb_df_parsed_2 = qb_df_parsed[['Player', 'Yds/Att', 'Cmp%', 'anti_int', 'Pass_TD', 'Rush_TD', 'anti_fum']]
+    qb_df_parsed_2 = qb_df_parsed[['Player', 'Pass YPA', 'Cmp%', 'anti_int', 'Pass TD', 'Rush TD', 'anti_fum']]
     
-    categories = ['Yds/Att', 'Cmp%', 'anti_int', 'Pass_TD', 'Rush_TD', 'anti_fum']
+    categories = ['Pass YPA', 'Cmp%', 'anti_int', 'Pass TD', 'Rush TD', 'anti_fum']
     N = len(categories)
 
     # Normalize data function by dividing by max values
@@ -759,26 +759,28 @@ def Player_QB_YPA_vs_CmpPct(db_name, weeks, year):
     
     att_threshold = 10*weeks
     
-    df = df[(df['Att'] > att_threshold)]
+    df = df[(df['Pass Att'] > att_threshold)]
     df.reset_index(inplace=True)
     
     fig, ax = plt.subplots(figsize=(12,9))
+    
+    df['Cmp %'] = (df['Pass Cmp'] / df['Pass Att']).astype(float)
 
-    x_mean = (df['Yds/Att']).mean()
+    x_mean = (df['Pass YPA']).mean()
     y_mean = (df['Cmp %']).mean()
     ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     
-    ax.scatter(df['Yds/Att'], df['Cmp %'], alpha=0.5, s=0)
+    ax.scatter(df['Pass YPA'], df['Cmp %'], alpha=0.5, s=0)
 
     for index, row in df.iterrows():
-        plt.text(row['Yds/Att'], row['Cmp %']+0.75, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+        plt.text(row['Pass YPA'], row['Cmp %']+0.75, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
         
     for i, team in enumerate(df['shortname']):
         logo_url = get_team_logo(team)
         img = plt.imread(logo_url)
         imagebox = OffsetImage(img, zoom=0.02)
-        ab = AnnotationBbox(imagebox, ((df['Yds/Att'])[i], (df['Cmp %'])[i]), frameon=False,zorder=1)
+        ab = AnnotationBbox(imagebox, ((df['Pass YPA'])[i], (df['Cmp %'])[i]), frameon=False,zorder=1)
         ax.add_artist(ab)
 
 
@@ -797,26 +799,26 @@ def Player_QB_YPG_vs_TD(db_name, weeks, year):
     
     att_threshold = 10*weeks
     
-    df = df[(df['Att'] > att_threshold)]
+    df = df[(df['Pass Att'] > att_threshold)]
     df.reset_index(inplace=True)
     
     fig, ax = plt.subplots(figsize=(12,9))
 
     x_mean = (df['Pass Yds'] / weeks).mean()
-    y_mean = (df['TD']/ weeks).mean()
+    y_mean = (df['Pass TD']/ weeks).mean()
     ax.axvline(x=x_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     ax.axhline(y=y_mean, color='#290002', linestyle='--', linewidth=1, dashes=(5, 5))
     
-    ax.scatter(df['Pass Yds']/ weeks, df['TD']/ weeks, alpha=0.5, s=0)
+    ax.scatter(df['Pass Yds']/ weeks, df['Pass TD']/ weeks, alpha=0.5, s=0)
 
     for index, row in df.iterrows():
-        plt.text(row['Pass Yds']/ weeks, (row['TD']/ weeks)+0.05, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
+        plt.text(row['Pass Yds']/ weeks, (row['Pass TD']/ weeks)+0.05, row['Player'], fontsize=9, ha='center',zorder=2,weight='bold')
         
     for i, team in enumerate(df['shortname']):
         logo_url = get_team_logo(team)
         img = plt.imread(logo_url)
         imagebox = OffsetImage(img, zoom=0.02)
-        ab = AnnotationBbox(imagebox, ((df['Pass Yds']/ weeks)[i], (df['TD']/ weeks)[i]), frameon=False,zorder=1)
+        ab = AnnotationBbox(imagebox, ((df['Pass Yds']/ weeks)[i], (df['Pass TD']/ weeks)[i]), frameon=False,zorder=1)
         ax.add_artist(ab)
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
@@ -838,7 +840,7 @@ def Team_FFScoring_vs_Allowed_Def(db_name, weeks, year):
 
     fantasy_points = []
     for i in range(len(df)):
-        fantasy_points.append(FantasyCalc.Team_D(df['Points_Scored'][i], df['Points_Allowed'][i], df['Sck'][i], df['INT'][i], df['FR'][i], df['SFTY'][i], df['FF'][i]))
+        fantasy_points.append(FantasyCalc.Team_D(df['Points_Scored'][i], df['Points_Allowed'][i], df['Sck'][i], df['Pass INT'][i], df['FR'][i], df['SFTY'][i], df['FF'][i]))
     df['Fantasy_Points'] = fantasy_points
 
     df.reset_index(inplace=True)
@@ -880,11 +882,11 @@ if __name__ == '__main__':
         weeks = 18
 
     db_name = rf'database\{year}.db'
-    #Team_RushAtt_PassAtt_Off(db_name, weeks, year)
-    #Team_RushAtt_PassAtt_Off_Linearized(db_name, weeks, year)
-    #Team_RushAtt_PassAtt_Both(db_name, weeks, year)
-    #Team_RushAtt_PassAtt_Both_Linearized(db_name, weeks, year)
-    #Player_All_Passing_Target_Share(db_name, weeks, year)
+    Team_RushAtt_PassAtt_Off(db_name, weeks, year)
+    Team_RushAtt_PassAtt_Off_Linearized(db_name, weeks, year)
+    Team_RushAtt_PassAtt_Both(db_name, weeks, year)
+    Team_RushAtt_PassAtt_Both_Linearized(db_name, weeks, year)
+    Player_All_Passing_Target_Share(db_name, weeks, year)
     Player_WR_TPG_vs_YPR(db_name, weeks, year)
     Player_WR_RPG_vs_YPR(db_name, weeks, year)
     Player_WR_TPG_vs_RPG(db_name, weeks, year)
@@ -895,7 +897,7 @@ if __name__ == '__main__':
     Player_TE_TPG_vs_RPG(db_name, weeks, year)
     Player_QB_YPG_vs_TD(db_name, weeks, year)
     Player_QB_YPA_vs_CmpPct(db_name, weeks, year)
-    Player_K_NetYards_vs_Touchback(db_name, weeks, year)
-    Team_FFScoring_vs_Allowed_Def(db_name, weeks, year)
+    #Player_K_NetYards_vs_Touchback(db_name, weeks, year)
+    #Team_FFScoring_vs_Allowed_Def(db_name, weeks, year)
     
     
