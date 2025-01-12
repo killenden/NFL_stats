@@ -31,7 +31,7 @@ jobs:
         if [ -d "database/$db_number.db" ]; then
           rm -r database/$db_number.db
         fi
-        
+
     - name: Delete old plots if they exist
       run: |
         db_number=${{ steps.set_values.outputs.db_number }}
@@ -50,6 +50,12 @@ jobs:
     - name: Run Python Script
       run: |
         python GitHubActions.py ${{ env.db_number }} ${{ env.week_number }}
+
+    - name: Check for changes
+      run: |
+        git status
+        git diff
+
 
     - name: Commit changes
       uses: EndBug/add-and-commit@v9
