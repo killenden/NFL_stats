@@ -1,13 +1,10 @@
 name: Run Python Stat File
 on:
-  pull_request:
-    types: [opened, edited, synchronize]
-    branches:
-      - '**'  # Run on all branches for pull requests
+  repository_dispatch:
+    types: [update_plots]
 
 jobs:
-  run_stats_py_file:
-    if: contains(github.event.pull_request.title, 'Update Plots')
+  update_db_and_plots:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -18,11 +15,6 @@ jobs:
       with:
         ref: ${{ github.head_ref }}
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pandas numpy matplotlib scikit-learn pysqlite3 beautifulsoup4 requests
-      
     - name: Set Values
       id: set_values
       run: |
@@ -30,21 +22,18 @@ jobs:
         echo "week_number=18" >> $GITHUB_ENV
         echo "::set-output name=db_number::2024"
         echo "::set-output name=week_number::18"
-        
-    - name: Ensure plots directory exists
-      run: |
-        mkdir -p ${{ steps.set_values.outputs.db_number }}/plots
 
-    - name: Delete old plots if they exist
+    - name: Install Dependencies
       run: |
-        db_number=${{ steps.set_values.outputs.db_number }}
-        if [ -d "$db_number/plots" ]; then
-          rm -r $db_number/plots/*
-        fi
+        python -m pip install --upgrade pip
+        pip install pandas numpy matplotlib scikit-learn pysqlite3 beautifulsoup4 requests
+
+    - name: Run FootballDB/main.py script
+      run: python FootballDB/main.py
 
     - name: Run Python Script
       run: |
-        python GitHubActions.py ${{ steps.set_values.outputs.db_number }} ${{ steps.set_values.outputs.week_number }}
+        python GitHubActions.py ${{ env.db_number }} ${{ env.week_number }}
 
     - name: Check for changes
       run: |
@@ -60,3 +49,4 @@ jobs:
         default_author: github_actions
         message: '[BOT] Update graphs and database for DB number ${{ steps.set_values.outputs.db_number }}'
         push: origin ${{ github.head_ref }}
+    
