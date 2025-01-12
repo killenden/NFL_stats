@@ -39,7 +39,7 @@ def insert_team_stats(df, table_name, dict, db_name):
 
 if __name__ == '__main__':
     
-    import PullRosters
+    import PullRosters_OLD
     import utils
     import Database
     #db_name = r'NFL_stats\database\2023_database.db'
@@ -79,7 +79,7 @@ if __name__ == '__main__':
                 #     print(team)
                 #     database_df_final = pd.concat([database_df_final,database_df]).reset_index(drop=True)
                 for team in NFL_URLs: 
-                    database_df = PullRosters.PullTeam_NFL('https://www.nfl.com/teams/'+team+'/roster',team) #https://www.nfl.com/teams/buffalo-bills/roster
+                    database_df = PullRosters_OLD.PullTeam_NFL('https://www.nfl.com/teams/'+team+'/roster',team) #https://www.nfl.com/teams/buffalo-bills/roster
                     print(team)
                     database_df_final = pd.concat([database_df_final,database_df]).reset_index(drop=True)
                 
@@ -119,7 +119,7 @@ if __name__ == '__main__':
                 #     database_df = PullRosters.PullTeam_CBS('https://www.cbssports.com/nfl/teams/'+team+'/roster/',team)
                 #     print(team)
                 #     database_df_final = pd.concat([database_df_final,database_df]).reset_index(drop=True)+
-                database_df_final = PullRosters.PullTeam_ProFootballArchives(f'https://www.profootballarchives.com/{year}.html') 
+                database_df_final = PullRosters_OLD.PullTeam_ProFootballArchives(f'https://www.profootballarchives.com/{year}.html') 
                 
                 db_teamid_dict = {}
                 for value in database_df_final['Team'].unique():
@@ -151,11 +151,11 @@ if __name__ == '__main__':
             Database.add_database_information('players',db_name,database_df_final,dtypes)
         
         
-        import PullStats
+        import PullStats_OLD
         week_list, lk_table_mascot, lk_table, CBS_URLs, NFL_URLs = utils.init()
-        standings_df = PullStats.standings(lk_table)
+        standings_df = PullStats_OLD.standings(lk_table)
         
-        (passing_df, rushing_df, receiving_df, int_df, fg_df, ko_df, kor_df, punt_df, puntr_df, fum_df) = PullStats.NFL_stats(lk_table_mascot, year)
+        (passing_df, rushing_df, receiving_df, int_df, fg_df, ko_df, kor_df, punt_df, puntr_df, fum_df) = PullStats_OLD.NFL_stats(lk_table_mascot, year)
                 
         all_df = pd.concat([passing_df, rushing_df, receiving_df, int_df, fg_df, ko_df, kor_df, punt_df, puntr_df, fum_df]).reset_index(drop=True)
         
@@ -171,9 +171,9 @@ if __name__ == '__main__':
         for key,value in dataframes.items():
             insert_player_stats(value[0], value[1], db_playerid_dict, db_name)
         
-        (passing_off_df, rushing_off_df, receiving_off_df, scoring_off_df, downs_off_df) = PullStats.NFL_stats_off(lk_table_mascot, year)
-        (passing_def_df, rushing_def_df, receiving_def_df, scoring_def_df, tackles_def_df, downs_def_df, fumbles_def_df, interception_def_df) = PullStats.NFL_stats_def(lk_table_mascot, year)
-        (special_fg_df, special_scoring_df, special_kickoff_df, special_kickoff_return_df, special_punting_df, special_punting_returns_df) = PullStats.NFL_stats_st(lk_table_mascot, year)
+        (passing_off_df, rushing_off_df, receiving_off_df, scoring_off_df, downs_off_df) = PullStats_OLD.NFL_stats_off(lk_table_mascot, year)
+        (passing_def_df, rushing_def_df, receiving_def_df, scoring_def_df, tackles_def_df, downs_def_df, fumbles_def_df, interception_def_df) = PullStats_OLD.NFL_stats_def(lk_table_mascot, year)
+        (special_fg_df, special_scoring_df, special_kickoff_df, special_kickoff_return_df, special_punting_df, special_punting_returns_df) = PullStats_OLD.NFL_stats_st(lk_table_mascot, year)
         
         db_teamid_dict = {}
         for value in passing_off_df.index.to_list():
