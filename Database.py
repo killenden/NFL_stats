@@ -98,6 +98,103 @@ def create_nfl_analytics_db(db_file):
     conn.commit()
     conn.close()
 
+def create_FootballDB_analytics_db(db_file):
+    # Connect to SQLite database
+    conn = sqlite3.connect(db_file)
+    cursor = conn.cursor()
+    
+    cursor.executescript('''
+        -- Create table for teams
+        CREATE TABLE IF NOT EXISTS teams (
+            team_id INTEGER PRIMARY KEY,
+            team_name TEXT NOT NULL,
+            shortname TEXT NOT NULL,
+            city TEXT,
+            state TEXT,
+            conference TEXT,
+            division TEXT
+        );
+        ''')
+
+    cursor.executescript('''
+        -- Create table for players
+        CREATE TABLE IF NOT EXISTS players (
+            jersey_number INTEGER,
+            player_name TEXT NOT NULL,
+            position TEXT,
+            height REAL,
+            weight REAL,
+            age TEXT,
+            college TEXT,
+            team_id INTEGER,
+            player_id INTEGER PRIMARY KEY,
+            FOREIGN KEY (team_id) REFERENCES teams (team_id)
+        );
+        ''')
+    
+    cursor.executescript('''
+        -- Create table for positions
+        CREATE TABLE IF NOT EXISTS positions (
+            POS TEXT NOT NULL,
+            pos_id INTEGER PRIMARY KEY 
+        );
+        ''')
+
+    
+    cursor.executescript('''
+        -- Example data for teams
+        INSERT OR IGNORE INTO teams (team_name, shortname, city, state, conference, division) VALUES
+            ('Arizona Cardinals', 'ARI', 'Glendale', 'Arizona', 'NFC', 'West'),
+            ('Atlanta Falcons', 'ATL', 'Atlanta', 'Georgia', 'NFC', 'South'),
+            ('Baltimore Ravens', 'BAL', 'Baltimore', 'Maryland', 'AFC', 'North'),
+            ('Buffalo Bills', 'BUF', 'Orchard Park', 'New York', 'AFC', 'East'),
+            ('Carolina Panthers', 'CAR', 'Charlotte', 'North Carolina', 'NFC', 'South'),
+            ('Chicago Bears', 'CHI', 'Chicago', 'Illinois', 'NFC', 'North'),
+            ('Cincinnati Bengals', 'CIN', 'Cincinnati', 'Ohio', 'AFC', 'North'),
+            ('Cleveland Browns', 'CLE', 'Cleveland', 'Ohio', 'AFC', 'North'),
+            ('Dallas Cowboys', 'DAL', 'Dallas', 'Texas', 'NFC', 'East'),
+            ('Denver Broncos', 'DEN', 'Denver', 'Colorado', 'AFC', 'West'),
+            ('Detroit Lions', 'DET', 'Detroit', 'Michigan', 'NFC', 'North'),
+            ('Green Bay Packers', 'GB', 'Green Bay', 'Wisconsin', 'NFC', 'North'),
+            ('Houston Texans', 'HOU', 'Houston', 'Texas', 'AFC', 'South'),
+            ('Indianapolis Colts', 'IND', 'Indianapolis', 'Indiana', 'AFC', 'South'),
+            ('Jacksonville Jaguars', 'JAX', 'Jacksonville', 'Florida', 'AFC', 'South'),
+            ('Kansas City Chiefs', 'KC', 'Kansas City', 'Missouri', 'AFC', 'West'),
+            ('Las Vegas Raiders', 'LV', 'Las Vegas', 'Nevada', 'AFC', 'West'),
+            ('Los Angeles Chargers', 'LAC', 'Los Angeles', 'California', 'AFC', 'West'),
+            ('Los Angeles Rams', 'LAR', 'Los Angeles', 'California', 'NFC', 'West'),
+            ('Miami Dolphins', 'MIA', 'Miami Gardens', 'Florida', 'AFC', 'East'),
+            ('Minnesota Vikings', 'MIN', 'Minneapolis', 'Minnesota', 'NFC', 'North'),
+            ('New England Patriots', 'NE', 'Foxborough', 'Massachusetts', 'AFC', 'East'),
+            ('New Orleans Saints', 'NO', 'New Orleans', 'Louisiana', 'NFC', 'South'),
+            ('New York Giants', 'NYG', 'East Rutherford', 'New Jersey', 'NFC', 'East'),
+            ('New York Jets', 'NYJ', 'East Rutherford', 'New Jersey', 'AFC', 'East'),
+            ('Philadelphia Eagles', 'PHI', 'Philadelphia', 'Pennsylvania', 'NFC', 'East'),
+            ('Pittsburgh Steelers', 'PIT', 'Pittsburgh', 'Pennsylvania', 'AFC', 'North'),
+            ('San Francisco 49ers', 'SF', 'Santa Clara', 'California', 'NFC', 'West'),
+            ('Seattle Seahawks', 'SEA', 'Seattle', 'Washington', 'NFC', 'West'),
+            ('Tampa Bay Buccaneers', 'TB', 'Tampa', 'Florida', 'NFC', 'South'),
+            ('Tennessee Titans', 'TEN', 'Nashville', 'Tennessee', 'AFC', 'South'),
+            ('Washington Commanders', 'WSH', 'Landover', 'Maryland', 'NFC', 'East');
+            ''')
+    
+
+    cursor.executescript('''
+        -- Example data for teams
+        INSERT OR IGNORE INTO positions (POS, pos_id) VALUES
+        ('G', 1), ('WR', 2), ('LB', 3), ('S', 4), ('OT', 5), ('RB', 6), ('SAF', 7), ('LS', 8), ('C', 9), 
+        ('CB', 10), ('DB', 11), ('DE', 12), ('P', 13), ('TE', 14), ('DT', 15), ('DL', 16), ('QB', 17), 
+        ('K', 18), ('OLB', 19), ('OL', 20), ('FS', 21), ('NT', 22), ('FB', 23), ('ILB', 24), ('MLB', 25);
+                ''')
+
+    
+    
+    
+    # Commit changes and close connection
+    conn.commit()
+    conn.close()
+
+
 
 def add_players_info(db_file,df):
     # Connect to SQLite database
