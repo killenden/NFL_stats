@@ -29,10 +29,11 @@ def create_db(year):
     
     #reset_db = input('Do you want to reset the db? This will delete all work. (y/n)   ')
     #TODO: Change this to 'n' for production. 'y' for development
-    reset_db = 'n'
+    reset_db = 'y'
+    reset_db1 = 'y'
     
     if reset_db == 'y':
-        reset_db1 = input('Are you sure? (y/n)   ')
+        #reset_db1 = input('Are you sure? (y/n)   ')
         if reset_db1 == 'y':
             Database.create_FootballDB_analytics_db(db_name)
     
