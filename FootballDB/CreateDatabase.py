@@ -29,7 +29,7 @@ def create_db(year):
     
     #reset_db = input('Do you want to reset the db? This will delete all work. (y/n)   ')
     #TODO: Change this to 'n' for production. 'y' for development
-    reset_db = 'n'
+    reset_db = 'y'
     
     if reset_db == 'y':
         reset_db1 = input('Are you sure? (y/n)   ')
