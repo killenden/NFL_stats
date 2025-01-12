@@ -25,6 +25,20 @@ jobs:
         echo "::set-output name=db_number::2024"
         echo "::set-output name=week_number::18"
 
+    - name: Delete old db if they exist
+      run: |
+        db_number=${{ steps.set_values.outputs.db_number }}
+        if [ -d "database/$db_number.db" ]; then
+          rm -r database/$db_number.db
+        fi
+        
+    - name: Delete old plots if they exist
+      run: |
+        db_number=${{ steps.set_values.outputs.db_number }}
+        if [ -d "$db_number/plots" ]; then
+          rm -r $db_number/plots/*
+        fi
+
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
