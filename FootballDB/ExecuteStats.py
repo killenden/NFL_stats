@@ -846,7 +846,7 @@ def Player_QB_YPG_vs_TD(db_name, weeks, year):
     save_fig(year, f'Player_QB_YPG_vs_TD.png')
     #plt.savefig(f'Player_QB_YPG_vs_TD.png', dpi=450)
     plt.show()
-    print('Player_QB_YPG_vs_TD Completed')SS
+    print('Player_QB_YPG_vs_TD Completed')
 
 def Team_FFScoring_vs_Allowed_Def(db_name, weeks, year):
     df = PullFromDatabase.team_total_def(db_name)
