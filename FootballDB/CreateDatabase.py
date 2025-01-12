@@ -33,7 +33,7 @@ def create_db(year):
     reset_db1 = 'y'
     
     if reset_db == 'y':
-        reset_db1 = input('Are you sure? (y/n)   ')
+        #reset_db1 = input('Are you sure? (y/n)   ')
         if reset_db1 == 'y':
             Database.create_FootballDB_analytics_db(db_name)
     
