@@ -26,7 +26,7 @@ def save_fig(year, plot_name):
     os.makedirs(plots_dir, exist_ok=True)
     # Change the current working directory to the plots directory
     os.chdir(plots_dir)
-    plt.savefig(f'{plot_name}.png', dpi=450)
+    plt.savefig(f'{plot_name}', dpi=450)
     #change back
     os.chdir(current_directory)
 

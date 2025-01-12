@@ -1,7 +1,7 @@
 name: Update DB and Plots
 on:
   repository_dispatch:
-    types: [update_plots]
+    types: [update_db_and_plots]
 
 jobs:
   update_db_and_plots:
@@ -13,7 +13,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        ref: ${{ github.head_ref }}
+        ref: ${{ github.event.pull_request.head.ref }}
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
 
     - name: Set Values
       id: set_values
