@@ -23,10 +23,14 @@ def main():
         weeks = week_number
         year = db_number
         nfl_state = SleeperInfo.get_nfl_state()
-        year = nfl_state['season']
-        weeks = nfl_state['week']
-        print(f"Sleeper year received: {year}")
-        print(f"Sleeper week received: {weeks}")
+        if nfl_state['season_type'] != 'post':
+            year = nfl_state['season']
+            weeks = nfl_state['week']
+            print(f"Sleeper year received: {year}")
+            print(f"Sleeper week received: {weeks}")
+        else:
+            year = 2024
+            weeks = 18
         db_dir = rf'database/{year}_database.db'
         current_directory = os.getcwd()
         db_dir = os.path.join(current_directory, db_dir)
