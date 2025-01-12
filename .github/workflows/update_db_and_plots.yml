@@ -1,12 +1,10 @@
 name: Run Python Stat File
 on:
-  pull_request:
-    branches:
-      - '**'  # Run on all branches for pull requests
+  repository_dispatch:
+    types: [update_plots]
 
 jobs:
-  run_stats_py_file:
-    if: contains(github.event.pull_request.title, 'Update Plots and Database')
+  update_db_and_plots:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -37,6 +35,11 @@ jobs:
       run: |
         python GitHubActions.py ${{ env.db_number }} ${{ env.week_number }}
 
+    - name: Check for changes
+      run: |
+        git status
+        git diff
+
     - name: Commit changes
       uses: EndBug/add-and-commit@v9
       with:
@@ -46,3 +49,4 @@ jobs:
         default_author: github_actions
         message: '[BOT] Update graphs and database for DB number ${{ steps.set_values.outputs.db_number }}'
         push: origin ${{ github.head_ref }}
+    

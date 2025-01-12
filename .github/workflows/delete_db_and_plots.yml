@@ -1,0 +1,82 @@
+name: Run Python Stat File
+on:
+  pull_request:
+    branches:
+      - '**'  # Run on all branches for pull requests
+
+jobs:
+  delete_db_and_plots:
+    if: contains(github.event.pull_request.title, 'Update Plots and Database')
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }}
+
+    - name: Set Values
+      id: set_values
+      run: |
+        echo "db_number=2024" >> $GITHUB_ENV
+        echo "week_number=18" >> $GITHUB_ENV
+        echo "::set-output name=db_number::2024"
+        echo "::set-output name=week_number::18"
+
+    - name: Delete old db if they exist
+      run: |
+        db_number=${{ steps.set_values.outputs.db_number }}
+        if [ -f "database/$db_number.db" ]; then
+          rm -r database/$db_number.db
+          echo "db_deleted=true" >> $GITHUB_ENV
+        else
+          echo "db_deleted=false" >> $GITHUB_ENV
+        fi
+
+    - name: Delete old plots if they exist
+      run: |
+        db_number=${{ steps.set_values.outputs.db_number }}
+        if [ -d "$db_number/plots" ]; then
+          rm -r $db_number/plots/*
+          echo "plots_deleted=true" >> $GITHUB_ENV
+        else
+          echo "plots_deleted=false" >> $GITHUB_ENV
+        fi
+    
+    - name: Set output
+      id: set_output
+      run: |
+        echo "::set-output name=db_deleted::${{ env.db_deleted }}"
+        echo "::set-output name=plots_deleted::${{ env.plots_deleted }}"
+  
+    - name: Print output
+      run: |
+        echo "DB Deleted: ${{ steps.set_output.outputs.db_deleted }}"
+        echo "Plots Deleted: ${{ steps.set_output.outputs.plots_deleted }}"
+
+    - name: Check for changes
+      run: |
+        git status
+        git diff
+
+
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        add: |
+          ./${{ steps.set_values.outputs.db_number }}/plots
+          ./database/${{ steps.set_values.outputs.db_number }}.db
+        default_author: github_actions
+        message: '[BOT] Delete graphs and database for DB number ${{ steps.set_values.outputs.db_number }}'
+        push: origin ${{ github.head_ref }}
+
+    - name: Trigger another workflow
+      run: |
+        curl -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/dispatches \
+          -d '{"event_type":"update_plots"}'
+    
