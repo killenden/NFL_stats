@@ -14,6 +14,10 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+    
+    - name: Print checked out branch
+      run: |
+        echo "Checked out branch: $(git rev-parse --abbrev-ref HEAD)"
 
     - name: Set Values
       id: set_values
