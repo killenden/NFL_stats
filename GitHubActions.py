@@ -1,7 +1,8 @@
 import sys
-import ExecuteStats
 import os
 from Sleeper import SleeperInfo
+sys.path.append(os.path.join(os.path.dirname(__file__), r'FootballDB'))
+import ExecuteStats
 
 def main():
     if len(sys.argv) > 1:
@@ -28,10 +29,7 @@ def main():
             weeks = nfl_state['week']
             print(f"Sleeper year received: {year}")
             print(f"Sleeper week received: {weeks}")
-        else:
-            year = 2024
-            weeks = 18
-        db_dir = rf'database/{year}_database.db'
+        db_dir = rf'database/{year}.db'
         current_directory = os.getcwd()
         db_dir = os.path.join(current_directory, db_dir)
         ExecuteStats.Team_RushAtt_PassAtt_Off(db_dir, weeks, year)
