@@ -10,7 +10,6 @@ from sklearn.cluster import KMeans
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../FootballDB')))
 import PullFromDatabase
-import utils
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../Sleeper')))
 import SleeperInfo
 
@@ -19,6 +18,18 @@ def get_team_logo(team_abbr):
     logo_dir = os.path.join(current_dir,'logos')
     file_path = os.path.join(logo_dir,team_abbr+'.png')
     return file_path
+
+def save_fig(year, plot_name):
+    current_directory = os.getcwd()
+    # Ensure the plots directory exists
+    plots_dir = os.path.join(current_directory, f'{year}/plots')
+    os.makedirs(plots_dir, exist_ok=True)
+    # Change the current working directory to the plots directory
+    os.chdir(plots_dir)
+    plt.savefig(f'{plot_name}', dpi=450)
+    #change back
+    os.chdir(current_directory)
+
 
 def Team_RushAtt_PassAtt_Off(db_name, weeks, year):
     pass_df = PullFromDatabase.team_off_passing(db_name)
@@ -53,7 +64,8 @@ def Team_RushAtt_PassAtt_Off(db_name, weeks, year):
     # Adjust plot limits
     plt.xlim(df['Rush Att'].min() - (df['Rush Att'].min()/weeks)/2, df['Rush Att'].max() + (df['Rush Att'].max()/weeks)/2)
     plt.ylim(df['Pass Att'].min() - (df['Pass Att'].min()/weeks)/2, df['Pass Att'].max() + (df['Pass Att'].max()/weeks)/2)
-    plt.savefig(f'{year}/plots/Team_RushAtt_PassAtt_Off.png', dpi=450)
+    
+    save_fig(year, f'Team_RushAtt_PassAtt_Off.png')
     plt.show()
     print('Team_RushAtt_PassAtt_Off Completed')
     
@@ -98,7 +110,7 @@ def Team_RushAtt_PassAtt_Off_Linearized(db_name, weeks, year):
     # Adjust plot limits
     plt.xlim((df['Rush Att']/df['Tot Att']).min() - 0.025, (df['Rush Att']/df['Tot Att']).max() + 0.025)
     plt.ylim((df['Pass Att']/df['Tot Att']).min() - 0.025, (df['Pass Att']/df['Tot Att']).max() + 0.025)
-    plt.savefig(f'{year}/plots/Team_RushAtt_PassAtt_Off_Linearized.png', dpi=450)
+    save_fig(year, f'Team_RushAtt_PassAtt_Off_Linearized.png')
     plt.show()
     print('Team_RushAtt_PassAtt_Off_Linearized Completed')
 
@@ -163,7 +175,7 @@ def Team_RushAtt_PassAtt_Both(db_name, weeks, year):
     # Adjust plot limits
     plt.xlim((df['Def Tot Att']).min() - (df['Def Tot Att']).min()/weeks/2, (df['Def Tot Att']).max() + (df['Def Tot Att']).max()/weeks/2)
     plt.ylim((df['Off Tot Att']).min() - (df['Off Tot Att']).min()/weeks/2, (df['Off Tot Att']).max() + (df['Off Tot Att']).max()/weeks/2)
-    plt.savefig(f'{year}/plots/Team_RushAtt_PassAtt_Both.png', dpi=450)
+    save_fig(year, f'Team_RushAtt_PassAtt_Both.png')
     plt.show()
     print('Team_RushAtt_PassAtt_Both Completed')
 
@@ -229,7 +241,7 @@ def Team_RushAtt_PassAtt_Both_Linearized(db_name, weeks, year):
     # Adjust plot limits
     plt.xlim((df['Def Tot Att']/df['Tot Att']).min() - 0.025, (df['Off Tot Att']/df['Tot Att']).max() + 0.025)
     plt.ylim((df['Off Tot Att']/df['Tot Att']).min() - 0.025, (df['Off Tot Att']/df['Tot Att']).max() + 0.025)
-    plt.savefig(f'{year}/plots/Team_RushAtt_PassAtt_Both_Linearized.png', dpi=450)
+    save_fig(year, f'Team_RushAtt_PassAtt_Both_Linearized.png')
     plt.show()
     print('Team_RushAtt_PassAtt_Both_Linearized Completed')
     
@@ -283,7 +295,7 @@ def Player_All_Passing_Target_Share(db_name, weeks, year):
     # Adjust plot limits
     plt.xlim((df['Off Pass Att']).min() - 10, (df['Off Pass Att']).max() + 10)
     plt.ylim((df['Tgt Share']).min() - 1.25, (df['Tgt Share']).max() + 1.25)
-    plt.savefig(f'{year}/plots/Player_All_Passing_Target_Share.png', dpi=450)
+    save_fig(year, f'Player_All_Passing_Target_Share.png')
     plt.show()
     print('Player_All_Passing_Target_Share Completed')
 
@@ -323,7 +335,7 @@ def Player_WR_TPG_vs_YPR(db_name, weeks, year):
     plt.title(f'{year} Week {weeks}: WR Targets per Game vs Yards per Reception', fontsize=16, fontweight='bold')
     plt.xlabel('Targets per Game', fontsize=12)
     plt.ylabel('Yards per Reception', fontsize=12)
-    plt.savefig(f'{year}/plots/Player_WR_TPG_vs_YPR.png', dpi=450)
+    save_fig(year, f'Player_WR_TPG_vs_YPR.png')
     plt.show()
     print('Player_WR_TPG_vs_YPR Completed')
 
@@ -365,7 +377,7 @@ def Player_WR_RPG_vs_YPR(db_name, weeks, year):
     plt.xlabel('Receptions per Game', fontsize=12)
     plt.ylabel('Yards per Game', fontsize=12)
     plt.tight_layout()
-    plt.savefig(f'{year}/plots/Player_WR_RPG_vs_YPR.png', dpi=450)
+    save_fig(year, f'Player_WR_RPG_vs_YPR.png')
     plt.show()
     print('Player_WR_RPG_vs_YPR Completed')
     
@@ -405,7 +417,7 @@ def Player_WR_TPG_vs_RPG(db_name, weeks, year):
     plt.xlabel('Targets per Game', fontsize=12)
     plt.ylabel('Receptions per Target', fontsize=12)
     plt.tight_layout()
-    plt.savefig(f'{year}/plots/Player_WR_TPG_vs_RPG.png', dpi=450)
+    save_fig(year, f'Player_WR_TPG_vs_RPG.png')
     plt.show()
     print('Player_WR_TPG_vs_RPG Completed')
 
@@ -444,7 +456,7 @@ def Player_TE_TPG_vs_RPG(db_name, weeks, year):
     plt.xlabel('Targets per Game', fontsize=12)
     plt.ylabel('Receptions per Target', fontsize=12)
     plt.tight_layout()
-    plt.savefig(f'{year}/plots/Player_TE_TPG_vs_RPG.png', dpi=450)
+    save_fig(year, f'Player_TE_TPG_vs_RPG.png')
     plt.show()
     print('Player_TE_TPG_vs_RPG Completed')
     
@@ -484,7 +496,7 @@ def Player_WR_RPG_vs_TDPR(db_name, weeks, year):
     plt.title(f'{year} Week {weeks}: WR Receptions per Game vs TDs per Reception', fontsize=16, fontweight='bold')
     plt.xlabel('Receptions per Game', fontsize=12)
     plt.ylabel('TDs per Reception', fontsize=12)
-    plt.savefig(f'{year}/plots/Player_WR_RPG_vs_TDPR.png', dpi=450)
+    save_fig(year, f'Player_WR_RPG_vs_TDPR.png')
     plt.show()
     print('Player_WR_RPG_vs_TDPR Completed')
 
@@ -536,7 +548,7 @@ def Player_RB_YPG_vs_TDPG(db_name, weeks, year):
     plt.xlabel('Yards per Game', fontsize=12, fontweight='bold')
     plt.ylabel('TDs per Game', fontsize=12, fontweight='bold')
     plt.tight_layout()
-    plt.savefig(f'{year}/plots/Player_RB_YPG_vs_TDPG.png', dpi=450)
+    save_fig(year, f'Player_RB_YPG_vs_TDPG.png')
     plt.show()
     print('Player_RB_YPG_vs_TDPG Completed')
     
@@ -606,7 +618,8 @@ def Player_RB_YPG(db_name, weeks, year):
     plt.xlabel('Rushing Yards per Game', fontsize=12, fontweight='bold')
     plt.ylabel('Recieving Yards per Game', fontsize=12, fontweight='bold')
     plt.tight_layout()
-    plt.savefig(f'{year}/plots/Player_RB_YPG.png', dpi=450, bbox_inches='tight')
+    save_fig(year, f'Player_RB_YPG.png')
+    #plt.savefig(f'Player_RB_YPG.png', dpi=450, bbox_inches='tight')
     plt.show()
     print('Player_RB_YPG Completed')
 
@@ -658,7 +671,8 @@ def Player_QB_Top12(db_name, weeks, year):
 
     plt.suptitle(f'{year} Week {weeks}: Top 12 QB Radar Charts', fontsize=16, fontweight='bold')
     plt.tight_layout()
-    plt.savefig(f'{year}/plots/Player_QB_Top12', dpi=450, bbox_inches='tight')
+    save_fig(year, f'Player_QB_Top12')
+    #plt.savefig(f'Player_QB_Top12', dpi=450, bbox_inches='tight')
     plt.show()
     print('Player_QB_Top12 Completed')
 
@@ -715,7 +729,8 @@ def Player_QB_Top12_1(db_name, weeks, year):
             ax.set_title(player_names[i], size=12, color='black', y=1.1)
 
     plt.tight_layout(rect=[0, 0, 1, 0.96])
-    plt.savefig(f'{year}/plots/Player_QB_Top12_1.png', dpi=450, bbox_inches='tight')
+    save_fig(year, f'Player_QB_Top12_1.png')
+    #plt.savefig(f'Player_QB_Top12_1.png', dpi=450, bbox_inches='tight')
     plt.show()
     print('Player_QB_Top12_1 Completed')
 
@@ -750,7 +765,7 @@ def Player_K_NetYards_vs_Touchback(db_name, weeks, year):
     plt.title(f'{year} Week {weeks}: Average Net Yards per Punt vs Touchback Count', fontsize=16, fontweight='bold')
     plt.xlabel('Average Net Yards per Punt', fontsize=12)
     plt.ylabel('Touchback Count', fontsize=12)
-    plt.savefig(f'{year}/plots/Player_K_NetYards_vs_Touchback.png', dpi=450)
+    plt.savefig(f'Player_K_NetYards_vs_Touchback.png', dpi=450)
     plt.show()
     print('Player_K_NetYards_vs_Touchback Completed')
     
@@ -790,7 +805,8 @@ def Player_QB_YPA_vs_CmpPct(db_name, weeks, year):
     plt.xlabel('Yards per Attempt', fontsize=12)
     plt.ylabel('Completion Percentage', fontsize=12)
     plt.tight_layout()
-    plt.savefig(f'{year}/plots/Player_QB_YPA_vs_CmpPct.png', dpi=450)
+    save_fig(year, f'Player_QB_YPA_vs_CmpPct.png')
+    #plt.savefig(f'Player_QB_YPA_vs_CmpPct.png', dpi=450)
     plt.show()
     print('Player_QB_YPA_vs_CmpPct Completed')
     
@@ -827,9 +843,10 @@ def Player_QB_YPG_vs_TD(db_name, weeks, year):
     plt.xlabel('Yards per Game', fontsize=12)
     plt.ylabel('Touchdowns per Game', fontsize=12)
     plt.tight_layout()
-    plt.savefig(f'{year}/plots/Player_QB_YPG_vs_TD.png', dpi=450)
+    save_fig(year, f'Player_QB_YPG_vs_TD.png')
+    #plt.savefig(f'Player_QB_YPG_vs_TD.png', dpi=450)
     plt.show()
-    print('Player_QB_YPG_vs_TD Completed')
+    print('Player_QB_YPG_vs_TD Completed')SS
 
 def Team_FFScoring_vs_Allowed_Def(db_name, weeks, year):
     df = PullFromDatabase.team_total_def(db_name)
@@ -867,7 +884,7 @@ def Team_FFScoring_vs_Allowed_Def(db_name, weeks, year):
     plt.xlabel('Fantasy Points per Game', fontsize=12)
     plt.ylabel('TDs Allowed per Game', fontsize=12)
     plt.tight_layout()
-    plt.savefig(f'{year}/plots/team_defensive_fantasy_scoring_vs_allowed.png', dpi=450)
+    plt.savefig(f'team_defensive_fantasy_scoring_vs_allowed.png', dpi=450)
     plt.show()
     print('Team_FFScoring_vs_Allowed_Def Completed')
 
@@ -882,6 +899,14 @@ if __name__ == '__main__':
         weeks = 18
 
     db_name = rf'database\{year}.db'
+
+    current_directory = os.getcwd()
+    # Ensure the plots directory exists
+    plots_dir = os.path.join(current_directory, f'{year}/plots')
+    os.makedirs(plots_dir, exist_ok=True)
+    # Change the current working directory to the plots directory
+    os.chdir(plots_dir)
+    
     Team_RushAtt_PassAtt_Off(db_name, weeks, year)
     Team_RushAtt_PassAtt_Off_Linearized(db_name, weeks, year)
     Team_RushAtt_PassAtt_Both(db_name, weeks, year)
