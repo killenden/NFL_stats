@@ -1,4 +1,4 @@
-name: Run Python Stat File
+name: Delete DB and Plots
 on:
   pull_request:
     branches:

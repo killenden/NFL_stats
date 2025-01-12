@@ -1,4 +1,4 @@
-name: Run Python Stat File
+name: Update DB and Plots
 on:
   repository_dispatch:
     types: [update_plots]
