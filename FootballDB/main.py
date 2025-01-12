@@ -13,6 +13,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import Database
 import utils
 
+
 def insert_player_stats(df, table_name, dict, db_name):
     df['Player'] = df.index.map(dict)
     df = df.reset_index(drop=True)
