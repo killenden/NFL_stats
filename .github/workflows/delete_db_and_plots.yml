@@ -18,6 +18,10 @@ jobs:
         fetch-depth: 0
         ref: ${{ github.event.pull_request.head.ref }}
         repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+    - name: Print checked out branch
+      run: |
+        echo "Checked out branch: $(git rev-parse --abbrev-ref HEAD)"
         
 
     - name: Set Values
