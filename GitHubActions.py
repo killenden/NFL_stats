@@ -33,6 +33,8 @@ def main():
         db_dir = rf'database/{year}.db'
         current_directory = os.getcwd()
         db_dir = os.path.join(current_directory, db_dir)
+        
+        
         ExecuteStats.Team_RushAtt_PassAtt_Off(db_dir, weeks, year)
         ExecuteStats.Team_RushAtt_PassAtt_Off_Linearized(db_dir, weeks, year)
         ExecuteStats.Team_RushAtt_PassAtt_Both(db_dir, weeks, year)
