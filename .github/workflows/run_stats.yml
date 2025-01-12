@@ -53,7 +53,7 @@ jobs:
     - name: Commit changes
       uses: EndBug/add-and-commit@v9
       with:
-        add: './database/${{ steps.set_values.outputs.db_number }}.db'
+        add: './${{ steps.set_values.outputs.db_number }}/plots'
         default_author: github_actions
         message: '[BOT] Update graphs'
         push: origin ${{ github.head_ref }}
