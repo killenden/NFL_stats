@@ -8,8 +8,8 @@ from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import matplotlib.colors as mcolors
 from sklearn.cluster import KMeans
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import Database
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../FootballDB')))
+import PullFromDatabase
 import utils
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../Sleeper')))
 import SleeperInfo
