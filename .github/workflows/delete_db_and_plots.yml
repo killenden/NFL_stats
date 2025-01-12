@@ -80,5 +80,5 @@ jobs:
           -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           https://api.github.com/repos/${{ github.repository }}/dispatches \
-          -d '{"event_type":"update_db_and_plots", "client_payload": {"db_number": "${{ steps.set_values.outputs.db_number }}", "week_number": "${{ steps.set_values.outputs.week_number }}", "branch": "${{ github.head_ref }}"}}'
+          -d '{"event_type":"update_db", "client_payload": {"db_number": "${{ steps.set_values.outputs.db_number }}", "week_number": "${{ steps.set_values.outputs.week_number }}", "branch": "${{ github.head_ref }}"}}'
     
