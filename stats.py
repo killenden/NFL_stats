@@ -2,7 +2,7 @@
 import utils
 import pandas as pd
 import os
-import PullFromDatabase
+import PullFromDatabase_OLD
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
@@ -18,7 +18,7 @@ def get_team_logo(team_abbr):
     return file_path
 
 def Team_RushAtt_PassAtt_Off(db_name, weeks, year):
-    df = PullFromDatabase.team_off_plays(db_name)
+    df = PullFromDatabase_OLD.team_off_plays(db_name)
 
     # Create scatter plot with team logos as markers
     fig, ax = plt.subplots(figsize=(12, 9))
@@ -51,7 +51,7 @@ def Team_RushAtt_PassAtt_Off(db_name, weeks, year):
     print('Team_RushAtt_PassAtt_Off Completed')
     
 def Team_RushAtt_PassAtt_Off_Linearized(db_name, weeks, year):
-    df = PullFromDatabase.team_off_plays(db_name)
+    df = PullFromDatabase_OLD.team_off_plays(db_name)
     
     total_att = []
     for i in range(len(df)):
@@ -92,7 +92,7 @@ def Team_RushAtt_PassAtt_Off_Linearized(db_name, weeks, year):
     print('Team_RushAtt_PassAtt_Off_Linearized Completed')
 
 def Team_RushAtt_PassAtt_Both(db_name, weeks, year):
-    df = PullFromDatabase.team_both_plays(db_name)
+    df = PullFromDatabase_OLD.team_both_plays(db_name)
     
     total_off_att = []
     total_def_att = []
@@ -139,7 +139,7 @@ def Team_RushAtt_PassAtt_Both(db_name, weeks, year):
 
 
 def Team_RushAtt_PassAtt_Both_Linearized(db_name, weeks, year):
-    df = PullFromDatabase.team_both_plays(db_name)
+    df = PullFromDatabase_OLD.team_both_plays(db_name)
     
     total_off_att = []
     total_def_att = []
@@ -185,7 +185,7 @@ def Team_RushAtt_PassAtt_Both_Linearized(db_name, weeks, year):
     print('Team_RushAtt_PassAtt_Both_Linearized Completed')
     
 def Player_All_Passing_Target_Share(db_name, weeks, year):
-    df = PullFromDatabase.team_off_target_share_plays(db_name)
+    df = PullFromDatabase_OLD.team_off_target_share_plays(db_name)
     
         
     df['Tgt_Share'] = (df['Tgts'] / df['Pass_Off_Att'])*100
@@ -235,7 +235,7 @@ def Player_All_Passing_Target_Share(db_name, weeks, year):
 
 
 def Player_WR_TPG_vs_YPR(db_name, weeks, year):
-    df = PullFromDatabase.receiving(db_name)
+    df = PullFromDatabase_OLD.receiving(db_name)
     df.drop_duplicates(inplace=True)
     
     tgts_threshold = 3*weeks
@@ -275,7 +275,7 @@ def Player_WR_TPG_vs_YPR(db_name, weeks, year):
 
 
 def Player_WR_RPG_vs_YPR(db_name, weeks, year):
-    df = PullFromDatabase.receiving(db_name)
+    df = PullFromDatabase_OLD.receiving(db_name)
     df.drop_duplicates(inplace=True)
     
     tgts_threshold = 3*weeks
@@ -317,7 +317,7 @@ def Player_WR_RPG_vs_YPR(db_name, weeks, year):
     
 
 def Player_WR_TPG_vs_RPG(db_name, weeks, year):
-    df = PullFromDatabase.receiving(db_name)
+    df = PullFromDatabase_OLD.receiving(db_name)
     df.drop_duplicates(inplace=True)
     
     tgts_threshold = 3*weeks
@@ -356,7 +356,7 @@ def Player_WR_TPG_vs_RPG(db_name, weeks, year):
     print('Player_WR_TPG_vs_RPG Completed')
 
 def Player_TE_TPG_vs_RPG(db_name, weeks, year):
-    df = PullFromDatabase.receiving(db_name)
+    df = PullFromDatabase_OLD.receiving(db_name)
     df.drop_duplicates(inplace=True)
     
     tgts_threshold = 3*weeks
@@ -395,7 +395,7 @@ def Player_TE_TPG_vs_RPG(db_name, weeks, year):
     print('Player_TE_TPG_vs_RPG Completed')
     
 def Player_WR_RPG_vs_TDPR(db_name, weeks, year):
-    df = PullFromDatabase.receiving(db_name)
+    df = PullFromDatabase_OLD.receiving(db_name)
     df.drop_duplicates(inplace=True)
     
     tgts_threshold = 3*weeks
@@ -436,9 +436,9 @@ def Player_WR_RPG_vs_TDPR(db_name, weeks, year):
 
 
 def Player_RB_YPG_vs_TDPG(db_name, weeks, year):
-    receiving_df = PullFromDatabase.receiving(db_name)
+    receiving_df = PullFromDatabase_OLD.receiving(db_name)
     receiving_df.drop_duplicates(inplace=True)
-    rushing_df = PullFromDatabase.rushing(db_name)
+    rushing_df = PullFromDatabase_OLD.rushing(db_name)
     rushing_df.drop_duplicates(inplace=True)
     
 
@@ -488,9 +488,9 @@ def Player_RB_YPG_vs_TDPG(db_name, weeks, year):
     
     
 def Player_RB_YPG(db_name, weeks, year):
-    receiving_df = PullFromDatabase.receiving(db_name)
+    receiving_df = PullFromDatabase_OLD.receiving(db_name)
     receiving_df.drop_duplicates(inplace=True)
-    rushing_df = PullFromDatabase.rushing(db_name)
+    rushing_df = PullFromDatabase_OLD.rushing(db_name)
     rushing_df.drop_duplicates(inplace=True)
     
     Att_threshold = 5*weeks
@@ -557,7 +557,7 @@ def Player_RB_YPG(db_name, weeks, year):
     print('Player_RB_YPG Completed')
 
 def Player_QB_Top12(db_name, weeks, year):
-    qb_df = PullFromDatabase.qb(db_name)
+    qb_df = PullFromDatabase_OLD.qb(db_name)
     qb_df.replace(np.nan, 0, inplace=True)
     qb_df['fantasy_points'] = (qb_df['Pass Yds'].astype(float)*0.04) + (qb_df['Pass_TD'].astype(float)*4) + (qb_df['Rush Yds'].astype(float)*0.1) + (qb_df['Rush_TD'].astype(float)*6) - (qb_df['INT'].astype(float)*1) - (qb_df['Rush FUM'].astype(float)*2)
     
@@ -609,7 +609,7 @@ def Player_QB_Top12(db_name, weeks, year):
     print('Player_QB_Top12 Completed')
 
 def Player_QB_Top12_1(db_name, weeks, year):
-    qb_df = PullFromDatabase.qb(db_name)
+    qb_df = PullFromDatabase_OLD.qb(db_name)
     qb_df.replace(np.nan, 0, inplace=True)
     qb_df['fantasy_points'] = (qb_df['Pass Yds'].astype(float)*0.04) + (qb_df['Pass_TD'].astype(float)*4) + (qb_df['Rush Yds'].astype(float)*0.1) + (qb_df['Rush_TD'].astype(float)*6) - (qb_df['INT'].astype(float)*1) - (qb_df['Rush FUM'].astype(float)*2)
     
@@ -666,7 +666,7 @@ def Player_QB_Top12_1(db_name, weeks, year):
     print('Player_QB_Top12_1 Completed')
 
 def Player_K_NetYards_vs_Touchback(db_name, weeks, year):
-    df = PullFromDatabase.punters(db_name)
+    df = PullFromDatabase_OLD.punters(db_name)
     
     df = df[(df['Punts'] > 2*weeks)]
     df.reset_index(inplace=True)
@@ -701,7 +701,7 @@ def Player_K_NetYards_vs_Touchback(db_name, weeks, year):
     print('Player_K_NetYards_vs_Touchback Completed')
     
 def Player_QB_YPA_vs_CmpPct(db_name, weeks, year):
-    df = PullFromDatabase.passing(db_name)
+    df = PullFromDatabase_OLD.passing(db_name)
     
     att_threshold = 10*weeks
     
@@ -739,7 +739,7 @@ def Player_QB_YPA_vs_CmpPct(db_name, weeks, year):
     print('Player_QB_YPA_vs_CmpPct Completed')
     
 def Player_QB_YPG_vs_TD(db_name, weeks, year):
-    df = PullFromDatabase.passing(db_name)
+    df = PullFromDatabase_OLD.passing(db_name)
     
     att_threshold = 10*weeks
     
@@ -776,7 +776,7 @@ def Player_QB_YPG_vs_TD(db_name, weeks, year):
     print('Player_QB_YPG_vs_TD Completed')
 
 def Team_FFScoring_vs_Allowed_Def(db_name, weeks, year):
-    df = PullFromDatabase.team_total_def(db_name)
+    df = PullFromDatabase_OLD.team_total_def(db_name)
     #(td, points_allowed, sacks, ints, fum_rec, safety, forced_fum, blocked_kick)
     # Sums the passing and rushing defenses, mulitplies by 7 (includes PATs), and divides by weeks 
     df['Points_Allowed'] = ((df['Rush TD'].astype(float) + df['Pass TD'].astype(float)) * 7) / weeks

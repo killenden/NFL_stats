@@ -426,7 +426,7 @@ def team_off_target_share_plays(db_name):
         players.Player, 
         teams.shortname, 
         offense_passing.Att AS "Off Pass Att", 
-        SUM(receiving."Receiving Tar") AS "Tgts"
+        SUM(receiving."Receiving Tar") AS "Rx Tgts"
     FROM players
     INNER JOIN teams ON teams.team_id = players.Team
     INNER JOIN offense_passing ON offense_passing.Team = players.Team

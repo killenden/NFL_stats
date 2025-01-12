@@ -683,7 +683,7 @@ def CBS_Stats(lk_table_mascot):
 
 if __name__ == '__main__':
     
-    import PullRosters
+    import PullRosters_OLD
     import utils
     
     
