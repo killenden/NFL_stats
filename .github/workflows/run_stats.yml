@@ -6,6 +6,8 @@ on:
   schedule:
     - cron: '00 9 * * 2'
   pull_request:
+    branches:
+      - '**'  # Run on all branches for pull requests
 
 jobs:
   run_stats_py_file:
@@ -16,6 +18,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }}
 
     - name: Install Dependencies
       run: |
@@ -34,36 +38,17 @@ jobs:
       run: |
         db_number=${{ steps.set_values.outputs.db_number }}
         if [ -d "$db_number/plots" ]; then
-          find "$db_number/plots/" -name '*.png' -exec rm -f {} +
-          echo "Deleted old plots in $db_number/plots/"
-        else
-          echo "Directory $db_number/plots does not exist"
+          rm -r $db_number/plots
         fi
 
-    - name: Run Python script with DB number
+    - name: Run Python Script
       run: |
-        db_number=${{ steps.set_values.outputs.db_number }}
-        week_number=${{ steps.set_values.outputs.week_number }}
-        echo "The output db_number is: $db_number"
-        echo "The output week_number is: $week_number"
-        echo "$PWD"
-        python GitHubActions.py $db_number $week_number
-      env:
-        db_number: ${{ steps.set_values.outputs.db_number }}
-        week_number: ${{ steps.set_values.outputs.week_number }}
-        
-    - name: Commit and push changes
-      run: |
-          git stash push -u
-          git pull --rebase origin main
-          # Pop the stash
-          git stash pop
-          git add $db_number/plots/*.png
-          if git diff --staged --quiet; then
-            echo "No changes to commit."
-          else
-            git commit -m "[BOT] Update Plots"
-            git push origin main
-          fi
-      env:
-        db_number: ${{ steps.set_values.outputs.db_number }}
+        python GitHubActions.py ${{ env.db_number }} ${{ env.week_number }}
+
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        add: './database/2024.db'
+        default_author: github_actions
+        message: '[BOT] Update pictures'
+        push: origin ${{ github.head_ref }}
