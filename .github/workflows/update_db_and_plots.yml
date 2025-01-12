@@ -31,7 +31,7 @@ jobs:
     - name: Run FootballDB/main.py script
       run: python FootballDB/main.py
 
-    - name: Run Python Script
+    - name: Run GitHubActions.py Script
       run: |
         python GitHubActions.py ${{ env.db_number }} ${{ env.week_number }}
 

@@ -39,7 +39,7 @@ jobs:
       run: |
         db_number=${{ steps.set_values.outputs.db_number }}
         if [ -d "$db_number/plots" ]; then
-          rm -r $db_number/plots/*
+          rm -r $db_number/plots/*.png
           echo "plots_deleted=true" >> $GITHUB_ENV
         else
           echo "plots_deleted=false" >> $GITHUB_ENV
