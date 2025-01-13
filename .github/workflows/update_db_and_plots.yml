@@ -81,6 +81,7 @@ jobs:
         push: origin ${{ github.head_ref }}
 
   update_db:
+    needs: delete_db_and_plots
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -131,6 +132,7 @@ jobs:
         push: origin ${{ github.head_ref }}
 
   update_plots:
+    needs: update_db
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
