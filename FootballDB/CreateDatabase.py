@@ -23,7 +23,7 @@ def check_csv_file(filename):
         return False
 
 def create_db(year):
-    db_name = rf'database\{year}.db' 
+    db_name = rf'database/{year}.db' 
     
     print(os.path.dirname(os.path.realpath(__file__)))
     
@@ -40,7 +40,7 @@ def create_db(year):
     if (reset_db != 'y' or reset_db1 != 'y') and not os.path.exists(db_name):
         Database.create_FootballDB_analytics_db(db_name)
     
-    filename = rf'database\{year}_temp_db'
+    filename = rf'database/{year}_temp_db'
 
     return filename, db_name
 

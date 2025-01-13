@@ -821,7 +821,7 @@ if __name__ == '__main__':
     year = nfl_state['season']
     weeks = nfl_state['week']
 
-    db_name = rf'database\{year}_database.db'
+    db_name = rf'database/{year}_database.db'
     Team_RushAtt_PassAtt_Off(db_name, weeks, year)
     Team_RushAtt_PassAtt_Off_Linearized(db_name, weeks, year)
     Team_RushAtt_PassAtt_Both(db_name, weeks, year)

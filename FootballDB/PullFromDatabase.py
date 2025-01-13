@@ -473,7 +473,7 @@ if __name__ == '__main__':
     
     #db_name = r'NFL_stats\database\2023_database.db'
     year = 2024
-    db_name = rf'database\{year}.db'
+    db_name = rf'database/{year}.db'
     
     
     #df, stats = receiving(db_name)
