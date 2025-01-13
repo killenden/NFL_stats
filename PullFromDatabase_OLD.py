@@ -190,7 +190,7 @@ if __name__ == '__main__':
     
     #db_name = r'NFL_stats\database\2023_database.db'
     year = 2020
-    db_name = rf'database\{year}_database.db'
+    db_name = rf'database/{year}_database.db'
     
     query = '''
     SELECT players.Player, rushing.TD, teams.team_name

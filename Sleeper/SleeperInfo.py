@@ -30,7 +30,7 @@ def get_nfl_state():
 if __name__ == '__main__':
     year = 2024
     weeks = 9
-    db_name = rf'database\{year}_database.db'
+    db_name = rf'database/{year}_database.db'
     username = 'killenden'
     league_id = '1115449767284281344'
     user_info = get_user(username)

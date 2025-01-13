@@ -898,7 +898,7 @@ if __name__ == '__main__':
         year = 2024
         weeks = 18
 
-    db_name = rf'database\{year}.db'
+    db_name = rf'database/{year}.db'
 
     current_directory = os.getcwd()
     # Ensure the plots directory exists
