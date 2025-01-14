@@ -103,23 +103,32 @@
             if (isNaN(input)) {
                 // Input is a username
                 try {
-                    const userResponse = await fetch(`https://api.sleeper.app/v1/user/${input}`);
-                    if (!userResponse.ok) {
+                    // Fetch user information using input
+                    const inputResponse = await fetch(`https://api.sleeper.app/v1/user/${input}`);
+                    if (!inputResponse.ok) {
                         throw new Error('User not found');
                     }
-                    const userData = await userResponse.json();
-                    const userId = userData.user_id;
 
+                    const inputData = await inputResponse.json(); // Parse response as JSON
+                    const userId = inputData.user_id;
 
+                    // Fetch leagues for the user
+                    const leaguesResponse = await fetch(`https://api.sleeper.app/v1/user/${userId}/leagues/nfl/2024`);
                     if (!leaguesResponse.ok) {
                         throw new Error('No leagues found for this user');
                     }
-                    const leaguesData = await leaguesResponse.json();
 
+                    const leaguesData = await leaguesResponse.json(); // Parse leagues data
+
+                    /// Check if leagues were found and generate HTML
                     if (leaguesData.length > 0) {
                         let leagueList = '<h3>Select a League:</h3><ul>';
                         leaguesData.forEach(league => {
-
+                            leagueList += `
+                                <li>
+                                    <button onclick="selectLeague('${league.league_id}', '${league.name}')">${league.name}</button>
+                                </li>
+                            `;
                         });
                         leagueList += '</ul>';
                         leagueInfoDiv.innerHTML = leagueList;
@@ -141,56 +150,116 @@
             leagueInfoDiv.innerHTML = '<p class="loading">Loading league info...</p>';
 
             try {
-
                 const leagueResponse = await fetch(`https://api.sleeper.app/v1/league/${leagueId}`);
-                if (!leagueResponse.ok) {
-                    throw new Error('League not found');
-                }
+                if (!leagueResponse.ok) throw new Error('League not found');
                 const leagueData = await leagueResponse.json();
 
-                if (leagueData.league_id) {
-                    leagueInfoDiv.innerHTML = `
-                        <h3>League Info:</h3>
-                        <p>League Name: ${leagueData.name}</p>
-                        <p>League ID: ${leagueData.league_id}</p>
-                        <p>Season: ${leagueData.season}</p>
+                leagueInfoDiv.innerHTML = `
+                    <h3>League Info:</h3>
+                    <p>League Name: ${escapeHTML(leagueData.name)}</p>
+                    <p>League ID: ${escapeHTML(leagueData.league_id)}</p>
+                    <p>Season: ${escapeHTML(leagueData.season)}</p>
+                `;
+
+                const [rostersResponse, usersResponse] = await Promise.all([
+                    fetch(`https://api.sleeper.app/v1/league/${leagueId}/rosters`),
+                    fetch(`https://api.sleeper.app/v1/league/${leagueId}/users`),
+                ]);
+
+                if (!rostersResponse.ok) throw new Error('No rosters found');
+                if (!usersResponse.ok) throw new Error('No users found');
+
+                const [rostersData, usersData] = await Promise.all([
+                    rostersResponse.json(),
+                    usersResponse.json(),
+                ]);
+
+                const userMap = {};
+                usersData.forEach(user => {
+                    userMap[user.user_id] = user.display_name;
+                });
+
+                if (rostersData.length > 0) {
+                    // Sort standings by wins (descending)
+                    rostersData.sort((a, b) => b.settings.wins - a.settings.wins);
+
+                    // Generate standings table
+                    let tableHTML = `
+                        <h3>Standings:</h3>
+                        <table border="1">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortTable(0)">Owner</th>
+                                    <th onclick="sortTable(1)">Wins</th>
+                                    <th onclick="sortTable(2)">Losses</th>
+                                    <th onclick="sortTable(3)">Points</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                     `;
 
-                    // Fetch rosters and standings
-                    const rostersResponse = await fetch(`https://api.sleeper.app/v1/league/${leagueId}/rosters`);
-                    if (!rostersResponse.ok) {
-                        throw new Error('No rosters found');
-                    }
-                    const rostersData = await rostersResponse.json();
-
-                    const usersResponse = await fetch(`https://api.sleeper.app/v1/league/${leagueId}/users`);
-                    if (!usersResponse.ok) {
-                        throw new Error('No users found');
-                    }
-                    const usersData = await usersResponse.json();
-
-                    // Map user IDs to user names
-                    const userMap = {};
-                    usersData.forEach(user => {
-                        userMap[user.user_id] = user.display_name;
+                    rostersData.forEach(roster => {
+                        const wins = roster.settings.wins ?? 0;
+                        const losses = roster.settings.losses ?? 0;
+                        const points = roster.settings.fpts ?? 0;
+                        const owner = escapeHTML(userMap[roster.owner_id] || 'Unknown');
+                        tableHTML += `
+                            <tr>
+                                <td>${owner}</td>
+                                <td>${wins}</td>
+                                <td>${losses}</td>
+                                <td>${points}</td>
+                            </tr>
+                        `;
                     });
 
-                    if (rostersData.length > 0) {
-                        leagueInfoDiv.innerHTML += '<h3>Standings:</h3><ul>';
-                        rostersData.forEach(roster => {
-                            leagueInfoDiv.innerHTML += `<li>${userMap[roster.owner_id]}: ${roster.settings.wins} Wins, ${roster.settings.losses} Losses, ${roster.settings.fpts} Points</li>`;
-                        });
-                        leagueInfoDiv.innerHTML += '</ul>';
-                    } else {
-                        leagueInfoDiv.innerHTML += '<p>No rosters found for this league.</p>';
-                    }
+                    tableHTML += `</tbody></table>`;
+                    leagueInfoDiv.innerHTML += tableHTML;
                 } else {
-                    leagueInfoDiv.innerHTML = '<p>League not found.</p>';
+                    leagueInfoDiv.innerHTML += '<p>No rosters found for this league.</p>';
                 }
             } catch (error) {
                 leagueInfoDiv.innerHTML = `<p>Error: ${error.message}</p>`;
                 console.error('Error:', error);
             }
+        }
+
+        // Add sorting functionality
+        function sortTable(columnIndex) {
+            const table = document.querySelector('#league-info table tbody');
+            const rows = Array.from(table.rows);
+
+            // Determine sort direction based on first two rows
+            const ascending = rows[0].cells[columnIndex].innerText >
+                            rows[1].cells[columnIndex].innerText;
+
+            // Sort rows
+            rows.sort((a, b) => {
+                const cellA = a.cells[columnIndex].innerText;
+                const cellB = b.cells[columnIndex].innerText;
+
+                return ascending
+                    ? cellA.localeCompare(cellB, undefined, { numeric: true })
+                    : cellB.localeCompare(cellA, undefined, { numeric: true });
+            });
+
+            // Rebuild table body
+            table.innerHTML = '';
+            rows.forEach(row => table.appendChild(row));
+        }
+
+
+        // Function to handle league selection
+        function selectLeague(leagueId, leagueName) {
+            console.log(`Selected League ID: ${leagueId}, Name: ${leagueName}`);
+            alert(`You selected the league: ${leagueName}`);
+            // Additional logic for the selected league can go here
+            getLeague(leagueId)
+        }
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
         }
     </script>
     

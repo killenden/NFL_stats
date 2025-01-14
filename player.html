@@ -97,13 +97,12 @@
         <a href="#rb">RB</a> 
         <a href="#wr">WR</a>
         <a href="#te">TE</a>
-        <a href="#punter">P</a>
     </div>
 
     <div class="container" id="qb">
         <h2>QB Stats</h2>
         <select id="qbImageSelector">
-            <option value="Player_QB_YPG_vs_TD">Passing Yards per Game vs Touchdowns</option>
+            <option value="Player_QB_YPG_vs_TD">Passing Yards per Game vs Touchdowns per Game</option>
             <option value="Player_QB_YPA_vs_CmpPct">Passing Yards per Attempt vs Completion Percentage</option>
         </select>
         <div class="image-container">
@@ -140,16 +139,6 @@
         </select>
         <div class="image-container">
             <img id="teStatImage" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2024/plots/Player_TE_TPG_vs_RPG.png" alt="TE Stats">
-        </div>
-    </div>
-
-    <div class="container" id="punter">
-        <h2>Punter Stats</h2>
-        <select id="punterImageSelector">
-            <option value="Player_K_NetYards_vs_Touchback">Net Yards per Punt vs Touchbacks</option>
-        </select>
-        <div class="image-container">
-            <img id="punterStatImage" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2024/plots/Player_K_NetYards_vs_Touchback.png" alt="Punter Stats">
         </div>
     </div>
 
@@ -192,13 +181,6 @@
             document.getElementById('teStatImage').src = imageUrl;
         });
 
-        document.getElementById('punterImageSelector').addEventListener('change', function() {
-            var imageUrl;
-            if (this.value === 'Player_K_NetYards_vs_Touchback') {
-                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/2024/plots/Player_K_NetYards_vs_Touchback.png';
-            }
-            document.getElementById('punterStatImage').src = imageUrl;
-        });
     </script>
 </body>
 </html>
