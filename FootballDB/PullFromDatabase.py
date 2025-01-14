@@ -251,7 +251,7 @@ def team_def_overall(db_name):
     SELECT DISTINCT 
         teams.team_name, 
         teams.shortname, 
-        defense_overall."Tot Pts" AS "Total Points", 
+        defense_overall."Tot Pts" AS "Total Points", 
         defense_overall."Pts/G" AS "Points Per Game", 
         defense_overall."RushYds" AS "Rush Yards", 
         defense_overall."RYds/G" AS "Rush Yards Per Game", 
@@ -271,7 +271,7 @@ def team_off_overall(db_name):
     SELECT DISTINCT 
         teams.team_name, 
         teams.shortname, 
-        offense_overall."Tot Pts" AS "Total Points", 
+        offense_overall."Tot Pts" AS "Total Points", 
         offense_overall."Pts/G" AS "Points Per Game", 
         offense_overall."RushYds" AS "Rush Yards", 
         offense_overall."RYds/G" AS "Rush Yards Per Game", 

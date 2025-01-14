@@ -60,17 +60,17 @@ def PullTeam_FootballDB(url, team):
             try:
                 if data.contents[0].attrs['class'][0] == 'rostplayer':
                     end = find_nth(data.text, '\n', 0)
-                    data_list.append(data.text[:end])
-                    player_dict[data.contents[0].contents[0].contents[0].text] = data.contents[0].contents[0].contents[0].attrs['href']
+                    data_list.append(data.text[:end].replace("\u00A0", " "))
+                    player_dict[data.contents[0].contents[0].contents[0].text] = data.contents[0].contents[0].contents[0].attrs['href'].replace("\u00A0", " ")
             except:
                 if len(data_list) == position_index:
                     if data.text in ['QB', 'RB', 'WR', 'TE']: # Add more positions as needed
-                        data_list.append(data.text)
+                        data_list.append(data.text.replace("\u00A0", " "))
                     else:
                         data_list = []
                         break
                 else:
-                    data_list.append(data.text)
+                    data_list.append(data.text.replace("\u00A0", " "))
                 continue
         if len(data_list) > 1:
             df_final = pd.concat([pd.DataFrame([data_list], columns=headers_list), df_final], ignore_index=True).reset_index(drop=True)
@@ -107,7 +107,7 @@ def FindHeaders(stats):
                                             continue
                                         if FindColSpan(header) > 0:
                                             for i in range(0,FindColSpan(header)):
-                                                colspan_list.append(header.text)
+                                                colspan_list.append(header.text.replace("\u00A0", " "))
                                         else:
                                             colspan_list.append('')
                                 if headers.attrs['class'] == ['header', 'right']:
@@ -116,12 +116,12 @@ def FindHeaders(stats):
                                         if not '\n' == header.text:
                                             try:
                                                 if colspan_list[i] != '':
-                                                    headers_list.append(f'{colspan_list[i]} {header.text}')
+                                                    headers_list.append(f'{colspan_list[i]} {header.text.replace("\u00A0", " ")}')
                                                 else:
-                                                    headers_list.append(header.text)
+                                                    headers_list.append(header.text.replace("\u00A0", " "))
                                                 i += 1
                                             except:
-                                                headers_list.append(header.text)
+                                                headers_list.append(header.text.replace("\u00A0", " "))
                                     return headers_list
                             except:
                                 continue
@@ -187,9 +187,9 @@ def FindTeamStats(stats, headers_list):
                                     for header in data.contents:
                                         if not '\n' == header.text:
                                             if len(header.contents) != 0:
-                                                statistics.append(header.contents[0].text)
+                                                statistics.append(header.contents[0].text.replace("\u00A0", " "))
                                             else:
-                                                statistics.append(header.text)
+                                                statistics.append(header.text.replace("\u00A0", " "))
                                     try:
                                         
                                         df_final = pd.concat([pd.DataFrame([statistics], columns=headers_list), df_final], ignore_index=True).reset_index(drop=True)

@@ -47,7 +47,7 @@ def PullTeam_FootballDB(url, team):
     headers_list.append('Team')
     #table = soup.find('table', class_='d3-o-table d3-o-table--row-striping d3-o-table--detailed d3-o-table--sortable')
     for header in soup.find_all(class_ = 'thead')[0].contents:
-        headers_list.append(header.text)
+        headers_list.append(header.text.replace("\u00A0", " "))
         
     df_final = pd.DataFrame(columns=headers_list)
         
@@ -66,19 +66,19 @@ def PullTeam_FootballDB(url, team):
                 if data.contents[0].attrs['class'][0] == 'rostplayer':
                     end = find_nth(data.text, '\n', 0)
                     data_list.append(data.text[:end])
-                    name = data.contents[0].contents[0].contents[0].text
-                    player_dict[name] = data.contents[0].contents[0].contents[0].attrs['href']
+                    name = data.contents[0].contents[0].contents[0].text.replace("\u00A0", " ")
+                    player_dict[name] = data.contents[0].contents[0].contents[0].attrs['href'].replace("\u00A0", " ")
                     
             except:
                 if len(data_list) == position_index:
                     if data.text in ['QB', 'RB', 'WR', 'TE']: # Add more positions as needed
-                        data_list.append(data.text)
+                        data_list.append(data.text.replace("\u00A0", " "))
                     else:
                         del player_dict[name]
                         data_list = []
                         break
                 else:
-                    data_list.append(data.text)
+                    data_list.append(data.text.replace("\u00A0", " "))
                 continue
         if len(data_list) > 1:
             df_final = pd.concat([pd.DataFrame([data_list], columns=headers_list), df_final], ignore_index=True).reset_index(drop=True)
@@ -108,12 +108,12 @@ def ScrapingFootballDB(soup):
                     for info in team_info.contents:
                         try:
                             if 'teams-teamname' in info.attrs['class'][0]:
-                                team_name = info.contents[0].text
+                                team_name = info.contents[0].text.replace("\u00A0", " ")
                             if 'teams-teamlinks' in info.attrs['class'][0]:
                                 for link in info.contents:
                                     try:
                                         if 'roster' in link.attrs['title'].lower():
-                                            footballdb_dict[team_name] = link.attrs['href']
+                                            footballdb_dict[team_name] = link.attrs['href'].replace("\u00A0", " ")
                                         #TODO: add additional if statements here to grab the other links:
                                             #results
                                             #stats

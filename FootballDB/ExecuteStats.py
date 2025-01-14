@@ -898,7 +898,7 @@ if __name__ == '__main__':
         year = 2024
         weeks = 18
 
-    db_name = rf'database/{year}.db'
+    db_name = rf'database\{year}.db'
 
     current_directory = os.getcwd()
     # Ensure the plots directory exists
@@ -906,6 +906,22 @@ if __name__ == '__main__':
     os.makedirs(plots_dir, exist_ok=True)
     # Change the current working directory to the plots directory
     os.chdir(plots_dir)
+    
+    
+    os.chdir(current_directory)
+    
+    df = PullFromDatabase.team_off_overall(db_name)
+    
+    # Apply some styling
+    styled_df = df.style.set_caption("Team Offense Overall") \
+    .highlight_max(subset="team_name", color="lightgreen") \
+    .highlight_min(subset="Total Points", color="lightblue") \
+    .set_table_styles([
+        {'selector': 'th', 'props': [('background-color', 'gray'), ('color', 'white'), ('font-weight', 'bold')]},
+        {'selector': 'tr:nth-child(even)', 'props': [('background-color', '#f2f2f2')]},
+    ])
+    
+    html_table = styled_df.to_html()
     
     Team_RushAtt_PassAtt_Off(db_name, weeks, year)
     Team_RushAtt_PassAtt_Off_Linearized(db_name, weeks, year)
