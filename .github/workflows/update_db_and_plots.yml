@@ -6,7 +6,7 @@ on:
 
 jobs:
   delete_db_and_plots:
-    if: contains(github.event.pull_request.title, 'Update Database and Plots')
+    if: contains(github.event.pull_request.title, '[BOT] Update Database and Plots')
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
