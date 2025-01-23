@@ -34,13 +34,14 @@ jobs:
         BRANCH_NAME="issue-${ISSUE_NUMBER}"
         git checkout -b $BRANCH_NAME
         git config user.email $EMAIL
-        git config user.name "Kyle Illenden"
+        git config user.name $USERNAME
         git commit --allow-empty -m "Empty commit"
         git push origin main
         echo "::set-output name=branch_name::$BRANCH_NAME"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EMAIL: ${{ secrets.K_EMAIL }}
+        USERNAME: ${{ secrets.K_USERNAME }}
         
 
     - name: Create Pull Request
