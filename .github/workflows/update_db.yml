@@ -1,8 +1,7 @@
 name: Update DB
 on:
-  pull_request:
-    branches:
-      - '**'  # Run on all branches for pull requests
+  repository_dispatch:
+    types: [update-database]
 
 jobs:
   delete_db:
