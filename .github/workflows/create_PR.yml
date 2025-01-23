@@ -33,6 +33,7 @@ jobs:
         ISSUE_NUMBER=${{ github.event.issue.number }}
         BRANCH_NAME="issue-${ISSUE_NUMBER}"
         git checkout -b $BRANCH_NAME
+        git commit --allow-empty -m "make pull request"
         echo "::set-output name=branch_name::$BRANCH_NAME"
 
     - name: Create Pull Request
