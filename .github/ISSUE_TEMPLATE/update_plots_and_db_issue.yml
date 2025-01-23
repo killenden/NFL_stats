@@ -10,3 +10,11 @@ body:
     attributes:
       value: |
         This issue will automatically create a pull request with the appropriate title based on the selected options.
+
+  - type: checkboxes
+    attributes:
+      label: Acknowledgment
+      description: You agree to updating the chosen option in Github
+      options:
+        - label: Agree
+          required: true
