@@ -16,7 +16,7 @@ jobs:
       id: determine_title
       run: |
         ISSUE_TITLE="${{ github.event.issue.title }}"
-        if [[ "$ISSUE_TITLE" == *"[BOT] Update Database"* && "$ISSUE_TITLE" == *"[BOT] Update Plots"* ]]; then
+        if [[ "$ISSUE_TITLE" == *"[BOT] Update Database and Plots"* ]]; then
           echo "::set-output name=title::[BOT] Update Database and Plots"
         elif [[ "$ISSUE_TITLE" == *"[BOT] Update Database"* ]]; then
           echo "::set-output name=title::[BOT] Update Database"
