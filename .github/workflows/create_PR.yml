@@ -73,7 +73,7 @@ jobs:
           -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           https://api.github.com/repos/${{ github.repository }}/dispatches \
-          -d '{"event_type":"update-database", "client_payload": {"ref": "${{ github.head_ref }}"}}'
+          -d '{"event_type":"update-database", "client_payload": {"ref": "${{ github.head_ref }}", "repo_name": ${{ github.event.repository.name }}}}'
 
     - name: Dispatch Update Plots Workflow
       if: steps.determine_title.outputs.title == '[BOT] Update Plots'
@@ -82,7 +82,7 @@ jobs:
           -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           https://api.github.com/repos/${{ github.repository }}/dispatches \
-          -d '{"event_type":"update-plots", "client_payload": {"ref": "${{ github.head_ref }}"}}'
+          -d '{"event_type":"update-database", "client_payload": {"ref": "${{ github.head_ref }}", "repo_name": ${{ github.event.repository.name }}}}'
 
     - name: Dispatch Update Database and Plots Workflow
       if: steps.determine_title.outputs.title == '[BOT] Update Database and Plots'
@@ -91,4 +91,4 @@ jobs:
           -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           https://api.github.com/repos/${{ github.repository }}/dispatches \
-          -d '{"event_type":"update-database-and-plots", "client_payload": {"ref": "${{ github.head_ref }}"}}'
+          -d '{"event_type":"update-database", "client_payload": {"ref": "${{ github.head_ref }}", "repo_name": ${{ github.event.repository.name }}}}'
