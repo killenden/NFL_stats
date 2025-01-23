@@ -1,9 +1,7 @@
 
 name: Update Database and Plots
-about: This will create a Pull Request that will run the Github Actions to update the database and plots.
 title: '[BOT] Update Plots and Database'
 labels: 'bot'
-assignees: ''
 
 body:
   - type: checkboxes
@@ -12,20 +10,11 @@ body:
       description: Select the options you want to update.
       options:
         - label: Update Database
+          id: update_database
           required: false
         - label: Update Plots
-          required: false
-
-  - type: hidden
-    id: update_database
-    attributes:
-      value: false
-
-  - type: hidden
-    id: update_plots
-    attributes:
-      value: false
-
+          id: update_plots
+   
   - type: markdown
     attributes:
       value: |
