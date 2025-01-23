@@ -53,10 +53,7 @@ jobs:
         add: '.'
         default_author: github_actions
         message: '[BOT] Created Temp File'
-        push: origin $BRANCH_NAME
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH_NAME: ${{ steps.create_branch.outputs.branch_name }}
+        push: origin origin ${{ github.head_ref }}
         
 
     - name: Create Pull Request
