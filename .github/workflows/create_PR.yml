@@ -25,6 +25,7 @@ jobs:
         else
           echo "No valid options selected. Exiting."
           exit 1
+        fi
 
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v4
