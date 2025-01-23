@@ -35,10 +35,8 @@ jobs:
         echo "::set-output name=branch_name::$BRANCH_NAME"
 
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: '[BOT] Automated update of database and plots'
-        branch: ${{ steps.create_branch.outputs.branch_name }}
-        title: ${{ steps.determine_title.outputs.title }}
-        body: 'This pull request was automatically created to update the database and plots.'
+      run: |
+        BRANCH_NAME=${{ steps.create_branch.outputs.branch_name }}
+        gh pr create -B main -H $BRANCH_NAME --title '$BRANCH_NAME branch_to_merge into main' --body 'Created by Github action'
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
