@@ -1,4 +1,4 @@
-name: Delete DB and Plots
+name: Update DB and Plots
 on:
   pull_request:
     branches:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   delete_db_and_plots:
-    if: contains(github.event.pull_request.title, 'Update Plots and Database')
+    if: contains(github.event.pull_request.title, '[BOT] Update Database and Plots')
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
