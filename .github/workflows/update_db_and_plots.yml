@@ -15,7 +15,7 @@ jobs:
       with:
         fetch-depth: 0
         ref: ${{ github.event.client_payload.ref }}
-        repository: ${{ github.event.client_payload.repo_name }}
+        repository: killenden/${{ github.event.client_payload.repo_name }}
 
     - name: Print checked out branch
       run: |
@@ -61,6 +61,12 @@ jobs:
         echo "DB Deleted: ${{ steps.set_output.outputs.db_deleted }}"
         echo "Plots Deleted: ${{ steps.set_output.outputs.plots_deleted }}"
 
+    - name: Delete Temp File
+      run: |
+        if [ -f ".temp" ]; then
+          rm -r .temp
+        fi
+    
     - name: Stage changes
       run: |
         git add -A
