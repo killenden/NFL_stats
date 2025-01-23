@@ -66,14 +66,14 @@ jobs:
           BRANCH_NAME: ${{ steps.create_branch.outputs.branch_name }}
           TITLE: ${{ steps.determine_title.outputs.title }}
 
-    - name: Dispatch Workflow
+    - name: Dispatch Update Database Workflow
       if: steps.determine_title.outputs.title == '[BOT] Update Database'
       run: |
         curl -X POST \
           -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           https://api.github.com/repos/${{ github.repository }}/dispatches \
-          -d '{"event_type":"update-database"}'
+          -d '{"event_type":"update-database", "client_payload": {"ref": "${{ github.head_ref }}"}}'
 
     - name: Dispatch Update Plots Workflow
       if: steps.determine_title.outputs.title == '[BOT] Update Plots'
@@ -82,7 +82,7 @@ jobs:
           -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           https://api.github.com/repos/${{ github.repository }}/dispatches \
-          -d '{"event_type":"update-plots"}'
+          -d '{"event_type":"update-plots", "client_payload": {"ref": "${{ github.head_ref }}"}}'
 
     - name: Dispatch Update Database and Plots Workflow
       if: steps.determine_title.outputs.title == '[BOT] Update Database and Plots'
@@ -91,4 +91,4 @@ jobs:
           -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           https://api.github.com/repos/${{ github.repository }}/dispatches \
-          -d '{"event_type":"update-database-and-plots"}'
+          -d '{"event_type":"update-database-and-plots", "client_payload": {"ref": "${{ github.head_ref }}"}}'
