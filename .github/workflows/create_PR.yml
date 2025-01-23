@@ -28,6 +28,7 @@ jobs:
         fi
 
     - name: Create Branch
+      id: create_branch
       run: |
         ISSUE_NUMBER=${{ github.event.issue.number }}
         BRANCH_NAME="issue-${ISSUE_NUMBER}"
