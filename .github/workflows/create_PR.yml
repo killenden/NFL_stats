@@ -36,11 +36,12 @@ jobs:
         echo "::set-output name=branch_name::$BRANCH_NAME"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
+
+    - name: Create Temp File
+      run: echo "Temporary file content" > .temp
+      
     - name: Stage changes
-      run: |
-        echo "Temporary file content" > .temp
-        git add -A
+      run: git add -A
 
     - name: Check for changes
       run: |
@@ -53,7 +54,7 @@ jobs:
         add: '.'
         default_author: github_actions
         message: '[BOT] Created Temp File'
-        push: origin origin ${{ github.head_ref }}
+        push: origin ${{ github.head_ref }}
         
 
     - name: Create Pull Request
