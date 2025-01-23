@@ -33,6 +33,7 @@ jobs:
         ISSUE_NUMBER=${{ github.event.issue.number }}
         BRANCH_NAME="issue-${ISSUE_NUMBER}"
         git checkout -b $BRANCH_NAME
+        echo "Temporary file content" > .temp
         git config user.email $EMAIL
         git config user.name $USERNAME
         git commit --allow-empty -m "Empty commit"
