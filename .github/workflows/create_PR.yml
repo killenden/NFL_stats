@@ -33,6 +33,7 @@ jobs:
         ISSUE_NUMBER=${{ github.event.issue.number }}
         BRANCH_NAME="issue-${ISSUE_NUMBER}"
         git checkout -b $BRANCH_NAME
+        git push --set-upstream origin issue-72
         echo "::set-output name=branch_name::$BRANCH_NAME"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
