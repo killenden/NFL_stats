@@ -15,12 +15,12 @@ jobs:
     - name: Determine Title
       id: determine_title
       run: |
-        ISSUE_BODY="${{ github.event.issue.body }}"
-        if [[ "$ISSUE_BODY" == *"- [x] Update Database"* && "$ISSUE_BODY" == *"- [x] Update Plots"* ]]; then
+        ISSUE_TITLE="${{ github.event.issue.title }}"
+        if [[ "$ISSUE_TITLE" == *"[BOT] Update Database"* && "$ISSUE_TITLE" == *"[BOT] Update Plots"* ]]; then
           echo "::set-output name=title::[BOT] Update Database and Plots"
-        elif [[ "$ISSUE_BODY" == *"- [x] Update Database"* ]]; then
+        elif [[ "$ISSUE_TITLE" == *"[BOT] Update Database"* ]]; then
           echo "::set-output name=title::[BOT] Update Database"
-        elif [[ "$ISSUE_BODY" == *"- [x] Update Plots"* ]]; then
+        elif [[ "$ISSUE_TITLE" == *"[BOT] Update Plots"* ]]; then
           echo "::set-output name=title::[BOT] Update Plots"
         else
           echo "No valid options selected. Exiting."
