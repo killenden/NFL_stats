@@ -5,7 +5,6 @@ on:
 
 jobs:
   delete_plots:
-    if: contains(github.event.pull_request.title, '[BOT] Update Plots')
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -15,8 +14,9 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-        ref: ${{ github.event.pull_request.head.ref }}
-        repository: ${{ github.event.pull_request.head.repo.full_name }}
+        ref: ${{ github.event.client_payload.ref }}
+        repository: ${{ github.event.client_payload.repo_name }}
+
 
     - name: Print checked out branch
       run: |
