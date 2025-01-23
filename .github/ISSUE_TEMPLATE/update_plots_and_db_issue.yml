@@ -5,17 +5,7 @@ title: '[BOT] Update Plots and Database'
 labels: 'bot'
 
 body:
-  - type: checkboxes
-    attributes:
-      label: Update Options
-      description: Select the options you want to update.
-      options:
-        - label: Update Database
-          id: update_database
-          required: false
-        - label: Update Plots
-          id: update_plots
-   
+
   - type: markdown
     attributes:
       value: |
