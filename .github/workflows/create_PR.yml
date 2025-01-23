@@ -33,16 +33,30 @@ jobs:
         ISSUE_NUMBER=${{ github.event.issue.number }}
         BRANCH_NAME="issue-${ISSUE_NUMBER}"
         git checkout -b $BRANCH_NAME
-        echo "Temporary file content" > .temp
-        git config user.email $EMAIL
-        git config user.name $USERNAME
-        git commit --allow-empty -m "Empty commit"
-        git push origin main
         echo "::set-output name=branch_name::$BRANCH_NAME"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        EMAIL: ${{ secrets.K_EMAIL }}
-        USERNAME: ${{ secrets.K_USERNAME }}
+        
+    - name: Stage changes
+      run: |
+        echo "Temporary file content" > .temp
+        git add -A
+
+    - name: Check for changes
+      run: |
+        git status
+        git diff
+
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        add: '.'
+        default_author: github_actions
+        message: '[BOT] Created Temp File'
+        push: origin $BRANCH_NAME
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: ${{ steps.create_branch.outputs.branch_name }}
         
 
     - name: Create Pull Request
