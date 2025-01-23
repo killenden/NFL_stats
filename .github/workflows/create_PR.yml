@@ -75,6 +75,8 @@ jobs:
           -H "X-GitHub-Api-Version: 2022-11-28" \
           /repos/killenden/NFL_stats/dispatches \
            -f "event_type=update-database" -F "client_payload[ref]=${{ github.head_ref }}" -F "client_payload[repo_name]=${{ github.event.repository.name }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Dispatch Update Plots Workflow
       if: steps.determine_title.outputs.title == '[BOT] Update Plots'
@@ -85,6 +87,8 @@ jobs:
           -H "X-GitHub-Api-Version: 2022-11-28" \
           /repos/killenden/NFL_stats/dispatches \
            -f "event_type=update-plots" -F "client_payload[ref]=${{ github.head_ref }}" -F "client_payload[repo_name]=${{ github.event.repository.name }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Dispatch Update Database and Plots Workflow
       if: steps.determine_title.outputs.title == '[BOT] Update Database and Plots'
@@ -95,3 +99,5 @@ jobs:
           -H "X-GitHub-Api-Version: 2022-11-28" \
           /repos/killenden/NFL_stats/dispatches \
            -f "event_type=update-database-and-plots" -F "client_payload[ref]=${{ github.head_ref }}" -F "client_payload[repo_name]=${{ github.event.repository.name }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
