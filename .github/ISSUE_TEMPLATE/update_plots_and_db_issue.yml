@@ -1,7 +1,7 @@
 
 name: Update Database and Plots
 description: Creates a new issue
-title: '[BOT] Update Plots and Database'
+title: '[BOT] Update Database and Plots'
 labels: 'bot'
 
 body:
