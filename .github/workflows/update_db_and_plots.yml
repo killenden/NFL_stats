@@ -1,8 +1,7 @@
 name: Update DB and Plots
 on:
-  pull_request:
-    branches:
-      - '**'  # Run on all branches for pull requests
+  repository_dispatch:
+    types: [update-database-and-plots]
 
 jobs:
   delete_db_and_plots:
