@@ -116,7 +116,8 @@ def FindHeaders(stats):
                                         if not '\n' == header.text:
                                             try:
                                                 if colspan_list[i] != '':
-                                                    headers_list.append(f'{colspan_list[i]} {header.text.replace("\u00A0", " ")}')
+                                                    #headers_list.append(f'{colspan_list[i]} {header.text.replace("\u00A0", " ")}')
+                                                    headers_list.append(f'{colspan_list[i]} {header.text.replace("u00A0", " ")}')
                                                 else:
                                                     headers_list.append(header.text.replace("\u00A0", " "))
                                                 i += 1

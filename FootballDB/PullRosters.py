@@ -46,35 +46,57 @@ def PullTeam_FootballDB(url, team):
     headers_list = []
     headers_list.append('Team')
     #table = soup.find('table', class_='d3-o-table d3-o-table--row-striping d3-o-table--detailed d3-o-table--sortable')
-    for header in soup.find_all(class_ = 'thead')[0].contents:
-        headers_list.append(header.text.replace("\u00A0", " "))
+    try:
+        # Old way before website changed
+        for header in soup.find_all(class_ = 'thead')[0].contents:
+            headers_list.append(header.text.replace("\u00A0", " "))
+    except:
+        for headers in soup.find_all('thead')[0].contents:
+            try:
+                for header in headers.contents:
+                    headers_list.append(header.text.replace("\u00A0", " "))
+            except:
+                continue
         
     df_final = pd.DataFrame(columns=headers_list)
         
     player_dict = {}
     position_index = headers_list.index('Pos')
-    for row in soup.find_all(class_ = 'tr'):
+    skip_header = True
+    for row in soup.find_all('tr'):
+        if skip_header == True:
+            skip_header = False
+            continue
         data_list = []
         data_list.append(team)
+        
         for data in row.contents:
             # if '\n' in data.text:
             #     end = find_nth(data.text, '\n', 0)
             #     data_list.append(data.text[:end])
             # else:
             #     data_list.append(data.text)
+            
             try:
-                if data.contents[0].attrs['class'][0] == 'rostplayer':
-                    end = find_nth(data.text, '\n', 0)
-                    data_list.append(data.text[:end])
-                    name = data.contents[0].contents[0].contents[0].text.replace("\u00A0", " ")
-                    player_dict[name] = data.contents[0].contents[0].contents[0].attrs['href'].replace("\u00A0", " ")
+                if data.contents[0].attrs != 0:
+                    name = data.contents[0].contents[0].text.replace("\u00A0", " ")
+                    #end = find_nth(data.text, '\n', 0)
+                    #if end != -1:
+                    #    data_list.append(data.text[:end])
+                    #else:
+                    #    data_list.append(data.text)
+                    data_list.append(name)
+                    player_dict[name] = data.contents[0].attrs['href'].replace("\u00A0", " ")
                     
             except:
                 if len(data_list) == position_index:
                     if data.text in ['QB', 'RB', 'WR', 'TE']: # Add more positions as needed
                         data_list.append(data.text.replace("\u00A0", " "))
                     else:
-                        del player_dict[name]
+                        try:
+                            del player_dict[name]
+                        except:
+                            pass
                         data_list = []
                         break
                 else:
