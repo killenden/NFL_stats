@@ -153,37 +153,60 @@ def FindPlayersStats(player_stats):
     player_statistics_dict = {}
     i = 1
     reset_week_count = False
+    preseason_lock = False
+    regseason_lock = False
     if len(player_stats.contents) > 0:
         for table in player_stats.contents:
             try:
-                for player_info in table.contents:
+                if preseason_lock == True:
                     try:
-                        if 'tbody' == player_info.name:
-                            for stats in player_info.contents:
-                                try:
-                                    player_statistics = []
-                                    if stats.attrs['class'][1] == 'preseason':
+                        for all_stats in table.contents:
+                            if all_stats.name == 'tbody':
+                                for stats in all_stats.contents:
+                                    if stats != '\n':
                                         player_statistics.append('Preseason')
-                                        player_statistics_dict[rf'Preseason Week {i}'] = CreateStatsList(stats, player_statistics)
+                                        player_statistics_dict[rf'Preseason Week {i}'] = CreateStatsList(stats, player_statistics) 
+                                        try:
+                                            if 'TOTALS' in player_statistics_dict[rf'Preseason Week {i}'][1] or \
+                                                'TOTALS' in player_statistics_dict[rf'Preseason Week {i}'][2]:
+                                                del player_statistics_dict[rf'Preseason Week {i}']
+                                        except:
+                                            continue
                                         i += 1
-                                        reset_week_count = True
-                                    else:
+                                        player_statistics = []
+                    except:
+                        continue
+                        
+                elif regseason_lock == True:
+                    try:
+                        for all_stats in table.contents:
+                            if all_stats.name == 'tbody':
+                                for stats in all_stats.contents:
+                                    if stats != '\n':
                                         if i > 1 and reset_week_count == True:
                                             i = 1
                                             reset_week_count = False
                                         player_statistics.append('Regular')
-                                        player_statistics_dict[rf'Regular Week {i}'] = CreateStatsList(stats, player_statistics)
-                                    try:
-                                        if player_statistics_dict[rf'Regular Week {i}'][1] == 'TOTALS':
-                                            del player_statistics_dict[rf'Regular Week {i}']
-                                            return player_statistics_dict
-                                    except:
-                                        continue
-                                    i += 1
-                                except:
-                                    continue
+                                        player_statistics_dict[rf'Regular Week {i}'] = CreateStatsList(stats, player_statistics) 
+                                        try:
+                                            if 'TOTALS' in player_statistics_dict[rf'Regular Week {i}'][1] or \
+                                                'TOTALS' in player_statistics_dict[rf'Regular Week {i}'][2]:
+                                                del player_statistics_dict[rf'Regular Week {i}']
+                                                return player_statistics_dict
+                                        except:
+                                            continue
+                                        i += 1
+                                        player_statistics = []
                     except:
                         continue
+                    
+                if table.name == 'h3' and 'preseason' in table.contents[0].lower():
+                    preseason_lock = True
+                    
+                elif table.name == 'h3' and 'regular' in table.contents[0].lower():
+                    preseason_lock = False
+                    regseason_lock = True
+                    reset_week_count = True
             except:
                 continue
     else:
