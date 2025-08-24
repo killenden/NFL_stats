@@ -1,0 +1,60 @@
+name: Update Weather
+on:
+  repository_dispatch:
+    types: [update-weather]
+
+jobs:
+
+  update_weather:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        ref: ${{ github.event.client_payload.ref }}
+        repository: killenden/${{ github.event.client_payload.repo_name }}
+    
+    - name: Print checked out branch
+      run: |
+        echo "Checked out branch: $(git rev-parse --abbrev-ref HEAD)"
+
+    - name: Set Values
+      id: set_values
+      run: |
+        echo "db_number=2024" >> $GITHUB_ENV
+        echo "week_number=18" >> $GITHUB_ENV
+        echo "::set-output name=db_number::2024"
+        echo "::set-output name=week_number::18"
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas numpy matplotlib requests metpy siphon xarray
+
+    - name: Run gfs_forecast.py Script
+      run: |
+        python weather/gfs_forecast.py
+
+    - name: Stage changes
+      run: |
+        git add -A
+
+    - name: Check for changes
+      run: |
+        git status
+        git diff
+
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        add: |
+          ./weather/gfs_forecasts/
+        default_author: github_actions
+        message: '[BOT] Update weather'
+        push: origin ${{ github.head_ref }}
+    
+

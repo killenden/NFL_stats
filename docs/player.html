@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=��evice-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="6WAYw55ioji2erHb-5NbNj-1UUxXejHX_e_PDEOf1Wg" />
+    <meta name="google-adsense-account" content="ca-pub-7255009353291623">
     <title>NFL Stats</title>
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/killenden/NFL_stats/main/docs/images/jared_goff.png">
     <style>
@@ -12,6 +14,7 @@
             width: 100%;
             height: 100%;
             font-family: Arial, sans-serif;
+            line-height: 1.6;
         }
         nav {
             background-color: #333;
@@ -30,6 +33,9 @@
             background-color: #ddd;
             color: black;
         }
+        nav a.active {
+            background-color: #04AA6D;
+        }
         .hero-section {
             background-image: url('https://raw.githubusercontent.com/killenden/NFL_stats/main/docs/images/ford_field.jpg');
             background-size: cover;
@@ -44,16 +50,116 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: white;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 30px;
             border-radius: 5px;
             text-align: center;
         }
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: auto;
             margin-top: 40px;
-            text-align: center; /* Center text */
+            padding: 0 20px;
+            margin-bottom: 40px;
+        }
+        .about-section {
+            background-color: #f9f9f9;
+            padding: 40px 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .feature-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .feature-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .feature-card p {
+            color: #666;
+            margin-bottom: 0;
+        }
+        .creators-section {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+        .creators-section h2 {
+            margin-bottom: 20px;
+        }
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .tech-item {
+            background-color: #333;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        .github-link {
+            display: inline-block;
+            background-color: #333;
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        .github-link:hover {
+            background-color: #555;
+        }
+        .stats-highlight {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .copyright {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            font-size: 0.9em;
+        }
+        .tips-section {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        .tips-section h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        .tips-section p {
+            color: #856404;
+            margin: 0;
         }
         .image-container {
             margin-top: 20px;
@@ -64,39 +170,32 @@
             max-width: 100%;
             height: auto; 
         }
-        .section-links {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .section-links a {
-            margin: 0 10px;
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
     <div class="hero-section">
         <div class="hero-text">
             <h1>NFL Stats</h1>
+            <p>Welcome to our NFL Stats website. Here you can find all the latest stats for your favorite teams and players. Stats are updated weekly.</p>
         </div>
     </div>
     
     <nav>
         <a href="index.html">Home</a>
-        <a href="player.html">Player</a> 
+        <a href="player.html" class="active">Player</a> 
         <a href="team.html">Team</a>
         <a href="sleeper.html">Sleeper</a>
-        <a href="#about">About</a>
+        <a href="about.html">About</a>
     </nav>
 
-    <div class="section-links">
-        <p>Click to navigate:</p>
+    <div class="container">
+        <div class="stats-highlight">
+            <h2>Click to navigate player stats by position:</h2>
         <a href="#qb">QB</a>
         <a href="#rb">RB</a> 
         <a href="#wr">WR</a>
         <a href="#te">TE</a>
+        </div>
     </div>
 
     <div class="container" id="qb">
