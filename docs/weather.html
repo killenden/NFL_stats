@@ -207,8 +207,8 @@
 <body>
     <div class="hero-section">
         <div class="hero-text">
-            <h1>�️ NFL Weather Forecast</h1>
-            <p>Game Day Weather Conditions - August 23, 2025</p>
+            <h1>NFL Weather Forecast</h1>
+            <p>Game Day Weather Conditions</p>
         </div>
     </div>
     
@@ -216,9 +216,9 @@
         <a href="index.html">Home</a>
         <a href="player.html">Player</a> 
         <a href="team.html">Team</a>
+        <a href="weather.html" class="active">Weather</a>
         <a href="sleeper.html">Sleeper</a>
         <a href="about.html">About</a>
-        <a href="weather.html" class="active">Weather</a>
     </nav>
 
     <div class="container">
@@ -262,7 +262,7 @@
     <script>
 
     // Path to csv
-    const csvFilePath = 'weather/gfs_forecasts/nfl_forecast.csv';
+    const csvFilePath = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/weather/gfs_forecasts/nfl_forecast.csv';
 
         function parseCSV(csv) {
             const lines = csv.trim().split('\n');
