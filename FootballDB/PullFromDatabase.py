@@ -139,6 +139,76 @@ def qb(db_name):
     #print(qb_df)
     return qb_df
 
+def ff_points(db_name):
+    query = '''
+    SELECT 
+        players.Player, 
+        positions.POS, 
+        COALESCE(passing_stats."Pass Yds", 0) AS "Pass Yds", 
+        COALESCE(passing_stats."Pass TD", 0) AS "Pass TD",
+        COALESCE(passing_stats."Pass Int", 0) AS "Pass Int", 
+        COALESCE(rushing_stats."Rush Yds", 0) AS "Rush Yds", 
+        COALESCE(rushing_stats."Rush TD", 0) AS "Rush TD", 
+        COALESCE(fumble_stats."Fum", 0) AS "Fum", 
+        COALESCE(receiving_stats."Rec", 0) AS "Rec", 
+        COALESCE(receiving_stats."Rec Yds", 0) AS "Rec Yds", 
+        COALESCE(receiving_stats."Rec TD", 0) AS "Rec TD", 
+        teams.team_name
+    FROM players
+    LEFT JOIN teams ON players.Team = teams.team_id
+    LEFT JOIN positions ON players.Pos = positions.pos_id
+
+    -- Aggregate passing stats before joining
+    LEFT JOIN (
+        SELECT Player, 
+            SUM("Passing Yds") AS "Pass Yds", 
+            SUM("Passing TD") AS "Pass TD", 
+            SUM("Passing Int") AS "Pass Int"
+        FROM passing 
+        WHERE Type = 'Regular'
+        GROUP BY Player
+    ) AS passing_stats ON players.player_id = passing_stats.Player
+
+    -- Aggregate rushing stats before joining
+    LEFT JOIN (
+        SELECT Player, 
+            SUM("Rushing Yds") AS "Rush Yds", 
+            SUM("Rushing TD") AS "Rush TD"
+        FROM rushing 
+        WHERE Type = 'Regular'
+        GROUP BY Player
+    ) AS rushing_stats ON players.player_id = rushing_stats.Player
+
+    -- Aggregate fumble stats before joining
+    LEFT JOIN (
+        SELECT Player, 
+            SUM("Fumbles Fum") AS "Fum"
+        FROM fumble 
+        WHERE Type = 'Regular'
+        GROUP BY Player
+    ) AS fumble_stats ON players.player_id = fumble_stats.Player
+
+    -- Aggregate receiving stats before joining
+    LEFT JOIN (
+        SELECT Player, 
+            SUM("Receiving Rec") AS "Rec", 
+            SUM("Receiving Yds") AS "Rec Yds", 
+            SUM("Receiving TD") AS "Rec TD"
+        FROM receiving 
+        WHERE Type = 'Regular'
+        GROUP BY Player
+    ) AS receiving_stats ON players.player_id = receiving_stats.Player
+
+    GROUP BY players.Player, positions.POS, teams.team_name, 
+            passing_stats."Pass Yds", passing_stats."Pass TD", passing_stats."Pass Int", 
+            rushing_stats."Rush Yds", rushing_stats."Rush TD",
+            fumble_stats."Fum", 
+            receiving_stats."Rec", receiving_stats."Rec Yds", receiving_stats."Rec TD";
+    '''
+    ff_df = pull_db(query, db_name)
+    #print(qb_df)
+    return ff_df
+
 def fumble(db_name):
     query = '''
     SELECT DISTINCT 
