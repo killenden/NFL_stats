@@ -4,8 +4,58 @@ on:
     types: [update-weather]
 
 jobs:
+  delete_temp:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        ref: ${{ github.event.client_payload.ref }}
+        repository: killenden/${{ github.event.client_payload.repo_name }}
+
+
+    - name: Print checked out branch
+      run: |
+        echo "Checked out branch: $(git rev-parse --abbrev-ref HEAD)"
+        
+
+    - name: Set Values
+      id: set_values
+      run: |
+        echo "db_number=2024" >> $GITHUB_ENV
+        echo "week_number=18" >> $GITHUB_ENV
+        echo "::set-output name=db_number::2024"
+        echo "::set-output name=week_number::18"
+
+    - name: Delete Temp File
+      run: |
+        if [ -f ".temp" ]; then
+          rm -r .temp
+        fi
+
+    - name: Stage changes
+      run: |
+        git add -A
+
+    - name: Check for changes
+      run: |
+        git status
+        git diff
+
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        add: '.'
+        default_author: github_actions
+        message: '[BOT] Delete temp file ${{ steps.set_values.outputs.db_number }}'
+        push: origin ${{ github.head_ref }}
 
   update_weather:
+    needs: delete_temp
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
