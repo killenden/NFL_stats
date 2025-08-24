@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=��evice-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="6WAYw55ioji2erHb-5NbNj-1UUxXejHX_e_PDEOf1Wg" />
+    <meta name="google-adsense-account" content="ca-pub-7255009353291623">
     <title>NFL Stats</title>
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/killenden/NFL_stats/main/website/images/jared_goff.png">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/killenden/NFL_stats/main/docs/images/jared_goff.png">
     <style>
         html, body {
             margin: 0;
@@ -31,7 +33,7 @@
             color: black;
         }
         .hero-section {
-            background-image: url('https://raw.githubusercontent.com/killenden/NFL_stats/main/website/images/ford_field.jpg');
+            background-image: url('https://raw.githubusercontent.com/killenden/NFL_stats/main/docs/images/ford_field.jpg');
             background-size: cover;
             background-position: center;
             height: 400px; 
@@ -55,6 +57,18 @@
             margin-top: 40px;
             text-align: center; /* Center text */
         }
+        .controls {
+            margin-bottom: 20px;
+        }
+        .controls select,
+        .controls input {
+            padding: 5px;
+            margin-right: 10px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
         .image-container {
             margin-top: 20px;
         }
@@ -64,6 +78,11 @@
             max-width: 100%;
             height: auto; 
         }
+        .yardageImages img {
+            display: none; 
+            max-width: 100%; 
+            height: auto; 
+        } 
     </style>
 </head>
 <body>
@@ -82,31 +101,13 @@
     </nav>
 
     <div class="container">
-        <h2>Total Defensive Attempts vs Total Offensive Attempts</h2>
-        <div class="image-container">
-            <img src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2024/plots/Team_RushAtt_PassAtt_Both.png">
-        </div>
-    </div>
-
-    <div class="container">
-    <h2><h2>Total Defensive Attempts vs Total Offensive Attempts Linearized</h2>
-    <div class="image-container">
-        <img src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2024/plots/Team_RushAtt_PassAtt_Both_Linearized.png">
-    </div>
-
-    <div class="container">
-        <h2>Total Rushing Attempts vs Total Passing Attempts</h2>
-        <div class="image-container">
-            <img src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2024/plots/Team_RushAtt_PassAtt_Off.png">
-    </div>
-        
-    <div class="container">
-        <h2>Total Rushing Attempts vs Total Passing Attempts Linearized</h2>
-        <div class="image-container">
-            <img src="https://raw.githubusercontent.com/killenden/NFL_stats/main/2024/plots/Team_RushAtt_PassAtt_Off_Linearized.png">
+        <h1>Welcome to our NFL Stats website. Here you can find all the latest stats for your favorite teams and players. Stats are updated weekly.</h1>
     </div>
     
-</div>
+    <div class="container">
+        <a class="twitter-timeline" href="https://twitter.com/laportaplatoon?ref_src=twsrc%5Etfw"></a>
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    </div>
 
 </body>
 </html>
