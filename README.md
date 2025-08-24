@@ -1,5 +1,5 @@
-[Page Link](https://killenden.github.io/NFL_stats/)
+Github repository brought to you by the brothers -- Kyle and Anthony Illenden
 
-### Steps:
-UpdatePlayerDatabase.py executes the db updates
-Stats.py executes the graphs and calcs
+NFL Stats [Page Link](https://killenden.github.io/NFL_stats/)
+
+**Tips Appreciated.**
