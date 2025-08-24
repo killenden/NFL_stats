@@ -22,6 +22,8 @@ jobs:
           echo "::set-output name=title::[BOT] Update Database"
         elif [[ "$ISSUE_TITLE" == *"[BOT] Update Plots"* ]]; then
           echo "::set-output name=title::[BOT] Update Plots"
+        elif [[ "$ISSUE_TITLE" == *"[BOT] Update Weather"* ]]; then
+          echo "::set-output name=title::[BOT] Update Weather"
         else
           echo "No valid options selected. Exiting."
           exit 1
@@ -99,5 +101,17 @@ jobs:
           -H "X-GitHub-Api-Version: 2022-11-28" \
           /repos/killenden/NFL_stats/dispatches \
            -f "event_type=update-database-and-plots" -F "client_payload[ref]=${{ steps.create_branch.outputs.branch_name }}" -F "client_payload[repo_name]=${{ github.event.repository.name }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Dispatch Weather Workflow
+      if: steps.determine_title.outputs.title == '[BOT] Update Weather'
+      run: |
+        gh api \
+          --method POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          /repos/killenden/NFL_stats/dispatches \
+           -f "event_type=update-weather" -F "client_payload[ref]=${{ steps.create_branch.outputs.branch_name }}" -F "client_payload[repo_name]=${{ github.event.repository.name }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
