@@ -374,7 +374,7 @@ def save_results_to_csv(weather_df, filename=None):
     os.makedirs(forecasts_dir, exist_ok=True)
     if filename is None:
         timestamp = datetime.now().strftime('%Y%m%d')
-        filename = f"{timestamp}_nfl_forecast.csv"
+        filename = f"nfl_forecast.csv"
     # Ensure the file is saved in the forecasts directory
     full_path = os.path.join(forecasts_dir, filename)
     weather_df.to_csv(full_path, index=False)
