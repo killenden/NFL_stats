@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import Database
-import utils
+import stats.FootballDB.Database as Database
+import stats.utils as utils
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../Sleeper')))
 import SleeperInfo
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
