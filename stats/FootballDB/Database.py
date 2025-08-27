@@ -307,7 +307,7 @@ def get_player_id(db_file,players):
     
     
 def datatypes(df):
-    import utils
+    import stats.utils as utils
     
     dtype = {}
     
