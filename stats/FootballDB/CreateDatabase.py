@@ -21,9 +21,9 @@ def check_csv_file(filename):
         return False
 
 def create_db(year):
-    db_name = rf'database/{year}.db' 
-    
-    print(os.path.dirname(os.path.realpath(__file__)))
+    base_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    db_name = os.path.join(base_dir, 'database', f'{year}.db')
+    print(db_name)
     
     #reset_db = input('Do you want to reset the db? This will delete all work. (y/n)   ')
     #TODO: Change this to 'n' for production. 'y' for development
@@ -33,6 +33,11 @@ def create_db(year):
     if reset_db == 'y':
         #reset_db1 = input('Are you sure? (y/n)   ')
         if reset_db1 == 'y':
+            if not os.path.exists(db_name):
+                os.makedirs(os.path.dirname(db_name), exist_ok=True)
+                # Create an empty file
+                with open(db_name, 'x'):
+                    pass
             Database.create_FootballDB_analytics_db(db_name)
     
     if (reset_db != 'y' or reset_db1 != 'y') and not os.path.exists(db_name):

@@ -29,7 +29,8 @@ def insert_team_stats(df, table_name, dict, db_name):
 
 if __name__ == '__main__':
     
-    for year in range(2024, 2025): 
+    if len(sys.argv) > 0:
+        year = sys.argv[1] 
         filename, db_name = CreateDatabase.create_db(year)
                 
         database_df_final = pd.DataFrame()
@@ -205,5 +206,7 @@ if __name__ == '__main__':
         
         for key,value in dataframes.items():
             insert_player_stats(value[0], value[1], db_playerid_dict, db_name)
+    else:
+        print("No year provided.")
             
     print('done')
