@@ -1,6 +1,6 @@
 import os
 import sys
-import Database
+import FootballDB.Database as Database
 
 def check_csv_file(filename):
     """
