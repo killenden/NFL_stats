@@ -133,7 +133,7 @@ jobs:
         pip install pandas numpy matplotlib scikit-learn beautifulsoup4 requests
 
     - name: Run stats/UpdateDatabase.py script
-      run: python stats/UpdateDatabase.py
+      run: python stats/UpdateDatabase.py ${{ steps.run_yearandweek.outputs.year }}
 
 
     - name: Stage changes

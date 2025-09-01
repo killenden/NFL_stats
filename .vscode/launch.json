@@ -6,12 +6,20 @@
     "configurations": [
 
         {
-            "name": "Python Debugger: Current File with Arguments",
+            "name": "Python Debugger: Current File with Year",
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["2024", "18"]
+            "args": ["2025"]
+        },
+        {
+            "name": "Python Debugger: Current File with Year and Week",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": ["2025", "1"]
         }
     ]
 }
