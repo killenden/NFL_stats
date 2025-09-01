@@ -5,17 +5,8 @@ import re
 import matplotlib.pyplot as plt
 import os
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import stats.FootballDB.Database as Database
-import stats.utils as utils
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../Sleeper')))
-import SleeperInfo
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../FootballDB')))
-import PullPlayerStats
-import PullRosters
-import PullTeamStats
-import CreateDatabase
+import FootballDB.Database as Database
+import utils as utils
 import PullFromDatabase
 
 # Fantasy Football Scoring Settings

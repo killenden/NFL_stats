@@ -4,12 +4,12 @@ import pandas as pd
 import re
 import matplotlib.pyplot as plt
 import os
-import stats.Processes.PullPlayerStats as PullPlayerStats
+import Processes.PullPlayerStats as PullPlayerStats
 import Processes.PullRosters as PullRosters
 import Processes.PullTeamStats as PullTeamStats
 import sys
 import FootballDB.CreateDatabase as CreateDatabase
-import stats.FootballDB.Database as Database
+import FootballDB.Database as Database
 import utils
 
 
