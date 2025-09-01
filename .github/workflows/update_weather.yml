@@ -87,7 +87,7 @@ jobs:
 
     - name: Run gfs_forecast.py Script
       run: |
-        python weather/gfs_forecast.py
+        python stats/weather/gfs_forecast.py
 
     - name: Stage changes
       run: |
@@ -102,7 +102,7 @@ jobs:
       uses: EndBug/add-and-commit@v9
       with:
         add: |
-          ./weather/gfs_forecasts/
+          .stats/weather/gfs_forecasts/
         default_author: github_actions
         message: '[BOT] Update weather'
         push: origin ${{ github.head_ref }}

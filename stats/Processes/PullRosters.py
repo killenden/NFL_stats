@@ -4,11 +4,7 @@ import pandas as pd
 import re
 import matplotlib.pyplot as plt
 import os
-from PullPlayerStats import *
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from Database import *
 
 
 
