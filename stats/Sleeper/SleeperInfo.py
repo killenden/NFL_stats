@@ -1,11 +1,3 @@
-
-import pandas as pd
-import os
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.offsetbox import OffsetImage, AnnotationBbox
-import matplotlib.colors as mcolors
-from sklearn.cluster import KMeans
 import requests
 import json
 
