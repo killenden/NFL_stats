@@ -1,33 +1,24 @@
 import sys
 import os
-from Sleeper import SleeperInfo
 import ExecuteStats
 
 def main():
     if len(sys.argv) > 1:
-        db_number = sys.argv[1]
-        week_number = sys.argv[2]
+        year = sys.argv[1]
+        weeks = sys.argv[2]
         try:
-            week_number = int(week_number)
-            print(f"Integer value: {week_number}")
+            weeks = int(weeks)
+            print(f"Integer value: {weeks}")
         except ValueError:
             # If casting to int fails, try to cast to a float
             try:
-                week_number = float(week_number)
-                print(f"Float value: {week_number}")
+                weeks = float(weeks)
+                print(f"Float value: {weeks}")
             except ValueError:
                 # If casting to float also fails, it's not a valid number
-                print(f"Error: '{week_number}' is not a valid number")
-        print(f"DB number received: {db_number}")
-        print(f"week number received: {week_number}")
-        weeks = week_number
-        year = db_number
-        nfl_state = SleeperInfo.get_nfl_state()
-        if nfl_state['season_type'] != 'post':
-            year = nfl_state['season']
-            weeks = nfl_state['week']
-            print(f"Sleeper year received: {year}")
-            print(f"Sleeper week received: {weeks}")
+                print(f"Error: '{weeks}' is not a valid number")
+        print(f"DB number received: {year}")
+        print(f"week number received: {weeks}")
         db_dir = rf'database/{year}.db'
         current_directory = os.getcwd()
         db_dir = os.path.join(current_directory, db_dir)

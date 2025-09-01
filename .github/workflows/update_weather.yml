@@ -23,13 +23,17 @@ jobs:
         echo "Checked out branch: $(git rev-parse --abbrev-ref HEAD)"
         
 
-    - name: Set Values
-      id: set_values
+    - name: Run stats/YearAndWeek.py script
+      id: run_yearandweek
       run: |
-        echo "db_number=2024" >> $GITHUB_ENV
-        echo "week_number=18" >> $GITHUB_ENV
-        echo "::set-output name=db_number::2024"
-        echo "::set-output name=week_number::18"
+        python stats/YearAndWeek.py
+        echo "year=$(cat $GITHUB_OUTPUT | grep '^year=' | cut -d'=' -f2-)" >> $GITHUB_OUTPUT
+        echo "weeks=$(cat $GITHUB_OUTPUT | grep '^weeks=' | cut -d'=' -f2-)" >> $GITHUB_OUTPUT
+      
+    - name: Print year and weeks
+      run: |
+        echo "Year: ${{ steps.run_yearandweek.outputs.year }}"
+        echo "Weeks: ${{ steps.run_yearandweek.outputs.weeks }}"
 
     - name: Delete Temp File
       run: |
@@ -72,13 +76,17 @@ jobs:
       run: |
         echo "Checked out branch: $(git rev-parse --abbrev-ref HEAD)"
 
-    - name: Set Values
-      id: set_values
+    - name: Run stats/YearAndWeek.py script
+      id: run_yearandweek
       run: |
-        echo "db_number=2024" >> $GITHUB_ENV
-        echo "week_number=18" >> $GITHUB_ENV
-        echo "::set-output name=db_number::2024"
-        echo "::set-output name=week_number::18"
+        python stats/YearAndWeek.py
+        echo "year=$(cat $GITHUB_OUTPUT | grep '^year=' | cut -d'=' -f2-)" >> $GITHUB_OUTPUT
+        echo "weeks=$(cat $GITHUB_OUTPUT | grep '^weeks=' | cut -d'=' -f2-)" >> $GITHUB_OUTPUT
+      
+    - name: Print year and weeks
+      run: |
+        echo "Year: ${{ steps.run_yearandweek.outputs.year }}"
+        echo "Weeks: ${{ steps.run_yearandweek.outputs.weeks }}"
 
     - name: Install Dependencies
       run: |
