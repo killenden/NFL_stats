@@ -118,9 +118,9 @@ jobs:
     - name: Run stats/YearAndWeek.py script
       id: run_yearandweek
       run: |
-        python stats/YearAndWeek.py
-        echo "year=$(cat $GITHUB_OUTPUT | grep '^year=' | cut -d'=' -f2-)" >> $GITHUB_OUTPUT
-        echo "weeks=$(cat $GITHUB_OUTPUT | grep '^weeks=' | cut -d'=' -f2-)" >> $GITHUB_OUTPUT
+        python stats/YearAndWeek.py > temp_output.txt
+        echo "year=$(grep '^year=' temp_output.txt | cut -d'=' -f2-)" >> $GITHUB_OUTPUT
+        echo "weeks=$(grep '^weeks=' temp_output.txt | cut -d'=' -f2-)" >> $GITHUB_OUTPUT
       
     - name: Print year and weeks
       run: |
@@ -178,9 +178,9 @@ jobs:
     - name: Run stats/YearAndWeek.py script
       id: run_yearandweek
       run: |
-        python stats/YearAndWeek.py
-        echo "year=$(cat $GITHUB_OUTPUT | grep '^year=' | cut -d'=' -f2-)" >> $GITHUB_OUTPUT
-        echo "weeks=$(cat $GITHUB_OUTPUT | grep '^weeks=' | cut -d'=' -f2-)" >> $GITHUB_OUTPUT
+        python stats/YearAndWeek.py > temp_output.txt
+        echo "year=$(grep '^year=' temp_output.txt | cut -d'=' -f2-)" >> $GITHUB_OUTPUT
+        echo "weeks=$(grep '^weeks=' temp_output.txt | cut -d'=' -f2-)" >> $GITHUB_OUTPUT
       
     - name: Print year and weeks
       run: |
