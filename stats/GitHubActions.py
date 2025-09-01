@@ -1,8 +1,7 @@
 import sys
 import os
 from Sleeper import SleeperInfo
-import stats.ExecuteStats as ExecuteStats
-import stats.Processes.PullFromDatabase as PullFromDatabase
+import ExecuteStats
 
 def main():
     if len(sys.argv) > 1:
