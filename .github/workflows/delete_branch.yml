@@ -1,0 +1,39 @@
+name: Delete Branch After Merge
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  delete_branch:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Delete Branch
+      run: |
+        git fetch origin
+        git branch -d ${{ github.event.pull_request.head.ref }}
+        git push origin --delete ${{ github.event.pull_request.head.ref }}
+
+    - name: Extract Issue Number
+      id: extract_issue
+      run: |
+        ISSUE_NUMBER=$(echo "${{ github.event.pull_request.body }}" | grep -oE 'Closes #([0-9]+)' | grep -oE '[0-9]+')
+        echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+
+    - name: Close Issue
+      if: steps.extract_issue.outputs.issue_number != ''
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const issue_number = process.env.ISSUE_NUMBER;
+          if (issue_number) {
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: Number(issue_number),
+              state: "closed"
+            });
+          }
+      env:
+        ISSUE_NUMBER: ${{ steps.extract_issue.outputs.issue_number }}

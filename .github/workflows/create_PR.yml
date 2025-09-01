@@ -62,11 +62,12 @@ jobs:
 
     - name: Create Pull Request
       run: |
-        gh pr create -B main -H $BRANCH_NAME --title "$TITLE" --body 'Created by Github action'
+        gh pr create -B main -H $BRANCH_NAME --title "$TITLE" --body "Created by Github action. Closes #${ISSUE_NUMBER}"
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH_NAME: ${{ steps.create_branch.outputs.branch_name }}
           TITLE: ${{ steps.determine_title.outputs.title }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
 
     - name: Dispatch Update Database Workflow
       if: steps.determine_title.outputs.title == '[BOT] Update Database'
