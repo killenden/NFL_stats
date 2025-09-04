@@ -1,17 +1,17 @@
 game,venue,city,state,roof_type,kickoff_utc,gfs_model_run,forecast_hour,time_accuracy_hrs,temp_f,feels_like_f,wind_mph,wind_dir,cloud_cover_pct,precip_in,weather_impact
-Los Angeles Chargers @ San Francisco 49ers,Levi's Stadium,Santa Clara,CA,Open,2025-08-24 00:30:00+00:00,2025-08-23 18:00:00,F006,-0.5,78.5,78.4,8.5,184.0,100.0,0.0,Favorable conditions
-Las Vegas Raiders @ Arizona Cardinals,State Farm Stadium,Glendale,AZ,Retractable,2025-08-24 02:00:00+00:00,2025-08-23 18:00:00,F009,1.0,73.5,73.4,13.4,72.0,100.0,0.0,Minimal impact (Indoor venue)
-Baltimore Ravens @ Washington Commanders,FedExField,Landover,MD,Open,2025-08-23 16:00:00+00:00,2025-08-23 18:00:00,F000,2.0,80.1,82.1,20.2,145.0,0.0,0.0,High winds - passing game affected
-Indianapolis Colts @ Cincinnati Bengals,Paycor Stadium,Cincinnati,OH,Open,2025-08-23 17:00:00+00:00,2025-08-23 18:00:00,F000,1.0,80.1,82.1,20.2,145.0,0.0,0.0,High winds - passing game affected
-Los Angeles Rams @ Cleveland Browns,FirstEnergy Stadium,Cleveland,OH,Open,2025-08-23 17:00:00+00:00,2025-08-23 18:00:00,F000,1.0,86.6,83.7,7.0,198.0,0.0,0.0,Favorable conditions
-Houston Texans @ Detroit Lions,Ford Field,Detroit,MI,Closed,2025-08-23 17:00:00+00:00,2025-08-23 18:00:00,F000,1.0,76.7,76.7,5.2,208.0,0.0,0.0,Minimal impact (Indoor venue)
-Denver Broncos @ New Orleans Saints,Caesars Superdome,New Orleans,LA,Closed,2025-08-23 17:00:00+00:00,2025-08-23 18:00:00,F000,1.0,100.8,95.3,11.1,98.0,0.0,0.0,Minimal impact (Indoor venue)
-Seattle Seahawks @ Green Bay Packers,Lambeau Field,Green Bay,WI,Open,2025-08-23 20:00:00+00:00,2025-08-23 18:00:00,F003,1.0,66.9,66.8,4.1,41.0,100.0,0.0,Favorable conditions
-Jacksonville Jaguars @ Miami Dolphins,Hard Rock Stadium,Miami Gardens,FL,Retractable,2025-08-23 23:00:00+00:00,2025-08-23 18:00:00,F006,1.0,98.8,93.5,20.5,52.0,0.0,0.0,Minimal impact (Indoor venue)
-Buffalo Bills @ Tampa Bay Buccaneers,Raymond James Stadium,Tampa,FL,Open,2025-08-23 23:30:00+00:00,2025-08-23 18:00:00,F006,0.5,95.6,90.6,18.0,62.0,0.0,0.0,Very hot conditions; Moderate winds - kicking affected
-Pittsburgh Steelers @ Carolina Panthers,Bank of America Stadium,Charlotte,NC,Open,2025-08-21 23:00:00+00:00,2025-08-23 18:00:00,F000,43.0,84.6,82.7,8.3,341.0,100.0,0.0,Favorable conditions
-New England Patriots @ New York Giants,MetLife Stadium,East Rutherford,NJ,Open,2025-08-22 00:00:00+00:00,2025-08-23 18:00:00,F000,42.0,75.2,75.3,7.8,135.0,4.0,0.01,Favorable conditions
-Philadelphia Eagles @ New York Jets,MetLife Stadium,East Rutherford,NJ,Open,2025-08-22 23:30:00+00:00,2025-08-23 18:00:00,F000,18.5,75.2,75.3,7.8,135.0,4.0,0.01,Favorable conditions
-Atlanta Falcons @ Dallas Cowboys,AT&T Stadium,Arlington,TX,Retractable,2025-08-23 00:00:00+00:00,2025-08-23 18:00:00,F000,18.0,95.2,90.4,7.4,192.0,76.0,0.0,Minimal impact (Indoor venue)
-Minnesota Vikings @ Tennessee Titans,Nissan Stadium,Nashville,TN,Open,2025-08-23 00:00:00+00:00,2025-08-23 18:00:00,F000,18.0,77.7,77.8,11.5,50.0,100.0,0.0,Favorable conditions
-Chicago Bears @ Kansas City Chiefs,GEHA Field at Arrowhead Stadium,Kansas City,MO,Open,2025-08-23 00:20:00+00:00,2025-08-23 18:00:00,F000,17.7,80.1,82.1,20.2,145.0,0.0,0.0,High winds - passing game affected
+Dallas Cowboys @ Philadelphia Eagles,Lincoln Financial Field,Philadelphia,PA,Open,2025-09-05 00:20:00+00:00,2025-09-03 18:00:00,F030,-0.3,77.4,77.6,6.7,60.0,96.0,0.0,Favorable conditions
+Kansas City Chiefs @ Los Angeles Chargers,SoFi Stadium,Sao Paulo,,Retractable,2025-09-06 00:00:00+00:00,2025-09-03 18:00:00,F054,0.0,74.4,74.4,1.9,87.0,99.0,0.0,Minimal impact (Indoor venue)
+Tampa Bay Buccaneers @ Atlanta Falcons,Mercedes-Benz Stadium,Atlanta,GA,Retractable,2025-09-07 17:00:00+00:00,2025-09-03 18:00:00,F096,1.0,87.0,84.2,22.1,243.0,98.0,0.01,Minimal impact (Indoor venue)
+Cincinnati Bengals @ Cleveland Browns,FirstEnergy Stadium,Cleveland,OH,Open,2025-09-07 17:00:00+00:00,2025-09-03 18:00:00,F096,1.0,85.9,84.2,10.3,101.0,98.0,0.0,Favorable conditions
+Miami Dolphins @ Indianapolis Colts,Lucas Oil Stadium,Indianapolis,IN,Retractable,2025-09-07 17:00:00+00:00,2025-09-03 18:00:00,F096,1.0,77.8,77.8,11.8,107.0,100.0,0.12,Minimal impact (Indoor venue)
+Las Vegas Raiders @ New England Patriots,Gillette Stadium,Foxborough,MA,Open,2025-09-07 17:00:00+00:00,2025-09-03 18:00:00,F096,1.0,82.3,80.8,3.0,94.0,15.0,0.0,Favorable conditions
+Arizona Cardinals @ New Orleans Saints,Caesars Superdome,New Orleans,LA,Closed,2025-09-07 17:00:00+00:00,2025-09-03 18:00:00,F096,1.0,98.9,94.3,4.7,139.0,100.0,0.0,Minimal impact (Indoor venue)
+Pittsburgh Steelers @ New York Jets,MetLife Stadium,East Rutherford,NJ,Open,2025-09-07 17:00:00+00:00,2025-09-03 18:00:00,F096,1.0,77.6,77.4,5.3,180.0,79.0,0.02,Favorable conditions
+New York Giants @ Washington Commanders,FedExField,Landover,MD,Open,2025-09-07 17:00:00+00:00,2025-09-03 18:00:00,F096,1.0,78.7,78.7,8.7,41.0,64.0,0.03,Favorable conditions
+Carolina Panthers @ Jacksonville Jaguars,TIAA Bank Field,Jacksonville,FL,Open,2025-09-07 17:00:00+00:00,2025-09-03 18:00:00,F096,1.0,98.3,93.8,6.4,139.0,100.0,0.0,Very hot conditions
+Tennessee Titans @ Denver Broncos,Empower Field at Mile High,Denver,CO,Open,2025-09-07 20:05:00+00:00,2025-09-03 18:00:00,F099,0.9,77.4,77.6,6.1,231.0,100.0,0.0,Favorable conditions
+San Francisco 49ers @ Seattle Seahawks,Lumen Field,Seattle,WA,Open,2025-09-07 20:05:00+00:00,2025-09-03 18:00:00,F099,0.9,63.4,63.3,7.5,243.0,98.0,0.0,Favorable conditions
+Detroit Lions @ Green Bay Packers,Lambeau Field,Green Bay,WI,Open,2025-09-07 20:25:00+00:00,2025-09-03 18:00:00,F099,0.6,64.8,65.0,8.2,328.0,92.0,0.0,Favorable conditions
+Houston Texans @ Los Angeles Rams,SoFi Stadium,Inglewood,CA,Retractable,2025-09-07 20:25:00+00:00,2025-09-03 18:00:00,F099,0.6,83.4,81.7,8.8,222.0,100.0,0.0,Minimal impact (Indoor venue)
+Baltimore Ravens @ Buffalo Bills,Highmark Stadium,Orchard Park,NY,Open,2025-09-08 00:20:00+00:00,2025-09-03 18:00:00,F102,-0.3,51.7,51.6,6.7,170.0,18.0,0.09,Favorable conditions
+Minnesota Vikings @ Chicago Bears,Soldier Field,Chicago,IL,Open,2025-09-09 00:15:00+00:00,2025-09-03 18:00:00,F126,-0.2,71.6,71.7,2.7,99.0,100.0,0.0,Favorable conditions
