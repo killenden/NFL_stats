@@ -19,9 +19,8 @@ def main():
                 print(f"Error: '{weeks}' is not a valid number")
         print(f"DB number received: {year}")
         print(f"week number received: {weeks}")
-        db_dir = rf'database/{year}.db'
-        current_directory = os.getcwd()
-        db_dir = os.path.join(current_directory, db_dir)
+        base_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+        db_dir = os.path.join(base_dir, 'stats', 'database', f'{year}.db')
         
         
         ExecuteStats.Team_RushAtt_PassAtt_Off(db_dir, weeks, year)
