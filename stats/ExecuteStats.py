@@ -12,9 +12,8 @@ import json
 import Processes.PullFromDatabase as PullFromDatabase
 
 def get_team_logo(team_abbr):
-    current_dir = os.getcwd()
-    logo_dir = os.path.join(current_dir,'logos')
-    file_path = os.path.join(logo_dir,team_abbr+'.png')
+    base_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    file_path = os.path.join(base_dir, 'stats', 'logos', f'{team_abbr}.png')
     return file_path
 
 def save_fig(year, plot_name):
