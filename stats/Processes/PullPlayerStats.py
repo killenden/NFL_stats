@@ -200,10 +200,10 @@ def FindPlayersStats(player_stats):
                     except:
                         continue
                     
-                if table.name == 'h3' and 'preseason' in table.contents[0].lower() and 'ufl' not in table.contents[0].lower()::
+                if table.name == 'h3' and 'preseason' in table.contents[0].lower() and 'ufl' not in table.contents[0].lower():
                     preseason_lock = True
                     
-                elif table.name == 'h3' and 'regular' in table.contents[0].lower() and 'ufl' not in table.contents[0].lower()::
+                elif table.name == 'h3' and 'regular' in table.contents[0].lower() and 'ufl' not in table.contents[0].lower():
                     preseason_lock = False
                     regseason_lock = True
                     reset_week_count = True
