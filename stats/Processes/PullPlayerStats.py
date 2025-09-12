@@ -237,7 +237,7 @@ def PullPlayerStats_FootballDB(player, player_url, year):
             player_id = player_url[start+len('-'):]
             player_stats_list = FindPlayersStats(player_stats)
             #print('Player Stats found')
-            if player_stats_list == None:
+            if player_stats_list == None or len(player_stats_list) == 0:
                 return None, None, None, None
             else:
                 df_final = pd.DataFrame(player_stats_list).T
