@@ -206,7 +206,7 @@
             <option value="Player_QB_YPA_vs_CmpPct">Passing Yards per Attempt vs Completion Percentage</option>
         </select>
         <div class="image-container">
-            <img id="qbStatImage" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2024/Player_QB_YPG_vs_TD.png" alt="QB Stats">
+            <img id="qbStatImage" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2025/Player_QB_YPG_vs_TD.png" alt="QB Stats">
         </div>
     </div>
 
@@ -217,7 +217,7 @@
             <option value="Player_RB_YPG_vs_TDPG">Rushing Yards and TDs per Game</option>
         </select>
         <div class="image-container">
-            <img id="rbStatImage" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2024/Player_RB_YPG.png" alt="RB Stats">
+            <img id="rbStatImage" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2025/Player_RB_YPG.png" alt="RB Stats">
         </div>
     </div>
 
@@ -228,7 +228,7 @@
             <option value="Player_WR_TPG_vs_RPG">Targets per Game vs Receptions per Target</option>
         </select>
         <div class="image-container">
-            <img id="statImage" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2024/Player_WR_TPG_vs_RPG.png" alt="WR Stats">
+            <img id="statImage" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2025/Player_WR_TPG_vs_RPG.png" alt="WR Stats">
         </div>
     </div>
 
@@ -238,7 +238,7 @@
             <option value="Player_TE_TPG_vs_RPG">Targets per Game vs Receptions per Game</option>
         </select>
         <div class="image-container">
-            <img id="teStatImage" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2024/Player_TE_TPG_vs_RPG.png" alt="TE Stats">
+            <img id="teStatImage" src="https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2025/Player_TE_TPG_vs_RPG.png" alt="TE Stats">
         </div>
     </div>
 
@@ -246,9 +246,9 @@
         document.getElementById('imageSelector').addEventListener('change', function() {
             var imageUrl;
             if (this.value === 'Player_WR_TPG_vs_YPR') {
-                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2024/Player_WR_TPG_vs_YPR.png';
+                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2025/Player_WR_TPG_vs_YPR.png';
             } else if (this.value === 'Player_WR_TPG_vs_RPG') {
-                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2024/Player_WR_TPG_vs_RPG.png';
+                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2025/Player_WR_TPG_vs_RPG.png';
             }
             document.getElementById('statImage').src = imageUrl;
         });
@@ -256,9 +256,9 @@
         document.getElementById('rbImageSelector').addEventListener('change', function() {
             var imageUrl;
             if (this.value === 'Player_RB_YPG') {
-                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2024/Player_RB_YPG.png';
+                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2025/Player_RB_YPG.png';
             } else if (this.value === 'Player_RB_YPG_vs_TDPG') {
-                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2024/Player_RB_YPG_vs_TDPG.png';
+                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2025/Player_RB_YPG_vs_TDPG.png';
             }
             document.getElementById('rbStatImage').src = imageUrl;
         });
@@ -266,9 +266,9 @@
         document.getElementById('qbImageSelector').addEventListener('change', function() {
             var imageUrl;
             if (this.value === 'Player_QB_YPG_vs_TD') {
-                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2024/Player_QB_YPG_vs_TD.png';
+                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2025/Player_QB_YPG_vs_TD.png';
             } else if (this.value === 'Player_QB_YPA_vs_CmpPct') {
-                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2024/Player_QB_YPA_vs_CmpPct.png';
+                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2025/Player_QB_YPA_vs_CmpPct.png';
             }
             document.getElementById('qbStatImage').src = imageUrl;
         });
@@ -276,7 +276,7 @@
         document.getElementById('teImageSelector').addEventListener('change', function() {
             var imageUrl;
             if (this.value === 'Player_TE_TPG_vs_RPG') {
-                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2024/Player_TE_TPG_vs_RPG.png';
+                imageUrl = 'https://raw.githubusercontent.com/killenden/NFL_stats/main/stats/plots/2025/Player_TE_TPG_vs_RPG.png';
             }
             document.getElementById('teStatImage').src = imageUrl;
         });
