@@ -21,6 +21,9 @@ def main():
         print(f"week number received: {weeks}")
         base_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         db_dir = os.path.join(base_dir, 'stats', 'database', f'{year}.db')
+        if not os.path.exists(plot_dir):
+            os.makedirs(plot_dir)
+        os.chdir(plot_dir)
         
         
         ExecuteStats.Team_RushAtt_PassAtt_Off(db_dir, weeks, year)
