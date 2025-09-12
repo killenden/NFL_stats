@@ -76,6 +76,9 @@ if __name__ == '__main__':
         #                                   TEAM STATS
         #
         #################################################################################
+        
+        df_standings = PullTeamStats.PullTeam_Standings(year)
+        
         (df_offense_overall,        df_offense_passing, df_offense_rushing, df_offense_kickoff_returns, 
         df_offense_punt_returns,    df_offense_punting, df_offense_scoring, df_offense_downs,
         df_defense_overall,         df_defense_passing, df_defense_rushing, df_defense_kickoff_returns, 
@@ -84,6 +87,7 @@ if __name__ == '__main__':
         #TODO: Update the line below to work for the team stats
         #Be sure to make the team id the index
         dataframes = {
+        'df_standings': [df_standings, 'standings'],
         'df_offense_overall': [df_offense_overall, 'offense_overall'],
         'df_offense_passing': [df_offense_passing, 'offense_passing'],
         'df_offense_rushing': [df_offense_rushing, 'offense_rushing'],

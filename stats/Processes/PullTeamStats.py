@@ -26,6 +26,24 @@ def find_nth_capital(input_string, n):
     
     return -1  # Return -1 if nth capital letter is not found
 
+def PullTeam_Standings(year):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'}
+
+    r = requests.get(f'https://www.footballdb.com/standings/index.html?lg=NFL&yr={year}', headers=headers)
+    soup = BeautifulSoup(r.text, 'html.parser')
+    
+    df_final = None
+    df_team = None
+    for team_stats in soup.find_all('table'):
+        headers_list = FindHeaders(team_stats)
+        #print('Headers found')
+        df_team = FindTeamStats(team_stats, headers_list)
+        df_team.rename(columns={df_team.columns[0]: 'Team'}, inplace=True)
+        df_final = pd.concat([df_final, df_team]) if df_final is not None else df_team
+    df_final.set_index('Team', inplace=True)
+    return df_final
+
 def PullTeam_FootballDB(url, team):
     headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'}
