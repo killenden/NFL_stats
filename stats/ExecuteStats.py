@@ -17,15 +17,15 @@ def get_team_logo(team_abbr):
     return file_path
 
 def save_fig(year, plot_name):
-    current_directory = os.getcwd()
+    #current_directory = os.getcwd()
     # Ensure the plots directory exists
-    plots_dir = os.path.join(current_directory, f'{year}/plots')
-    os.makedirs(plots_dir, exist_ok=True)
+    #plots_dir = os.path.join(current_directory, f'{year}/plots')
+    #os.makedirs(plots_dir, exist_ok=True)
     # Change the current working directory to the plots directory
-    os.chdir(plots_dir)
+    #os.chdir(plots_dir)
     plt.savefig(f'{plot_name}', dpi=450)
     #change back
-    os.chdir(current_directory)
+    #os.chdir(current_directory)
 
 
 def Team_RushAtt_PassAtt_Off(db_name, weeks, year):
