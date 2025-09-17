@@ -1,0 +1,129 @@
+:root{
+  --bg: #ffffff;
+  --card: #ffffff;
+  --text: #0b1720;
+  --nav-bg: rgba(255,255,255,0.9);
+  --nav-link-color: var(--text);
+  --muted: #556677;
+  --accent: #04AA6D;
+  --accent-2: #667eea;
+  --danger: #cc4b4b;
+  --success: #2ecc71;
+  --border: rgba(0,0,0,0.08);
+}
+
+/* Manual override via data-theme attribute on the <html> element.
+   JavaScript sets html.dataset.theme = 'dark'|'light' to force a theme.
+*/
+
+/* Dark theme when user's system prefers dark */
+@media (prefers-color-scheme: dark) {
+  :root{
+    --bg:#0b0f14;
+    --card:#0f1720;
+    --text:#e6eef6;
+    --nav-bg: rgba(10,14,18,0.9);
+    --nav-link-color: var(--text);
+    --muted:#9aa4b2;
+    --accent:#19a974;
+    --accent-2:#2b6cb0;
+    --danger:#e96969;
+    --success:#3ad07a;
+    --border: rgba(255,255,255,0.06);
+  }
+}
+
+/* Manual override via data-theme attribute on the <html> element.
+   JavaScript sets html.dataset.theme = 'dark'|'light' to force a theme.
+*/
+html[data-theme="dark"]{
+  --bg:#0b0f14;
+  --card:#0f1720;
+  --text:#e6eef6;
+  --nav-bg: rgba(10,14,18,0.9);
+  --nav-link-color: var(--text);
+  --muted:#9aa4b2;
+  --accent:#19a974;
+  --accent-2:#2b6cb0;
+  --danger:#e96969;
+  --success:#3ad07a;
+  --border: rgba(255,255,255,0.06);
+}
+html[data-theme="light"]{
+  --bg: #ffffff;
+  --card: #ffffff;
+  --text: #0b1720;
+  --nav-bg: rgba(255,255,255,0.9);
+  --nav-link-color: var(--text);
+  --muted: #556677;
+  --accent: #04AA6D;
+  --accent-2: #667eea;
+  --danger: #cc4b4b;
+  --success: #2ecc71;
+  --border: rgba(0,0,0,0.08);
+}
+
+/* Base layout */
+html, body{ margin:0; padding:0; width:100%; height:100%; font-family: Arial, sans-serif; line-height:1.6; background:var(--bg); color:var(--text); }
+/* nav uses theme variables and force-override to avoid other styles taking precedence */
+nav{ background-color: var(--nav-bg) !important; overflow:hidden; text-align:center; border-bottom:1px solid var(--border); }
+nav a{ display:inline-block; color:var(--nav-link-color) !important; padding:14px 16px; text-decoration:none; }
+nav a:hover{ background-color: rgba(0,0,0,0.04); }
+nav a.active{ background-color: var(--accent); color:#fff; }
+/* ensure the toggle button appended to nav uses the same link color */
+nav button#theme-toggle-btn{ color:var(--nav-link-color) !important; background:transparent; border:none; padding:14px 16px; font-size:1em; cursor:pointer; }
+nav button#theme-toggle-btn[aria-pressed="true"]{ font-weight:700; }
+.hero-section{
+  background-image: url('https://raw.githubusercontent.com/killenden/NFL_stats/main/docs/images/ford_field.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 400px;
+  position: relative;
+  width: 100vw;
+  filter: brightness(0.9) contrast(1.02);
+}
+.hero-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 30px;
+  border-radius: 5px;
+  text-align: center;
+}
+.container{ max-width:1000px; margin:auto; margin-top:32px; padding:0 20px; margin-bottom:40px; }
+.about-section{ background:var(--card); padding:28px 20px; margin:30px 0; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.06); border:1px solid var(--border); }
+.features-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:30px; margin:30px 0; }
+.feature-card{ background:linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01)); padding:22px; border-radius:8px; box-shadow:0 6px 16px rgba(0,0,0,0.06); text-align:center; border:1px solid var(--border);} 
+.feature-card h3{ color:var(--text); margin-bottom:15px; font-size:1.3em; }
+.feature-card p{ color:var(--muted); margin-bottom:0; }
+.creators-section{ text-align:center; background:linear-gradient(135deg,var(--accent-2) 0%, #5b3f85 100%); color:white; padding:36px 20px; margin:30px 0; border-radius:8px; border:1px solid rgba(255,255,255,0.04);} 
+.tech-stack{ display:flex; flex-wrap:wrap; justify-content:center; gap:15px; margin:20px 0; }
+.tech-item{ background-color: rgba(0,0,0,0.04); color:var(--text); padding:8px 16px; border-radius:20px; font-size:0.9em; border:1px solid var(--border);} 
+.github-link{ display:inline-block; background-color: rgba(0,0,0,0.04); color:var(--text); padding:12px 25px; text-decoration:none; border-radius:5px; margin-top:20px; transition:background-color .3s; border:1px solid var(--border);} 
+.github-link:hover{ background-color: rgba(0,0,0,0.06); }
+.stats-highlight{ background: linear-gradient(45deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01)); color:var(--text); padding:22px; text-align:center; border-radius:8px; margin:30px 0; border:1px solid var(--border);} 
+.copyright{ background-color: rgba(0,0,0,0.04); color:var(--muted); text-align:center; padding:20px; margin-top:40px; font-size:0.9em; border-top:1px solid var(--border);} 
+.tips-section{ background-color: rgba(0,0,0,0.02); border:1px solid rgba(0,0,0,0.04); padding:20px; border-radius:8px; text-align:center; margin:30px 0; color:var(--muted);} 
+.tips-section h3{ color:var(--text); margin-bottom:10px; }
+.tips-section p{ color:var(--muted); margin:0; }
+img{ display:block; margin:0 auto; max-width:100%; height:auto; border-radius:6px; }
+table{ width:100%; border-collapse:collapse; margin-top:15px; background:transparent; border:1px solid var(--border); }
+table th, table td{ padding:8px 10px; text-align:left; border-bottom:1px solid rgba(0,0,0,0.04); color:var(--text); }
+table th{ background: rgba(0,0,0,0.02); cursor:pointer; color:var(--muted); }
+.legend{ margin-top:12px; display:flex; gap:12px; align-items:center; }
+.legend .item{ padding:6px 10px; border-radius:4px; color:white; }
+.legend .lucky{ background:var(--success); }
+.legend .unlucky{ background:var(--danger); }
+.block{ background:linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01)); padding:18px; border-radius:8px; box-shadow:0 8px 28px rgba(0,0,0,0.06); margin-top:18px; border:1px solid var(--border); color:var(--text);} 
+.block-controls{ margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
+.block-toggle{ background:transparent; border:1px solid rgba(0,0,0,0.06); padding:8px 12px; border-radius:6px; cursor:pointer; color:var(--text);} 
+.block-toggle.active{ background:var(--accent); color:white; border-color:transparent; }
+.block-toggle:hover{ background: rgba(0,0,0,0.04); }
+.positive{ color:var(--success); font-weight:600; }
+.negative{ color:var(--danger); font-weight:600; }
+
+/* Utility */
+.loading{ color:var(--muted); }

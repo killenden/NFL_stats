@@ -7,170 +7,8 @@
     <meta name="google-adsense-account" content="ca-pub-7255009353291623">
     <title>NFL Stats</title>
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/killenden/NFL_stats/main/docs/images/jared_goff.png">
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-        }
-        nav {
-            background-color: #333;
-            overflow: hidden;
-            text-align: center;
-        }
-        nav a {
-            float: none; 
-            display: inline-block;
-            color: white;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
-        nav a:hover {
-            background-color: #ddd;
-            color: black;
-        }
-        nav a.active {
-            background-color: #04AA6D;
-        }
-        .hero-section {
-            background-image: url('https://raw.githubusercontent.com/killenden/NFL_stats/main/docs/images/ford_field.jpg');
-            background-size: cover;
-            background-position: center;
-            height: 400px; 
-            position: relative;
-            width: 100vw;
-        }
-        .hero-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 30px;
-            border-radius: 5px;
-            text-align: center;
-        }
-        .container {
-            max-width: 1000px;
-            margin: auto;
-            margin-top: 40px;
-            padding: 0 20px;
-            margin-bottom: 40px;
-        }
-        .about-section {
-            background-color: #f9f9f9;
-            padding: 40px 20px;
-            margin: 30px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 30px 0;
-        }
-        .feature-card {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .feature-card h3 {
-            color: #333;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-        .feature-card p {
-            color: #666;
-            margin-bottom: 0;
-        }
-        .creators-section {
-            text-align: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 20px;
-            margin: 30px 0;
-            border-radius: 8px;
-        }
-        .creators-section h2 {
-            margin-bottom: 20px;
-        }
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-        }
-        .tech-item {
-            background-color: #333;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9em;
-        }
-        .github-link {
-            display: inline-block;
-            background-color: #333;
-            color: white;
-            padding: 12px 25px;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 20px;
-            transition: background-color 0.3s;
-        }
-        .github-link:hover {
-            background-color: #555;
-        }
-        .stats-highlight {
-            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            border-radius: 8px;
-            margin: 30px 0;
-        }
-        .copyright {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            margin-top: 40px;
-            font-size: 0.9em;
-        }
-        .tips-section {
-            background-color: #fff3cd;
-            border: 1px solid #ffeaa7;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            margin: 30px 0;
-        }
-        .tips-section h3 {
-            color: #856404;
-            margin-bottom: 10px;
-        }
-        .tips-section p {
-            color: #856404;
-            margin: 0;
-        }
-        .image-container {
-            margin-top: 20px;
-        }
-        img {
-            display: block;
-            margin: 0 auto;
-            max-width: 100%;
-            height: auto; 
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <script src="theme-toggle.js" defer></script>
 </head>
 <body>
     <div class="hero-section">
@@ -195,7 +33,9 @@
             <input type="text" id="input" placeholder="e.g., username or 123456789012345678">
             <button onclick="getUserOrLeague()">Get League Info</button>
         </div>
-        <div id="league-info"></div>
+    <div id="league-info"></div>
+    <div id="blocks"></div>
+        
     </div>
 
     <script>
@@ -255,7 +95,11 @@
             }
         }
 
-        async function getLeague(leagueId) {
+        let _lastLeagueId = null;
+        let _lastLeagueData = null;
+
+        async function getLeague(leagueId, maxWeeks = 18) {
+            _lastLeagueId = leagueId;
             const leagueInfoDiv = document.getElementById('league-info');
             leagueInfoDiv.innerHTML = '<p class="loading">Loading league info...</p>';
 
@@ -264,12 +108,78 @@
                 if (!leagueResponse.ok) throw new Error('League not found');
                 const leagueData = await leagueResponse.json();
 
+                _lastLeagueData = leagueData;
+
                 leagueInfoDiv.innerHTML = `
                     <h3>League Info:</h3>
                     <p>League Name: ${escapeHTML(leagueData.name)}</p>
                     <p>League ID: ${escapeHTML(leagueData.league_id)}</p>
                     <p>Season: ${escapeHTML(leagueData.season)}</p>
                 `;
+
+                // Clear existing blocks and controls for a fresh league view
+                const blocksDiv = document.getElementById('blocks');
+                if (blocksDiv) blocksDiv.innerHTML = '';
+
+                // Create block controls (toggles) area
+                let controls = document.getElementById('block-controls');
+                if (!controls) {
+                    controls = document.createElement('div');
+                    controls.id = 'block-controls';
+                    controls.className = 'block-controls';
+                    leagueInfoDiv.parentNode.insertBefore(controls, document.getElementById('blocks'));
+                } else {
+                    controls.innerHTML = '';
+                }
+
+                // Create Luck toggle button
+                const luckToggle = document.createElement('button');
+                luckToggle.className = 'block-toggle';
+                luckToggle.innerText = '🔮 Luck';
+                luckToggle.onclick = () => {
+                    const willBeActive = !luckToggle.classList.contains('active');
+                    // deactivate other toggles
+                    Array.from(controls.querySelectorAll('.block-toggle')).forEach(btn => {
+                        if (btn !== luckToggle) {
+                            btn.classList.remove('active');
+                        }
+                    });
+                    // remove other blocks
+                    removePowerBlock();
+
+                    if (willBeActive) {
+                        luckToggle.classList.add('active');
+                        renderLuckBlock();
+                    } else {
+                        luckToggle.classList.remove('active');
+                        removeLuckBlock();
+                    }
+                };
+                controls.appendChild(luckToggle);
+                // Create Power Rankings toggle button
+                const powerToggle = document.createElement('button');
+                powerToggle.className = 'block-toggle';
+                powerToggle.innerText = '📊 Power Rankings';
+                powerToggle.onclick = () => {
+                    const willBeActive = !powerToggle.classList.contains('active');
+                    // deactivate other toggles
+                    Array.from(controls.querySelectorAll('.block-toggle')).forEach(btn => {
+                        if (btn !== powerToggle) {
+                            btn.classList.remove('active');
+                        }
+                    });
+                    // remove other blocks
+                    removeLuckBlock();
+
+                    if (willBeActive) {
+                        powerToggle.classList.add('active');
+                        renderPowerBlock();
+                    } else {
+                        powerToggle.classList.remove('active');
+                        removePowerBlock();
+                    }
+                };
+                controls.appendChild(powerToggle);
 
                 const [rostersResponse, usersResponse] = await Promise.all([
                     fetch(`https://api.sleeper.app/v1/league/${leagueId}/rosters`),
@@ -290,12 +200,130 @@
                 });
 
                 if (rostersData.length > 0) {
-                    // Sort standings by wins (descending)
-                    rostersData.sort((a, b) => b.settings.wins - a.settings.wins);
+                    // We'll compute expected wins (luck) by fetching matchups for the season
+                    const rosterIds = rostersData.map(r => r.roster_id);
+                    const rosterIndex = {};
+                    rostersData.forEach((r, i) => { rosterIndex[r.roster_id] = i; });
 
-                    // Generate standings table
+                    // Initialize stats per roster
+                    const stats = rostersData.map(r => ({
+                        roster_id: r.roster_id,
+                        owner: escapeHTML(userMap[r.owner_id] || 'Unknown'),
+                        wins: r.settings.wins ?? 0,
+                        losses: r.settings.losses ?? 0,
+                        points: r.settings.fpts ?? 0,
+                        expectedWins: 0, // games outscored opponents
+                        gamesCounted: 0,
+                        luckyWins: 0,
+                        unluckyLosses: 0
+                    }));
+
+                    // Fetch matchups for season weeks. Try weeks 1-18; stop when no data returned for the week.
+                    const season = leagueData.season || '2025';
+                    for (let week = 1; week <= maxWeeks; week++) {
+                        try {
+                            const mResp = await fetch(`https://api.sleeper.app/v1/league/${leagueId}/matchups/${week}`);
+                            if (!mResp.ok) break; // no more matchup data
+                            const matchups = await mResp.json();
+                            if (!Array.isArray(matchups) || matchups.length === 0) break;
+
+                            // Compute median points across all rosters this week for lucky/unlucky classification
+                            const allPoints = matchups.map(e => Number(e.points ?? e.fpts ?? 0)).filter(v => !isNaN(v));
+                            let medianPoint = 0;
+                            if (allPoints.length > 0) {
+                                allPoints.sort((a, b) => a - b);
+                                const mid = Math.floor(allPoints.length / 2);
+                                medianPoint = (allPoints.length % 2 === 1) ? allPoints[mid] : ((allPoints[mid - 1] + allPoints[mid]) / 2);
+                            }
+
+                            // For each matchup, compare points and award expected win to higher score
+                            matchups.forEach(mu => {
+                                if (!mu || typeof mu.roster_id === 'undefined') return;
+                                // Sleeper returns an array of matchup objects where each has roster_id and points
+                                // But depending on endpoint, matchups may be an array of rosters for that week.
+                                // We'll handle arrays of roster objects (common) where each element has "roster_id" and "points".
+                                if (Array.isArray(mu)) return; // defensive: skip nested arrays
+                            });
+
+                            // The /matchups/{week} endpoint returns an array of roster objects (each roster entry for that week),
+                            // but the pairing isn't explicit here. We'll instead use /league/{leagueId}/matchups/{week} which returns
+                            // an array of matchup objects; ensure we treat each object that contains multiple roster entries.
+                            // To be robust, if matchups is an array of objects where each object has a "players" or "rosters" field,
+                            // attempt to normalize. Otherwise, if entries have "roster_id" and "points", group by matchupId.
+
+                            // Build grouping: if objects have 'matchup_id' or 'matchup_id' use that, otherwise try 'matchup' or pair by order.
+                            const groups = {};
+                            matchups.forEach(entry => {
+                                const mid = entry.matchup_id ?? entry.matchup ?? entry.week ?? entry.matchupId ?? 'm_' + (entry.roster_id ?? Math.random());
+                                if (!groups[mid]) groups[mid] = [];
+                                groups[mid].push(entry);
+                            });
+
+                            Object.values(groups).forEach(group => {
+                                if (group.length < 2) return; // need opponent to compare
+                                // For each roster in group, compare to opponents
+                                group.forEach(playerEntry => {
+                                    const rid = playerEntry.roster_id;
+                                    const pts = Number(playerEntry.points ?? playerEntry.fpts ?? 0);
+                                    if (rid == null) return;
+                                    const idx = rosterIndex[rid];
+                                    if (typeof idx === 'undefined') return; // roster not in this league's roster list
+                                    stats[idx].gamesCounted++;
+                                    // Compare against other players in same group
+                                    let winsAgainst = 0;
+                                    group.forEach(other => {
+                                        if (other === playerEntry) return;
+                                        const otherPts = Number(other.points ?? other.fpts ?? 0);
+                                        if (pts > otherPts) winsAgainst += 1;
+                                    });
+                                    const fractional = winsAgainst / (group.length - 1);
+                                    stats[idx].expectedWins += fractional;
+                                    // Determine whether this roster "won" or "lost" the matchup (beat majority of opponents)
+                                    const won = winsAgainst > ((group.length - 1) / 2);
+                                    const lost = winsAgainst < ((group.length - 1) / 2);
+                                    if (won && pts < medianPoint) {
+                                        stats[idx].luckyWins += 1;
+                                    }
+                                    if (lost && pts > medianPoint) {
+                                        stats[idx].unluckyLosses += 1;
+                                    }
+                                });
+                            });
+                        } catch (e) {
+                            console.warn('Week fetch error', week, e);
+                            break;
+                        }
+                    }
+
+                    // Now compute luck = (+1 per lucky win) + (-1 per unlucky loss)
+                    stats.forEach(s => {
+                        s.luck = (s.luckyWins ?? 0) - (s.unluckyLosses ?? 0);
+                    });
+
+                    // Prepare summary: top 3 lucky and top 3 unlucky
+                    const summary = [...stats];
+                    summary.sort((a, b) => b.luck - a.luck);
+                    const topLucky = summary.slice(0, 3);
+                    const topUnlucky = summary.slice(-3).reverse();
+
+                    // Build luck block content
+                    let summaryHTML = `<div class="stats-highlight center"><h4>Luck Summary</h4><div style="display:flex;gap:20px;flex-wrap:wrap;">`;
+                    summaryHTML += `<div><strong>Top Lucky</strong><ol>`;
+                    topLucky.forEach(t => { summaryHTML += `<li>${t.owner} (${t.luck>=0? '+'+t.luck: t.luck})</li>` });
+                    summaryHTML += `</ol></div>`;
+                    summaryHTML += `<div><strong>Top Unlucky</strong><ol>`;
+                    topUnlucky.forEach(t => { summaryHTML += `<li>${t.owner} (${t.luck>=0? '+'+t.luck: t.luck})</li>` });
+                    summaryHTML += `</ol></div>`;
+                    summaryHTML += `</div></div>`;
+
+                    // Generate table HTML (no change to content)
+
+                    // Sort standings by wins descending
+                    stats.sort((a, b) => b.wins - a.wins || b.points - a.points);
+
+                    // Generate standings table with Expected Wins and Luck columns
                     let tableHTML = `
-                        <h3>Standings:</h3>
+                        <h3>Standings (with Luck):</h3>
                         <table border="1">
                             <thead>
                                 <tr>
@@ -303,28 +331,119 @@
                                     <th onclick="sortTable(1)">Wins</th>
                                     <th onclick="sortTable(2)">Losses</th>
                                     <th onclick="sortTable(3)">Points</th>
+                            <th onclick="sortTable(4,this)">Luck</th>
+                            <th onclick="sortTable(5,this)">Lucky Wins</th>
+                            <th onclick="sortTable(6,this)">Unlucky Losses</th>
                                 </tr>
                             </thead>
                             <tbody>
                     `;
 
-                    rostersData.forEach(roster => {
-                        const wins = roster.settings.wins ?? 0;
-                        const losses = roster.settings.losses ?? 0;
-                        const points = roster.settings.fpts ?? 0;
-                        const owner = escapeHTML(userMap[roster.owner_id] || 'Unknown');
+                    stats.forEach(s => {
+                        const wins = s.wins ?? 0;
+                        const losses = s.losses ?? 0;
+                        const points = s.points ?? 0;
+                        const luck = Number(s.luck ?? 0);
+                        const luckyWins = s.luckyWins ?? 0;
+                        const unluckyLosses = s.unluckyLosses ?? 0;
                         tableHTML += `
                             <tr>
-                                <td>${owner}</td>
+                                <td>${s.owner}</td>
                                 <td>${wins}</td>
                                 <td>${losses}</td>
                                 <td>${points}</td>
+                                <td style="color:${luck>0? 'green': (luck<0? 'red':'black')}">${luck>0? '+'+luck: luck}</td>
+                                <td>${luckyWins}</td>
+                                <td>${unluckyLosses}</td>
                             </tr>
                         `;
                     });
 
                     tableHTML += `</tbody></table>`;
-                    leagueInfoDiv.innerHTML += tableHTML;
+
+                    // Prepare content for luck block but do not render immediately — provide a renderer
+                    window.__luckBlockContent = { summaryHTML, tableHTML };
+                    function renderLuckBlock() {
+                        const blocksDiv = document.getElementById('blocks');
+                        const luckBlock = document.createElement('div');
+                        luckBlock.className = 'block';
+                        luckBlock.id = 'luck-block';
+                        luckBlock.innerHTML = `<h3>Luck</h3>` + window.__luckBlockContent.summaryHTML + window.__luckBlockContent.tableHTML;
+                        const existing = document.getElementById('luck-block');
+                        if (existing) blocksDiv.replaceChild(luckBlock, existing); else blocksDiv.appendChild(luckBlock);
+                    }
+                    function removeLuckBlock() {
+                        const existing = document.getElementById('luck-block');
+                        if (existing) existing.remove();
+                    }
+
+                    // --- Power Rankings content: compute PPG and ranks ---
+                    const power = stats.map(s => {
+                        const wins = s.wins ?? 0;
+                        const losses = s.losses ?? 0;
+                        const matches = Number(wins) + Number(losses);
+                        return {
+                            roster_id: s.roster_id,
+                            owner: s.owner,
+                            points: s.points ?? 0,
+                            matches: matches,
+                            wins: wins,
+                            losses: losses,
+                            ppg: (matches > 0) ? (s.points / matches) : 0
+                        };
+                    });
+                    power.sort((a, b) => b.ppg - a.ppg || b.points - a.points);
+                    // assign rank after sorting: 1 = highest PPG
+                    power.forEach((p, i) => { p.rank = i + 1; });
+                    let powerSummary = `<div class="stats-highlight"><h4>Power Rankings Top</h4><ol>`;
+                    power.slice(0,3).forEach(p => { powerSummary += `<li>${p.owner} — ${p.ppg.toFixed(1)} PPG</li>`; });
+                    powerSummary += `</ol></div>`;
+
+                    let powerTable = `
+                        <h3>Power Rankings (by PPG)</h3>
+                        <table border="1">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortTable(0,this)">Rank</th>
+                                    <th onclick="sortTable(1,this)">Owner</th>
+                                    <th onclick="sortTable(2,this)">PPG</th>
+                                    <th onclick="sortTable(3,this)">Total Points</th>
+                                    <th onclick="sortTable(4,this)">Matches</th>
+                                    <th onclick="sortTable(5,this)">Wins</th>
+                                    <th onclick="sortTable(6,this)">Losses</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    power.forEach(p => {
+                        powerTable += `
+                            <tr>
+                                <td>${p.rank}</td>
+                                <td>${p.owner}</td>
+                                <td>${p.ppg.toFixed(1)}</td>
+                                <td>${p.points}</td>
+                                <td>${p.matches}</td>
+                                <td>${p.wins}</td>
+                                <td>${p.losses}</td>
+                            </tr>
+                        `;
+                    });
+                    powerTable += `</tbody></table>`;
+
+                    window.__powerBlockContent = { powerSummary, powerTable };
+                    function renderPowerBlock() {
+                        const blocksDiv = document.getElementById('blocks');
+                        const powerBlock = document.createElement('div');
+                        powerBlock.className = 'block';
+                        powerBlock.id = 'power-block';
+                        powerBlock.innerHTML = `<h3>Power Rankings</h3>` + window.__powerBlockContent.powerSummary + window.__powerBlockContent.powerTable;
+                        const existing = document.getElementById('power-block');
+                        if (existing) blocksDiv.replaceChild(powerBlock, existing); else blocksDiv.appendChild(powerBlock);
+                    }
+                    function removePowerBlock() {
+                        const existing = document.getElementById('power-block');
+                        if (existing) existing.remove();
+                    }
                 } else {
                     leagueInfoDiv.innerHTML += '<p>No rosters found for this league.</p>';
                 }
@@ -335,27 +454,36 @@
         }
 
         // Add sorting functionality
-        function sortTable(columnIndex) {
-            const table = document.querySelector('#league-info table tbody');
-            const rows = Array.from(table.rows);
+        function sortTable(columnIndex, headerEl) {
+            // Determine target table body: if headerEl provided, use its table; otherwise fallback
+            let tbody;
+            if (headerEl && headerEl.closest) {
+                const tableEl = headerEl.closest('table');
+                if (tableEl) tbody = tableEl.querySelector('tbody');
+            }
+            if (!tbody) tbody = document.querySelector('#league-info table tbody');
+            if (!tbody) return;
 
-            // Determine sort direction based on first two rows
-            const ascending = rows[0].cells[columnIndex].innerText >
-                            rows[1].cells[columnIndex].innerText;
+            const rows = Array.from(tbody.rows);
+            if (rows.length < 2) return; // nothing to sort
 
-            // Sort rows
+            // Determine sort direction based on first two rows (text comparison)
+            const aText = rows[0].cells[columnIndex]?.innerText ?? '';
+            const bText = rows[1].cells[columnIndex]?.innerText ?? '';
+            const ascending = aText > bText;
+
+            // Sort rows using numeric-aware localeCompare
             rows.sort((a, b) => {
-                const cellA = a.cells[columnIndex].innerText;
-                const cellB = b.cells[columnIndex].innerText;
-
+                const cellA = a.cells[columnIndex]?.innerText ?? '';
+                const cellB = b.cells[columnIndex]?.innerText ?? '';
                 return ascending
                     ? cellA.localeCompare(cellB, undefined, { numeric: true })
                     : cellB.localeCompare(cellA, undefined, { numeric: true });
             });
 
             // Rebuild table body
-            table.innerHTML = '';
-            rows.forEach(row => table.appendChild(row));
+            tbody.innerHTML = '';
+            rows.forEach(row => tbody.appendChild(row));
         }
 
 
@@ -374,7 +502,7 @@
     
     <div class="copyright">
         <p>Copyright © 2025 Kyle Illenden, Anthony Illenden. Released under MIT License.</p>
-        <p>WxFantasyFootball - Weather insights for fantasy football success</p>
+        <p>LaPorta Potty Platoon</p>
     </div>
 </body>
 </html>
