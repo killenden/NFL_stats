@@ -15,9 +15,8 @@ def SetValue():
 
     print(f"year={year}")
     print(f"weeks={weeks}")
-        
-
-def SetValueReturn():
+    
+def SetValue_Return():
     nfl_state = SleeperInfo.get_nfl_state()
     if nfl_state['season_type'] == 'regular':
         year = nfl_state['season']
@@ -31,8 +30,8 @@ def SetValueReturn():
 
     print(f"year={year}")
     print(f"weeks={weeks}")
-
     return year, weeks
+        
 
 if __name__ == "__main__":
     SetValue()

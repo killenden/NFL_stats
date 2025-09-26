@@ -142,6 +142,7 @@ def qb(db_name):
 def ff_points(db_name):
     query = '''
     SELECT 
+        players.player_id,
         players.Player, 
         positions.POS, 
         COALESCE(passing_stats."Pass Yds", 0) AS "Pass Yds", 

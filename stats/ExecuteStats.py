@@ -891,7 +891,7 @@ def get_nfl_state():
     return json.loads(r.text)
 
 if __name__ == '__main__':
-    year, weeks = YearAndWeek.SetValueReturn()
+    year, weeks = YearAndWeek.SetValue_Return()
     base_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     db_dir = os.path.join(base_dir, 'stats', 'database', f'{year}.db')
     plot_dir = os.path.join(base_dir, 'stats', 'plots', f'{year}')

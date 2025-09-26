@@ -5,9 +5,15 @@ import re
 import matplotlib.pyplot as plt
 import os
 import sys
-import FootballDB.Database as Database
-import utils as utils
-import PullFromDatabase
+try:
+    import stats.Processes.PullFromDatabase as PullFromDatabase
+    import stats.YearAndWeek as YearAndWeek
+except ModuleNotFoundError:
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+    if repo_root not in sys.path:
+        sys.path.insert(0, repo_root)
+    import stats.Processes.PullFromDatabase as PullFromDatabase
+    import stats.YearAndWeek as YearAndWeek
 
 # Fantasy Football Scoring Settings
 
@@ -42,7 +48,8 @@ DEF_UNDER_7_POINTS = 7      # 7 points for under 7 points allowed
 DEF_UNDER_14_POINTS = 4     # 4 points for under 14 points allowed
 
 
-def main(db_name, weeks, year):
+
+def main(db_name):
     ff_points_df = PullFromDatabase.ff_points(db_name)
     ff_points_df['FF_Points'] = ff_points_df['Pass TD']*PASS_TD_POINTS
     ff_points_df['FF_Points'] = ff_points_df['FF_Points']+(ff_points_df['Pass Yds']/PASS_YARDS_PER_POINT)
@@ -64,15 +71,14 @@ if __name__ == '__main__':
     # else:
     #     year = 2024
     #     weeks = 18
-        
-    year = 2024
-    weeks = 18
-
-    db_name = rf'database\{year}.db'
-
-    current_directory = os.getcwd()
     
-    df = main(db_name, weeks, year)
+    year, weeks = YearAndWeek.SetValue_Return()
+
+    base_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    db_name = os.path.join(base_dir, 'database', f'{year}.db')
+    print(db_name)
+    
+    df = main(db_name)
     
             
     print('done')
