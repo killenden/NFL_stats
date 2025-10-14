@@ -180,6 +180,31 @@
                     }
                 };
                 controls.appendChild(powerToggle);
+                // Create Strength of Schedule toggle button
+                const sosToggle = document.createElement('button');
+                sosToggle.className = 'block-toggle';
+                sosToggle.innerText = '🛡️ Strength of Schedule';
+                sosToggle.onclick = () => {
+                    const willBeActive = !sosToggle.classList.contains('active');
+                    // deactivate other toggles
+                    Array.from(controls.querySelectorAll('.block-toggle')).forEach(btn => {
+                        if (btn !== sosToggle) {
+                            btn.classList.remove('active');
+                        }
+                    });
+                    // remove other blocks
+                    removeLuckBlock();
+                    removePowerBlock();
+
+                    if (willBeActive) {
+                        sosToggle.classList.add('active');
+                        renderSoSBlock();
+                    } else {
+                        sosToggle.classList.remove('active');
+                        removeSoSBlock();
+                    }
+                };
+                controls.appendChild(sosToggle);
 
                 const [rostersResponse, usersResponse] = await Promise.all([
                     fetch(`https://api.sleeper.app/v1/league/${leagueId}/rosters`),
@@ -205,26 +230,53 @@
                     const rosterIndex = {};
                     rostersData.forEach((r, i) => { rosterIndex[r.roster_id] = i; });
 
+                    // Track processed win/loss/tie record based only on the matchups we've fetched
+                    const processedRecord = {};
+                    rostersData.forEach(r => { processedRecord[r.roster_id] = { wins: 0, losses: 0, ties: 0 }; });
+
+                    // Determine last completed week from NFL state and ignore the current active week
+                    let lastCompletedWeek = maxWeeks;
+                    try {
+                        const stateResp = await fetch('https://api.sleeper.app/v1/state/nfl');
+                        if (stateResp.ok) {
+                            const stateData = await stateResp.json();
+                            const currentWeek = Number(stateData.week || 0);
+                            if (currentWeek > 0) {
+                                // ignore the current active week entirely
+                                lastCompletedWeek = Math.max(0, currentWeek - 1);
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('debug: unable to fetch NFL state, defaulting to maxWeeks', e);
+                    }
+                    // clamp to provided maxWeeks
+                    lastCompletedWeek = Math.min(lastCompletedWeek, maxWeeks);
+
                     // Initialize stats per roster
                     const stats = rostersData.map(r => ({
                         roster_id: r.roster_id,
                         owner: escapeHTML(userMap[r.owner_id] || 'Unknown'),
                         wins: r.settings.wins ?? 0,
+                        ties: r.settings.ties ?? 0,
                         losses: r.settings.losses ?? 0,
                         points: r.settings.fpts ?? 0,
                         expectedWins: 0, // games outscored opponents
-                        gamesCounted: 0,
+                        // gamesCounted should reflect the roster's recorded games: wins + losses + ties
+                        gamesCounted: (r.settings.wins ?? 0) + (r.settings.losses ?? 0) + (r.settings.ties ?? 0),
                         luckyWins: 0,
-                        unluckyLosses: 0
+                        unluckyLosses: 0,
+                        opponents: [], // list of opponent roster_ids (one entry per matchup opponent)
+                        pointsAgainst: 0 // sum of opponents' points across matchups
                     }));
 
                     // Fetch matchups for season weeks. Try weeks 1-18; stop when no data returned for the week.
                     const season = leagueData.season || '2025';
-                    for (let week = 1; week <= maxWeeks; week++) {
+                    for (let week = 1; week <= lastCompletedWeek; week++) {
                         try {
                             const mResp = await fetch(`https://api.sleeper.app/v1/league/${leagueId}/matchups/${week}`);
                             if (!mResp.ok) break; // no more matchup data
                             const matchups = await mResp.json();
+                            console.log('debug: week', week, 'matchups sample', Array.isArray(matchups) ? matchups.slice(0,3) : matchups);
                             if (!Array.isArray(matchups) || matchups.length === 0) break;
 
                             // Compute median points across all rosters this week for lucky/unlucky classification
@@ -259,8 +311,17 @@
                                 groups[mid].push(entry);
                             });
 
-                            Object.values(groups).forEach(group => {
+                            Object.entries(groups).forEach(([mid, group]) => {
                                 if (group.length < 2) return; // need opponent to compare
+                                // Log group structure for debugging
+                                console.log('debug: week', week, 'group', mid, group.map(g => ({ rid: g.roster_id, pts: Number(g.points ?? g.fpts ?? null) })));
+                                // Determine max points in group to detect ties
+                                const ptsArr = group.map(e => Number(e.points ?? e.fpts ?? 0));
+                                const maxPts = Math.max(...ptsArr);
+                                const winners = group.filter(e => Number(e.points ?? e.fpts ?? 0) === maxPts);
+                                const isTie = winners.length > 1;
+                                console.log('debug: week', week, 'mid', mid, 'ptsArr', ptsArr, 'maxPts', maxPts, 'winners', winners.map(w => w.roster_id), 'isTie', isTie);
+
                                 // For each roster in group, compare to opponents
                                 group.forEach(playerEntry => {
                                     const rid = playerEntry.roster_id;
@@ -268,8 +329,17 @@
                                     if (rid == null) return;
                                     const idx = rosterIndex[rid];
                                     if (typeof idx === 'undefined') return; // roster not in this league's roster list
-                                    stats[idx].gamesCounted++;
-                                    // Compare against other players in same group
+                                    // record opponents faced this week (one entry per opponent)
+                                    group.forEach(otherOpp => {
+                                        if (!otherOpp || otherOpp.roster_id == null) return;
+                                        if (otherOpp.roster_id !== rid) {
+                                            stats[idx].opponents.push(otherOpp.roster_id);
+                                            // accumulate pointsAgainst by summing opponent points for this matchup
+                                            const otherPts = Number(otherOpp.points ?? otherOpp.fpts ?? 0) || 0;
+                                            stats[idx].pointsAgainst = (stats[idx].pointsAgainst || 0) + otherPts;
+                                        }
+                                    });
+                                    // Compare against other players in same group to compute expectedWins
                                     let winsAgainst = 0;
                                     group.forEach(other => {
                                         if (other === playerEntry) return;
@@ -278,9 +348,28 @@
                                     });
                                     const fractional = winsAgainst / (group.length - 1);
                                     stats[idx].expectedWins += fractional;
-                                    // Determine whether this roster "won" or "lost" the matchup (beat majority of opponents)
-                                    const won = winsAgainst > ((group.length - 1) / 2);
-                                    const lost = winsAgainst < ((group.length - 1) / 2);
+
+                                    // Determine whether this roster "won", "lost", or tied the matchup using maxPts
+                                    let won = false;
+                                    let lost = false;
+                                    let tied = false;
+                                    if (isTie) {
+                                        // if there are multiple winners, any roster with pts === maxPts is tied for win
+                                        if (pts === maxPts) tied = true; else lost = true;
+                                    } else {
+                                        if (pts === maxPts) won = true; else lost = true;
+                                    }
+
+                                    // Log player result before updating processedRecord
+                                    console.log('debug: player', rid, 'pts', pts, { won, tied, lost });
+                                    // Update processed record only for games we've fetched
+                                    if (processedRecord[rid]) {
+                                        if (won) processedRecord[rid].wins += 1;
+                                        else if (lost) processedRecord[rid].losses += 1;
+                                        else if (tied) processedRecord[rid].ties += 1;
+                                        console.log('debug: processedRecord update for', rid, processedRecord[rid]);
+                                    }
+
                                     if (won && pts < medianPoint) {
                                         stats[idx].luckyWins += 1;
                                     }
@@ -378,10 +467,18 @@
                     }
 
                     // --- Power Rankings content: compute PPG and ranks ---
+                    // Compute PPG based on recorded matchup games (gamesCounted) when available.
+                    // This is more reliable than relying on settings.wins/settings.losses which
+                    // may be missing or not reflect number of games fetched.
                     const power = stats.map(s => {
                         const wins = s.wins ?? 0;
                         const losses = s.losses ?? 0;
-                        const matches = Number(wins) + Number(losses);
+                        const ties = s.ties ?? 0;
+                        // Use processedRecord (only completed/fetched weeks) to compute matches when available
+                        const rec = processedRecord[s.roster_id] || { wins: 0, losses: 0, ties: 0 };
+                        const matchesFromRecord = Number(rec.wins || 0) + Number(rec.losses || 0) + Number(rec.ties || 0);
+                        const matchesFallback = Number(wins) + Number(losses) + Number(ties || 0);
+                        const matches = (matchesFromRecord > 0) ? matchesFromRecord : matchesFallback;
                         return {
                             roster_id: s.roster_id,
                             owner: s.owner,
@@ -442,6 +539,100 @@
                     }
                     function removePowerBlock() {
                         const existing = document.getElementById('power-block');
+                        if (existing) existing.remove();
+                    }
+
+                    // --- Strength of Schedule (SoS) computation ---
+                    // Map roster_id -> ppg for opponent lookup
+                    const rosterPPG = {};
+                    power.forEach(p => { rosterPPG[p.roster_id] = p.ppg; });
+
+                    // Compute SoS and opponents record using processed matchups only
+                    stats.forEach(s => {
+                        const opps = s.opponents || [];
+                        // Deduplicate opponents for combined record calculation (count each opponent once)
+                        const uniqueOpps = Array.from(new Set(opps));
+
+                        // Compute matches (number of weeks/games the team has played) using gamesCounted or fallback
+                        const matchesFromRecord = Number(s.gamesCounted || 0);
+                        const matchesFallback = Number(s.wins || 0) + Number(s.losses || 0);
+                        const matches = (matchesFromRecord > 0) ? matchesFromRecord : matchesFallback;
+
+                        // SoS = pointsAgainst divided by number of games the team has played
+                        const ptsAgainst = Number(s.pointsAgainst || 0);
+                        s.sos = (matches > 0) ? (ptsAgainst / matches) : 0;
+
+                        // Combined opponents record (sum wins/losses/ties of unique opponents) based on processedRecord
+                        let oppWins = 0;
+                        let oppLosses = 0;
+                        let oppTies = 0;
+                        uniqueOpps.forEach(rid => {
+                            const rec = processedRecord[rid];
+                            if (rec) {
+                                oppWins += rec.wins || 0;
+                                oppLosses += rec.losses || 0;
+                                oppTies += rec.ties || 0;
+                            }
+                        });
+                        s.opponentsCombinedRecord = oppTies ? `${oppWins}-${oppLosses}-${oppTies}` : `${oppWins}-${oppLosses}`;
+                    });
+
+                    // Expose debug state for inspection in DevTools
+                    window.__lastStats = stats;
+                    window.__processedRecord = processedRecord;
+                    console.log('debug: FINAL stats snapshot', stats);
+                    console.log('debug: FINAL processedRecord', processedRecord);
+
+                    // Prepare SoS summary: hardest (highest opponent PPG) and easiest
+                    const sosSorted = [...stats].sort((a,b) => b.sos - a.sos);
+                    const topHard = sosSorted.slice(0,3);
+                    const topEasy = sosSorted.slice(-3).reverse();
+
+                    let sosSummary = `<div class="stats-highlight"><h4>Strength of Schedule Top</h4><div style="display:flex;gap:20px;flex-wrap:wrap;">`;
+                    sosSummary += `<div><strong>Hardest Schedules</strong><ol>`;
+                    topHard.forEach(t => { sosSummary += `<li>${t.owner} — Opp Avg PPG: ${t.sos.toFixed(1)}</li>`; });
+                    sosSummary += `</ol></div>`;
+                    sosSummary += `<div><strong>Easiest Schedules</strong><ol>`;
+                    topEasy.forEach(t => { sosSummary += `<li>${t.owner} — Opp Avg PPG: ${t.sos.toFixed(1)}</li>`; });
+                    sosSummary += `</ol></div></div></div>`;
+
+                    let sosTable = `
+                        <h3>Strength of Schedule</h3>
+                        <table border="1">
+                            <thead>
+                                <tr>
+                                            <th>Owner</th>
+                                                <th>Opp Avg PPG (SoS)</th>
+                                                <th>Opponents Record</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    // sort by sos desc for table
+                    const sosForTable = [...stats].sort((a,b) => b.sos - a.sos);
+                    sosForTable.forEach(s => {
+                        sosTable += `
+                            <tr>
+                                <td>${s.owner}</td>
+                                            <td>${s.sos.toFixed(2)}</td>
+                                            <td>${s.opponentsCombinedRecord || '0-0'}</td>
+                            </tr>
+                        `;
+                    });
+                    sosTable += `</tbody></table>`;
+
+                    window.__sosBlockContent = { sosSummary, sosTable };
+                    function renderSoSBlock() {
+                        const blocksDiv = document.getElementById('blocks');
+                        const sosBlock = document.createElement('div');
+                        sosBlock.className = 'block';
+                        sosBlock.id = 'sos-block';
+                        sosBlock.innerHTML = window.__sosBlockContent.sosSummary + window.__sosBlockContent.sosTable;
+                        const existing = document.getElementById('sos-block');
+                        if (existing) blocksDiv.replaceChild(sosBlock, existing); else blocksDiv.appendChild(sosBlock);
+                    }
+                    function removeSoSBlock() {
+                        const existing = document.getElementById('sos-block');
                         if (existing) existing.remove();
                     }
                 } else {

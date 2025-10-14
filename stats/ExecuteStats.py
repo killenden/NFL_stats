@@ -10,6 +10,7 @@ import sys
 import requests
 import json
 import Processes.PullFromDatabase as PullFromDatabase
+import YearAndWeek
 
 def get_team_logo(team_abbr):
     base_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -890,27 +891,17 @@ def get_nfl_state():
     return json.loads(r.text)
 
 if __name__ == '__main__':
-    nfl_state = get_nfl_state()
-    if nfl_state['season_type'] != 'post':
-        year = nfl_state['season']
-        weeks = nfl_state['week']
-    else:
-        year = 2024
-        weeks = 18
-
-    db_name = rf'database\{year}.db'
-
-    current_directory = os.getcwd()
-    # Ensure the plots directory exists
-    plots_dir = os.path.join(current_directory, f'{year}/plots')
-    os.makedirs(plots_dir, exist_ok=True)
-    # Change the current working directory to the plots directory
-    os.chdir(plots_dir)
+    year, weeks = YearAndWeek.SetValue_Return()
+    base_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    db_dir = os.path.join(base_dir, 'stats', 'database', f'{year}.db')
+    plot_dir = os.path.join(base_dir, 'stats', 'plots', f'{year}')
+    if not os.path.exists(plot_dir):
+        os.makedirs(plot_dir)
+    os.chdir(plot_dir)
     
     
-    os.chdir(current_directory)
     
-    df = PullFromDatabase.team_off_overall(db_name)
+    df = PullFromDatabase.team_off_overall(db_dir)
     
     # Apply some styling
     styled_df = df.style.set_caption("Team Offense Overall") \
@@ -923,22 +914,22 @@ if __name__ == '__main__':
     
     html_table = styled_df.to_html()
     
-    Team_RushAtt_PassAtt_Off(db_name, weeks, year)
-    Team_RushAtt_PassAtt_Off_Linearized(db_name, weeks, year)
-    Team_RushAtt_PassAtt_Both(db_name, weeks, year)
-    Team_RushAtt_PassAtt_Both_Linearized(db_name, weeks, year)
-    Player_All_Passing_Target_Share(db_name, weeks, year)
-    Player_WR_TPG_vs_YPR(db_name, weeks, year)
-    Player_WR_RPG_vs_YPR(db_name, weeks, year)
-    Player_WR_TPG_vs_RPG(db_name, weeks, year)
-    Player_WR_RPG_vs_TDPR(db_name, weeks, year)
-    Player_RB_YPG_vs_TDPG(db_name, weeks, year)
-    Player_RB_YPG(db_name, weeks, year)
-    Player_QB_Top12_1(db_name, weeks, year)
-    Player_TE_TPG_vs_RPG(db_name, weeks, year)
-    Player_QB_YPG_vs_TD(db_name, weeks, year)
-    Player_QB_YPA_vs_CmpPct(db_name, weeks, year)
-    #Player_K_NetYards_vs_Touchback(db_name, weeks, year)
-    #Team_FFScoring_vs_Allowed_Def(db_name, weeks, year)
+    Team_RushAtt_PassAtt_Off(db_dir, weeks, year)
+    Team_RushAtt_PassAtt_Off_Linearized(db_dir, weeks, year)
+    Team_RushAtt_PassAtt_Both(db_dir, weeks, year)
+    Team_RushAtt_PassAtt_Both_Linearized(db_dir, weeks, year)
+    Player_All_Passing_Target_Share(db_dir, weeks, year)
+    Player_WR_TPG_vs_YPR(db_dir, weeks, year)
+    Player_WR_RPG_vs_YPR(db_dir, weeks, year)
+    Player_WR_TPG_vs_RPG(db_dir, weeks, year)
+    Player_WR_RPG_vs_TDPR(db_dir, weeks, year)
+    Player_RB_YPG_vs_TDPG(db_dir, weeks, year)
+    Player_RB_YPG(db_dir, weeks, year)
+    Player_QB_Top12_1(db_dir, weeks, year)
+    Player_TE_TPG_vs_RPG(db_dir, weeks, year)
+    Player_QB_YPG_vs_TD(db_dir, weeks, year)
+    Player_QB_YPA_vs_CmpPct(db_dir, weeks, year)
+    #Player_K_NetYards_vs_Touchback(db_dir, weeks, year)
+    #Team_FFScoring_vs_Allowed_Def(db_dir, weeks, year)
     
     
