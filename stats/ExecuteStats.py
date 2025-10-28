@@ -11,6 +11,7 @@ import requests
 import json
 import Processes.PullFromDatabase as PullFromDatabase
 import YearAndWeek
+from datetime import date
 
 def get_team_logo(team_abbr):
     base_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -56,7 +57,9 @@ def Team_RushAtt_PassAtt_Off(db_name, weeks, year):
     # Set labels and title
     ax.set_xlabel('Rush Att', fontsize=12)
     ax.set_ylabel('Pass Att', fontsize=12)
-    ax.set_title(f'{year} Week {weeks}: Rush Att vs Pass Att', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    ax.set_title(f'{formatted_date}: Rush Att vs Pass Att', fontsize=16, fontweight='bold')
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
@@ -102,7 +105,9 @@ def Team_RushAtt_PassAtt_Off_Linearized(db_name, weeks, year):
     # Set labels and title
     ax.set_xlabel('Rush Att', fontsize=12)
     ax.set_ylabel('Pass Att', fontsize=12)
-    ax.set_title(f'{year} Week {weeks}: Rush Att vs Pass Att Linearized', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    ax.set_title(f'{formatted_date}: Rush Att vs Pass Att Linearized', fontsize=16, fontweight='bold')
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
@@ -167,7 +172,9 @@ def Team_RushAtt_PassAtt_Both(db_name, weeks, year):
     # Set labels and title
     ax.set_xlabel('Def Tot Att', fontsize=12)
     ax.set_ylabel('Off Tot Att', fontsize=12)
-    ax.set_title(f'{year} Week {weeks}: Defense Att vs Offense Att', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    ax.set_title(f'{formatted_date}: Defense Att vs Offense Att', fontsize=16, fontweight='bold')
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
@@ -233,7 +240,9 @@ def Team_RushAtt_PassAtt_Both_Linearized(db_name, weeks, year):
     # Set labels and title
     ax.set_xlabel('Def %', fontsize=12)
     ax.set_ylabel('Off %', fontsize=12)
-    ax.set_title(f'{year} Week {weeks}: Defense Att vs Offense Att Linearized', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    ax.set_title(f'{formatted_date}: Defense Att vs Offense Att Linearized', fontsize=16, fontweight='bold')
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
@@ -287,7 +296,9 @@ def Player_All_Passing_Target_Share(db_name, weeks, year):
     # Set labels and title
     ax.set_xlabel('Total Team Passing Attempts', fontsize=12)
     ax.set_ylabel('Target Share (%)', fontsize=12)
-    ax.set_title(f'{year} Week {weeks}: Passing Target Share Percentage by Team', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    ax.set_title(f'{formatted_date}: Passing Target Share Percentage by Team', fontsize=16, fontweight='bold')
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
     # Adjust plot limits
@@ -330,7 +341,9 @@ def Player_WR_TPG_vs_YPR(db_name, weeks, year):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title(f'{year} Week {weeks}: WR Targets per Game vs Yards per Reception', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    plt.title(f'{formatted_date}: WR Targets per Game vs Yards per Reception', fontsize=16, fontweight='bold')
     plt.xlabel('Targets per Game', fontsize=12)
     plt.ylabel('Yards per Reception', fontsize=12)
     save_fig(year, f'Player_WR_TPG_vs_YPR.png')
@@ -371,7 +384,9 @@ def Player_WR_RPG_vs_YPR(db_name, weeks, year):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title(f'{year} Week {weeks}: WR Receptions per Game vs Yards per Game', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    plt.title(f'{formatted_date}: WR Receptions per Game vs Yards per Game', fontsize=16, fontweight='bold')
     plt.xlabel('Receptions per Game', fontsize=12)
     plt.ylabel('Yards per Game', fontsize=12)
     plt.tight_layout()
@@ -411,7 +426,9 @@ def Player_WR_TPG_vs_RPG(db_name, weeks, year):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title(f'{year} Week {weeks}: WR Targets per Game vs Receptions per Target', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    plt.title(f'{formatted_date}: WR Targets per Game vs Receptions per Target', fontsize=16, fontweight='bold')
     plt.xlabel('Targets per Game', fontsize=12)
     plt.ylabel('Receptions per Target', fontsize=12)
     plt.tight_layout()
@@ -450,7 +467,9 @@ def Player_TE_TPG_vs_RPG(db_name, weeks, year):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title(f'{year} Week {weeks}: TE Targets per Game vs Receptions per Target', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    plt.title(f'{formatted_date}: TE Targets per Game vs Receptions per Target', fontsize=16, fontweight='bold')
     plt.xlabel('Targets per Game', fontsize=12)
     plt.ylabel('Receptions per Target', fontsize=12)
     plt.tight_layout()
@@ -491,7 +510,9 @@ def Player_WR_RPG_vs_TDPR(db_name, weeks, year):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title(f'{year} Week {weeks}: WR Receptions per Game vs TDs per Reception', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    plt.title(f'{formatted_date}: WR Receptions per Game vs TDs per Reception', fontsize=16, fontweight='bold')
     plt.xlabel('Receptions per Game', fontsize=12)
     plt.ylabel('TDs per Reception', fontsize=12)
     save_fig(year, f'Player_WR_RPG_vs_TDPR.png')
@@ -542,7 +563,9 @@ def Player_RB_YPG_vs_TDPG(db_name, weeks, year):
 
     #ax.tick_params(axis='both', which='both', length=0)
 
-    plt.title(f'{year} Week {weeks}: RB Yards and TDs per Game', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    plt.title(f'{formatted_date}: RB Yards and TDs per Game', fontsize=16, fontweight='bold')
     plt.xlabel('Yards per Game', fontsize=12, fontweight='bold')
     plt.ylabel('TDs per Game', fontsize=12, fontweight='bold')
     plt.tight_layout()
@@ -611,8 +634,9 @@ def Player_RB_YPG(db_name, weeks, year):
 
     #ax.tick_params(axis='both', which='both', length=0)
 
-
-    plt.title(f'{year} Week {weeks}: RB Rushing and Recieving Yards per Game', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    plt.title(f'{formatted_date}: RB Rushing and Recieving Yards per Game', fontsize=16, fontweight='bold')
     plt.xlabel('Rushing Yards per Game', fontsize=12, fontweight='bold')
     plt.ylabel('Recieving Yards per Game', fontsize=12, fontweight='bold')
     plt.tight_layout()
@@ -667,7 +691,9 @@ def Player_QB_Top12(db_name, weeks, year):
     for i in range(len(qb_df_parsed3_t12), len(axs)):
         axs[i].axis('off')
 
-    plt.suptitle(f'{year} Week {weeks}: Top 12 QB Radar Charts', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    plt.suptitle(f'{formatted_date}: Top 12 QB Radar Charts', fontsize=16, fontweight='bold')
     plt.tight_layout()
     save_fig(year, f'Player_QB_Top12')
     #plt.savefig(f'Player_QB_Top12', dpi=450, bbox_inches='tight')
@@ -717,7 +743,9 @@ def Player_QB_Top12_1(db_name, weeks, year):
     player_names = qb_df_parsed['Player'].values
 
     fig, axs = plt.subplots(3, 4, subplot_kw=dict(polar=True), figsize=(15, 10))
-    plt.suptitle(f'{year} Week {weeks}: Top 12 Fantasy QBs', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    plt.suptitle(f'{formatted_date}: Top 12 Fantasy QBs', fontsize=16, fontweight='bold')
 
     for i, ax in enumerate(axs.flatten()):
         if i < len(data_to_plot):
@@ -760,7 +788,9 @@ def Player_K_NetYards_vs_Touchback(db_name, weeks, year):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title(f'{year} Week {weeks}: Average Net Yards per Punt vs Touchback Count', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    plt.title(f'{formatted_date}: Average Net Yards per Punt vs Touchback Count', fontsize=16, fontweight='bold')
     plt.xlabel('Average Net Yards per Punt', fontsize=12)
     plt.ylabel('Touchback Count', fontsize=12)
     plt.savefig(f'Player_K_NetYards_vs_Touchback.png', dpi=450)
@@ -799,7 +829,9 @@ def Player_QB_YPA_vs_CmpPct(db_name, weeks, year):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title(f'{year} Week {weeks}: Yards per Attempt vs Completion Percentage', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    plt.title(f'{formatted_date}: Yards per Attempt vs Completion Percentage', fontsize=16, fontweight='bold')
     plt.xlabel('Yards per Attempt', fontsize=12)
     plt.ylabel('Completion Percentage', fontsize=12)
     plt.tight_layout()
@@ -837,7 +869,9 @@ def Player_QB_YPG_vs_TD(db_name, weeks, year):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--')
 
-    plt.title(f'{year} Week {weeks}: Yards vs Touchdowns per Game', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    plt.title(f'{formatted_date}: Yards vs Touchdowns per Game', fontsize=16, fontweight='bold')
     plt.xlabel('Yards per Game', fontsize=12)
     plt.ylabel('Touchdowns per Game', fontsize=12)
     plt.tight_layout()
@@ -878,7 +912,9 @@ def Team_FFScoring_vs_Allowed_Def(db_name, weeks, year):
 
     ax.grid(True, which='both', axis='both', linewidth=0.5, linestyle='--', zorder=0)
 
-    plt.title(f'{year} Week {weeks}: Team Defense Fantasy Points vs TDs Allowed per Game', fontsize=16, fontweight='bold')
+    today = date.today()
+    formatted_date = today.strftime("%m-%d-%Y")
+    plt.title(f'{formatted_date}: Team Defense Fantasy Points vs TDs Allowed per Game', fontsize=16, fontweight='bold')
     plt.xlabel('Fantasy Points per Game', fontsize=12)
     plt.ylabel('TDs Allowed per Game', fontsize=12)
     plt.tight_layout()
