@@ -14,9 +14,20 @@ jobs:
     name: Create scheduled issue
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Create issue from template file
         uses: peter-evans/create-issue-from-file@v4
         with:
+          # Use a personal access token (PAT) stored in repository secrets so the
+          # `issues` event created by this step will trigger other workflows.
+          # Workflows triggered by the default GITHUB_TOKEN do NOT create new
+          # workflow runs, which is why `create_PR.yml` didn't run previously.
+          # Create a PAT with 'repo' scope and store it as a secret (example name
+          # below: PERSONAL_TOKEN).
+          token: ${{ secrets.PAT_TOKEN }}
           title: "[BOT] Update Database and Plots"
           content-filepath: .github/ISSUE_TEMPLATE/update_plots_and_db_issue.yml
           labels: bot, scheduled, update
