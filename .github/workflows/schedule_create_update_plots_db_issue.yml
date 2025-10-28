@@ -14,6 +14,10 @@ jobs:
     name: Create scheduled issue
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Create issue from template file
         uses: peter-evans/create-issue-from-file@v4
         with:
