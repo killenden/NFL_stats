@@ -1,4 +1,3 @@
-Sleeper year received: 2025
-Sleeper week received: 17
-year=2025
-weeks=17
+Sleeper season type is not regular, defaulting to year: 2026 and weeks: 1
+year=2026
+weeks=1
