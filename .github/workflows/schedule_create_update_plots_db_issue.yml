@@ -1,9 +1,10 @@
 name: Schedule Create Update Plots & DB Issue
 
 on:
-  schedule:
+# Reenable 'schedule:' and 'cron' lines
+  #schedule:
     # Runs every Tuesday at 09:00 UTC. Adjust cron as needed for local timezone.
-    - cron: '0 9 * * 2'
+    #- cron: '0 9 * * 2'
   workflow_dispatch:
 
 permissions:
