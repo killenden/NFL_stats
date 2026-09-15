@@ -1,4 +1,4 @@
-Sleeper year received: 2025
-Sleeper week received: 18
-year=2025
-weeks=18
+Sleeper year received: 2026
+Sleeper week received: 2
+year=2026
+weeks=2
